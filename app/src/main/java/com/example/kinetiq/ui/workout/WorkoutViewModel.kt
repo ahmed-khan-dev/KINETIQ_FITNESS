@@ -7,10 +7,12 @@ import com.example.kinetiq.KinetiqApplication
 import com.example.kinetiq.data.local.entity.DietaryPreferenceEntity
 import com.example.kinetiq.data.local.entity.ExerciseLibraryEntity
 import com.example.kinetiq.data.local.entity.ExerciseLogEntity
+import com.example.kinetiq.data.local.entity.GpsLogEntity
 import com.example.kinetiq.data.local.entity.SessionExerciseEntity
 import com.example.kinetiq.data.local.entity.UserProfileEntity
 import com.example.kinetiq.data.local.entity.WorkoutPlanEntity
 import com.example.kinetiq.data.local.entity.WorkoutSessionEntity
+import com.example.kinetiq.utils.LocationUtils
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -204,62 +206,72 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun completeCurrentExercise(weight: String = "", repsOverride: Int? = null, setsOverride: Int? = null) {
-        val currentState = _sessionState.value
-        if (!currentState.hasWorkoutData) return
+         val currentState = _sessionState.value
+         if (!currentState.hasWorkoutData) return
 
-        val session = cachedSessions.getOrNull(currentState.sessionIndex) ?: return
-        val exercise = session.exercises.getOrNull(currentState.currentExerciseIndex) ?: return
+         val session = cachedSessions.getOrNull(currentState.sessionIndex) ?: return
+         val exercise = session.exercises.getOrNull(currentState.currentExerciseIndex) ?: return
 
-        val exerciseCompletedSets = setsOverride ?: exercise.sets
-        val completedTotal = currentState.completedSets + exerciseCompletedSets.coerceAtLeast(0)
-        val logEntry = if (repsOverride != null || weight.isNotBlank()) {
-            val repsText = repsOverride ?: exercise.reps
-            val weightText = if (weight.isNotBlank()) " @ ${weight.trim()} kg" else ""
-            "$exerciseCompletedSets x $repsText$weightText"
-        } else {
-            "${exerciseCompletedSets} x ${exercise.reps}"
-        }
+         val exerciseCompletedSets = setsOverride ?: exercise.sets
+         val completedTotal = currentState.completedSets + exerciseCompletedSets.coerceAtLeast(0)
+         val logEntry = if (repsOverride != null || weight.isNotBlank()) {
+             val repsText = repsOverride ?: exercise.reps
+             val weightText = if (weight.isNotBlank()) " @ ${weight.trim()} kg" else ""
+             "$exerciseCompletedSets x $repsText$weightText"
+         } else {
+             "${exerciseCompletedSets} x ${exercise.reps}"
+         }
 
-        viewModelScope.launch {
-            val log = ExerciseLogEntity(
-                id = UUID.randomUUID().toString(),
-                sessionExerciseId = exercise.sessionExerciseId,
-                userId = userId,
-                loggedSets = logEntry,
-                rpe = 7,
-                completedAt = System.currentTimeMillis(),
-                gpsLogId = null,
-                createdAt = System.currentTimeMillis(),
-                updatedAt = System.currentTimeMillis()
-            )
-            repository.saveExerciseLog(log)
-        }
+         viewModelScope.launch {
+             // Capture GPS location
+             val gpsLog = LocationUtils.getCurrentLocation(getApplication())
+             val savedGpsId = if (gpsLog.gpsOk) {
+                 repository.saveGpsLog(gpsLog)
+                 gpsLog.id
+             } else {
+                 repository.saveGpsLog(gpsLog)
+                 gpsLog.id
+             }
 
-        val nextIndex = currentState.currentExerciseIndex + 1
-        if (nextIndex < session.exercises.size) {
-            val nextExercise = session.exercises[nextIndex]
-            _sessionState.value = currentState.copy(
-                exerciseName = nextExercise.name,
-                currentExerciseIndex = nextIndex,
-                totalExercises = session.exercises.size,
-                targetMuscles = nextExercise.targetMuscles,
-                sets = nextExercise.sets,
-                reps = nextExercise.reps,
-                restSeconds = nextExercise.restSeconds,
-                notes = nextExercise.notes,
-                sessionExerciseId = nextExercise.sessionExerciseId,
-                completedSets = completedTotal.coerceAtMost(session.totalSets),
-                completionSummary = logEntry,
-                isComplete = false
-            )
-        } else {
-            _sessionState.value = currentState.copy(
-                completedSets = session.totalSets,
-                completionSummary = "Workout complete: ${session.title} finished.",
-                isComplete = true
-            )
-        }
-    }
+             val log = ExerciseLogEntity(
+                 id = UUID.randomUUID().toString(),
+                 sessionExerciseId = exercise.sessionExerciseId,
+                 userId = userId,
+                 loggedSets = logEntry,
+                 rpe = 7,
+                 completedAt = System.currentTimeMillis(),
+                 gpsLogId = savedGpsId,
+                 createdAt = System.currentTimeMillis(),
+                 updatedAt = System.currentTimeMillis()
+             )
+             repository.saveExerciseLog(log)
+         }
+
+         val nextIndex = currentState.currentExerciseIndex + 1
+         if (nextIndex < session.exercises.size) {
+             val nextExercise = session.exercises[nextIndex]
+             _sessionState.value = currentState.copy(
+                 exerciseName = nextExercise.name,
+                 currentExerciseIndex = nextIndex,
+                 totalExercises = session.exercises.size,
+                 targetMuscles = nextExercise.targetMuscles,
+                 sets = nextExercise.sets,
+                 reps = nextExercise.reps,
+                 restSeconds = nextExercise.restSeconds,
+                 notes = nextExercise.notes,
+                 sessionExerciseId = nextExercise.sessionExerciseId,
+                 completedSets = completedTotal.coerceAtMost(session.totalSets),
+                 completionSummary = logEntry,
+                 isComplete = false
+             )
+         } else {
+             _sessionState.value = currentState.copy(
+                 completedSets = session.totalSets,
+                 completionSummary = "Workout complete: ${session.title} finished.",
+                 isComplete = true
+             )
+         }
+     }
 
     private suspend fun buildDayUiFromPlanAsync(plan: WorkoutPlanEntity): List<WorkoutDayUi> {
          val sessions = repository.getSessionsForPlan(plan.id)
