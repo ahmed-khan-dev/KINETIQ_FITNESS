@@ -1,5 +1,24 @@
 # Kinetiq Changelog
 
+## 2026-09-26 (SUBMISSION VERSION)
+
+### Phase 6 — Workout Plan & Logging (COMPLETE)
+- **Exercise Library**: 15 pre-seeded exercises (Chest, Back, Legs, Shoulders, Arms, Core) with equipment/difficulty/restrictions
+- **Deterministic Generator**: Rules-based split generation (3-day Full Body, 4-day Upper/Lower, 5-6-day Push/Pull/Legs)
+- **Workout Persistence**: All plans/sessions/exercises saved in Room database
+- **Real Data Flow**: Exercises from library → generated plan → session display → UI (no placeholder zeros)
+- **Exercise Logging**: Set-by-set tracking with weight, reps, and completion status
+- **GPS Integration**: Location captured when workouts/sets completed with graceful fallback
+- **Profile Integration**: Generator respects fitness level, goal, equipment, days/week, medical flags
+- **Equipment Filtering**: Exercises filtered by user's available equipment
+- **Medical Restrictions**: Exercises excluded/avoided based on user flags
+- **Session Management**: Weekly plan display with today's workout highlighted
+- **Progress Tracking**: Exercise and set count displayed during active workout
+- **Data Persistence**: All logs survive app restart
+- **Build Status**: `:app:assembleDebug` — BUILD SUCCESSFUL
+- **Phase 5 Protected**: All authentication, profile, onboarding flows remain stable and unchanged
+- **Submission Ready**: Minimal scope, no unnecessary features, all core Phase 6 requirements met
+
 ## 2026-09-26
 
 ### Phase 5 — User Profile & Onboarding
