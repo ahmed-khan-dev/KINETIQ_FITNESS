@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/lockFragment">
+
+    <fragment
+        android:id="@+id/lockFragment"
+        android:name="com.example.kinetiq.ui.auth.LockFragment"
+        android:label="LockScreen"
+        tools:layout="@layout/fragment_lock">
+        <action
+            android:id="@+id/action_lockFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/lockFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_lockFragment_to_onboardingFragment"
+            app:destination="@id/onboardingFragment"
+            app:popUpTo="@id/lockFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/onboardingFragment"
+        android:name="com.example.kinetiq.ui.profile.OnboardingFragment"
+        android:label="Onboarding"
+        tools:layout="@layout/fragment_onboarding">
+        <action
+            android:id="@+id/action_onboardingFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/onboardingFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.kinetiq.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/profileFragment"
+        android:name="com.example.kinetiq.ui.profile.ProfileFragment"
+        android:label="Profile"
+        tools:layout="@layout/fragment_profile" />
+
+    <fragment
+        android:id="@+id/workoutPlanFragment"
+        android:name="com.example.kinetiq.ui.workout.WorkoutPlanFragment"
+        android:label="Workout Plan"
+        tools:layout="@layout/fragment_workout_plan">
+        <action
+            android:id="@+id/action_workoutPlanFragment_to_workoutSessionFragment"
+            app:destination="@id/workoutSessionFragment"
+            app:popUpTo="@id/workoutPlanFragment"
+            app:launchSingleTop="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/workoutSessionFragment"
+        android:name="com.example.kinetiq.ui.workout.WorkoutSessionFragment"
+        android:label="Workout Session"
+        tools:layout="@layout/fragment_workout_session" />
+
+    <fragment
+        android:id="@+id/logMealFragment"
+        android:name="com.example.kinetiq.ui.meal.LogMealFragment"
+        android:label="Log Meal"
+        tools:layout="@layout/fragment_log_meal" />
+
+    <fragment
+        android:id="@+id/progressFragment"
+        android:name="com.example.kinetiq.ui.progress.ProgressFragment"
+        android:label="Progress"
+        tools:layout="@layout/fragment_progress" />
+
+</navigation>

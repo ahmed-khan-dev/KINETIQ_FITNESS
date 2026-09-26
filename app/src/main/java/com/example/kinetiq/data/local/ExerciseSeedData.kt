@@ -1,0 +1,203 @@
+package com.example.kinetiq.data.local
+
+import com.example.kinetiq.data.local.entity.ExerciseLibraryEntity
+
+object ExerciseSeedData {
+    val initialExercises = listOf(
+        ExerciseLibraryEntity(
+            id = "ex_pushups",
+            name = "Push-ups",
+            muscleGroup = "Chest",
+            equipmentTag = "Bodyweight",
+            difficulty = "Beginner",
+            metValue = 3.8,
+            instructions = "Place hands shoulder-width apart, lower chest to ground, press back up.",
+            exclusionTags = "shoulder_injury",
+            defaultSets = 3,
+            defaultReps = 12,
+            defaultRestSec = 60
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_squats",
+            name = "Bodyweight Squats",
+            muscleGroup = "Legs",
+            equipmentTag = "Bodyweight",
+            difficulty = "Beginner",
+            metValue = 5.0,
+            instructions = "Stand feet shoulder-width apart, bend knees and sit back, return to standing.",
+            exclusionTags = "knee_injury",
+            defaultSets = 3,
+            defaultReps = 15,
+            defaultRestSec = 60
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_db_press",
+            name = "Dumbbell Bench Press",
+            muscleGroup = "Chest",
+            equipmentTag = "Dumbbell",
+            difficulty = "Intermediate",
+            metValue = 6.0,
+            instructions = "Lie on bench, press dumbbells upward from chest height.",
+            exclusionTags = "shoulder_injury",
+            defaultSets = 3,
+            defaultReps = 10,
+            defaultRestSec = 90
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_db_row",
+            name = "Dumbbell Bent-Over Row",
+            muscleGroup = "Back",
+            equipmentTag = "Dumbbell",
+            difficulty = "Intermediate",
+            metValue = 5.5,
+            instructions = "Hinge at hips, pull dumbbells to waist level squeezing shoulder blades.",
+            exclusionTags = "lower_back_injury",
+            defaultSets = 3,
+            defaultReps = 10,
+            defaultRestSec = 90
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_bb_squat",
+            name = "Barbell Back Squat",
+            muscleGroup = "Legs",
+            equipmentTag = "Barbell",
+            difficulty = "Advanced",
+            metValue = 7.0,
+            instructions = "Rest barbell across upper back, squat down below parallel, drive up.",
+            exclusionTags = "knee_injury,lower_back_injury",
+            defaultSets = 4,
+            defaultReps = 8,
+            defaultRestSec = 120
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_deadlift",
+            name = "Conventional Deadlift",
+            muscleGroup = "Back",
+            equipmentTag = "Barbell",
+            difficulty = "Advanced",
+            metValue = 8.0,
+            instructions = "Grip barbell at shin level, hinge hips and drive upward keeping back straight.",
+            exclusionTags = "lower_back_injury",
+            defaultSets = 4,
+            defaultReps = 6,
+            defaultRestSec = 120
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_plank",
+            name = "Forearm Plank",
+            muscleGroup = "Core",
+            equipmentTag = "Bodyweight",
+            difficulty = "Beginner",
+            metValue = 3.3,
+            instructions = "Hold body straight resting on forearms and toes, hold core tight.",
+            exclusionTags = null,
+            defaultSets = 3,
+            defaultReps = 45,
+            defaultRestSec = 45
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_db_ohp",
+            name = "Dumbbell Shoulder Press",
+            muscleGroup = "Shoulders",
+            equipmentTag = "Dumbbell",
+            difficulty = "Intermediate",
+            metValue = 5.0,
+            instructions = "Seated or standing, press dumbbells overhead from shoulder level.",
+            exclusionTags = "shoulder_injury",
+            defaultSets = 3,
+            defaultReps = 10,
+            defaultRestSec = 90
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_lunges",
+            name = "Walking Lunges",
+            muscleGroup = "Legs",
+            equipmentTag = "Bodyweight",
+            difficulty = "Intermediate",
+            metValue = 5.5,
+            instructions = "Step forward bending both knees to 90 degrees, step forward into next leg.",
+            exclusionTags = "knee_injury",
+            defaultSets = 3,
+            defaultReps = 12,
+            defaultRestSec = 60
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_pullups",
+            name = "Pull-ups",
+            muscleGroup = "Back",
+            equipmentTag = "Bodyweight",
+            difficulty = "Advanced",
+            metValue = 8.0,
+            instructions = "Grip pull-up bar overhand, pull chest up to bar level.",
+            exclusionTags = "shoulder_injury",
+            defaultSets = 3,
+            defaultReps = 8,
+            defaultRestSec = 90
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_bicep_curls",
+            name = "Dumbbell Bicep Curls",
+            muscleGroup = "Arms",
+            equipmentTag = "Dumbbell",
+            difficulty = "Beginner",
+            metValue = 4.0,
+            instructions = "Stand straight, curl dumbbells up toward shoulders contracting biceps.",
+            exclusionTags = null,
+            defaultSets = 3,
+            defaultReps = 12,
+            defaultRestSec = 60
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_tricep_dips",
+            name = "Tricep Bench Dips",
+            muscleGroup = "Arms",
+            equipmentTag = "Bodyweight",
+            difficulty = "Beginner",
+            metValue = 4.5,
+            instructions = "Place hands on bench edge, lower hips by bending elbows, press back up.",
+            exclusionTags = "shoulder_injury",
+            defaultSets = 3,
+            defaultReps = 12,
+            defaultRestSec = 60
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_mtn_climbers",
+            name = "Mountain Climbers",
+            muscleGroup = "Core",
+            equipmentTag = "Bodyweight",
+            difficulty = "Intermediate",
+            metValue = 8.0,
+            instructions = "In push-up position, rapidly alternate driving knees toward chest.",
+            exclusionTags = null,
+            defaultSets = 3,
+            defaultReps = 30,
+            defaultRestSec = 45
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_rdl",
+            name = "Dumbbell Romanian Deadlift",
+            muscleGroup = "Legs",
+            equipmentTag = "Dumbbell",
+            difficulty = "Intermediate",
+            metValue = 5.5,
+            instructions = "Hold dumbbells, hinge at hips lowering along shins feeling hamstrings stretch.",
+            exclusionTags = "lower_back_injury",
+            defaultSets = 3,
+            defaultReps = 10,
+            defaultRestSec = 90
+        ),
+        ExerciseLibraryEntity(
+            id = "ex_lat_raises",
+            name = "Dumbbell Lateral Raises",
+            muscleGroup = "Shoulders",
+            equipmentTag = "Dumbbell",
+            difficulty = "Beginner",
+            metValue = 4.0,
+            instructions = "Raise dumbbells out to sides to shoulder height, slowly lower.",
+            exclusionTags = "shoulder_injury",
+            defaultSets = 3,
+            defaultReps = 12,
+            defaultRestSec = 60
+        )
+    )
+}

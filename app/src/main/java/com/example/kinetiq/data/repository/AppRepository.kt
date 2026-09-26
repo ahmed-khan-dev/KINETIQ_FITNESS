@@ -1,0 +1,170 @@
+package com.example.kinetiq.data.repository
+
+import com.example.kinetiq.data.local.AppDatabase
+import com.example.kinetiq.data.local.entity.AppSessionEntity
+import com.example.kinetiq.data.local.entity.DietaryPreferenceEntity
+import com.example.kinetiq.data.local.entity.ExerciseLibraryEntity
+import com.example.kinetiq.data.local.entity.ExerciseLogEntity
+import com.example.kinetiq.data.local.entity.GpsLogEntity
+import com.example.kinetiq.data.local.entity.MealLogEntity
+import com.example.kinetiq.data.local.entity.MealLogItemEntity
+import com.example.kinetiq.data.local.entity.ProgressPhotoEntity
+import com.example.kinetiq.data.local.entity.StreakEntity
+import com.example.kinetiq.data.local.entity.UserProfileEntity
+import com.example.kinetiq.data.local.entity.WeightLogEntity
+import com.example.kinetiq.data.local.entity.WorkoutPlanEntity
+import com.example.kinetiq.data.local.entity.WorkoutSessionEntity
+import kotlinx.coroutines.flow.Flow
+
+import androidx.room.withTransaction
+import com.example.kinetiq.data.local.entity.SessionExerciseEntity
+import com.example.kinetiq.data.local.entity.UserTargetEntity
+
+class AppRepository(private val database: AppDatabase) {
+
+    val userDao = database.userDao()
+    val dietaryPreferenceDao = database.dietaryPreferenceDao()
+    val userTargetDao = database.userTargetDao()
+    val exerciseLibraryDao = database.exerciseLibraryDao()
+    val workoutPlanDao = database.workoutPlanDao()
+    val exerciseLogDao = database.exerciseLogDao()
+    val mealLogDao = database.mealLogDao()
+    val weightLogDao = database.weightLogDao()
+    val progressPhotoDao = database.progressPhotoDao()
+    val gpsLogDao = database.gpsLogDao()
+    val appSessionDao = database.appSessionDao()
+    val streakDao = database.streakDao()
+    val appSettingsDao = database.appSettingsDao()
+
+    // Profile & Dietary Preferences & Targets
+    suspend fun saveProfile(profile: UserProfileEntity) = userDao.insertOrUpdateProfile(profile)
+    fun getProfileFlow(userId: String = "default_user_id"): Flow<UserProfileEntity?> = userDao.getProfileFlow(userId)
+    suspend fun getProfile(userId: String = "default_user_id"): UserProfileEntity? = userDao.getProfile(userId)
+
+    suspend fun saveDietaryPreference(pref: DietaryPreferenceEntity) = dietaryPreferenceDao.insertOrUpdateDietaryPreference(pref)
+    suspend fun getDietaryPreference(userId: String = "default_user_id"): DietaryPreferenceEntity? = dietaryPreferenceDao.getDietaryPreference(userId)
+    fun getDietaryPreferenceFlow(userId: String = "default_user_id"): Flow<DietaryPreferenceEntity?> = dietaryPreferenceDao.getDietaryPreferenceFlow(userId)
+
+    fun getUserTargetFlow(userId: String = "default_user_id"): Flow<UserTargetEntity?> = userTargetDao.getLatestUserTargetFlow(userId)
+    suspend fun getUserTarget(userId: String = "default_user_id"): UserTargetEntity? = userTargetDao.getLatestUserTarget(userId)
+
+    suspend fun saveFullProfileAndTargets(
+        profile: UserProfileEntity,
+        preference: DietaryPreferenceEntity,
+        target: UserTargetEntity
+    ) {
+        database.withTransaction {
+            userDao.insertOrUpdateProfile(profile)
+            dietaryPreferenceDao.insertOrUpdateDietaryPreference(preference)
+            userTargetDao.insertOrUpdateUserTarget(target)
+        }
+    }
+
+    // Exercises
+    fun getAllExercisesFlow(): Flow<List<ExerciseLibraryEntity>> = exerciseLibraryDao.getAllExercisesFlow()
+    suspend fun getAllExercises(): List<ExerciseLibraryEntity> = exerciseLibraryDao.getAllExercises()
+
+    // Workout Plans & Logs
+    suspend fun saveWorkoutPlan(plan: WorkoutPlanEntity) = workoutPlanDao.insertWorkoutPlan(plan)
+    fun getActiveWorkoutPlanFlow(userId: String = "default_user_id"): Flow<WorkoutPlanEntity?> = workoutPlanDao.getActiveWorkoutPlanFlow(userId)
+    suspend fun saveWorkoutSessions(sessions: List<WorkoutSessionEntity>) = workoutPlanDao.insertWorkoutSessions(sessions)
+
+    suspend fun saveExerciseLog(log: ExerciseLogEntity) = exerciseLogDao.insertExerciseLog(log)
+
+    suspend fun getActiveWorkoutPlan(userId: String = "default_user_id"): WorkoutPlanEntity? =
+        workoutPlanDao.getActiveWorkoutPlan(userId)
+
+
+    suspend fun getSessionsForPlan(planId: String): List<WorkoutSessionEntity> =
+        workoutPlanDao.getSessionsForPlan(planId)
+
+    suspend fun getSessionExercises(sessionId: String): List<SessionExerciseEntity> =
+        workoutPlanDao.getSessionExercises(sessionId)
+
+    suspend fun saveWorkoutPlanWithSessions(
+        plan: WorkoutPlanEntity,
+        sessions: List<WorkoutSessionEntity>,
+        exercises: List<SessionExerciseEntity>
+    ) {
+        database.withTransaction {
+            workoutPlanDao.insertWorkoutPlan(plan)
+            if (sessions.isNotEmpty()) {
+                workoutPlanDao.insertWorkoutSessions(sessions)
+            }
+            if (exercises.isNotEmpty()) {
+                workoutPlanDao.insertSessionExercises(exercises)
+            }
+        }
+    }
+
+    // Meals
+    suspend fun saveMealLog(mealLog: MealLogEntity, items: List<MealLogItemEntity> = emptyList()): Long {
+        val id = mealLogDao.insertMealLog(mealLog)
+        if (items.isNotEmpty()) {
+            mealLogDao.insertMealLogItems(items)
+        }
+        return id
+    }
+    fun getTodayMealsFlow(userId: String, startTimestamp: Long, endTimestamp: Long): Flow<List<MealLogEntity>> =
+        mealLogDao.getMealsForTodayFlow(userId, startTimestamp, endTimestamp)
+
+    // Weight
+    suspend fun saveWeightLog(weightLog: WeightLogEntity) = weightLogDao.insertWeightLog(weightLog)
+    fun getLatestWeightFlow(userId: String): Flow<WeightLogEntity?> = weightLogDao.getLatestWeightFlow(userId)
+
+    // Progress Photos
+    suspend fun saveProgressPhoto(photo: ProgressPhotoEntity) = progressPhotoDao.insertProgressPhoto(photo)
+    fun getLatestProgressPhotoFlow(userId: String): Flow<ProgressPhotoEntity?> = progressPhotoDao.getLatestProgressPhotoFlow(userId)
+
+    // GPS Logs
+    suspend fun saveGpsLog(gpsLog: GpsLogEntity) = gpsLogDao.insertGpsLog(gpsLog)
+
+    // Session & Auth
+    suspend fun getAppSession(userId: String = "default_user_id"): AppSessionEntity? {
+        return appSessionDao.getSession(userId)
+    }
+
+    fun getAppSessionFlow(userId: String = "default_user_id"): Flow<AppSessionEntity?> {
+        return appSessionDao.getSessionFlow(userId)
+    }
+
+    suspend fun saveAppSession(session: AppSessionEntity) = appSessionDao.insertOrUpdateSession(session)
+
+    suspend fun updateSessionSuccess(userId: String = "default_user_id") {
+        val now = System.currentTimeMillis()
+        val currentSession = appSessionDao.getSession(userId)
+        val updated = currentSession?.copy(
+            isAuthenticated = true,
+            lastActiveTimestamp = now,
+            sessionExpiryTimestamp = now + com.example.kinetiq.utils.SecurityUtils.SESSION_TIMEOUT_MS
+        ) ?: AppSessionEntity(
+            userId = userId,
+            isAuthenticated = true,
+            lastActiveTimestamp = now,
+            sessionExpiryTimestamp = now + com.example.kinetiq.utils.SecurityUtils.SESSION_TIMEOUT_MS
+        )
+        appSessionDao.insertOrUpdateSession(updated)
+    }
+
+    suspend fun setPinHash(pin: String, userId: String = "default_user_id") {
+        val hash = com.example.kinetiq.utils.SecurityUtils.hashPin(pin)
+        val currentSession = appSessionDao.getSession(userId)
+        val updated = currentSession?.copy(pinHash = hash) ?: AppSessionEntity(
+            userId = userId,
+            pinHash = hash
+        )
+        appSessionDao.insertOrUpdateSession(updated)
+    }
+
+    suspend fun invalidateSession(userId: String = "default_user_id") {
+        val currentSession = appSessionDao.getSession(userId)
+        if (currentSession != null) {
+            val updated = currentSession.copy(isAuthenticated = false)
+            appSessionDao.insertOrUpdateSession(updated)
+        }
+    }
+
+    // Streak
+    suspend fun saveStreak(streak: StreakEntity) = streakDao.insertOrUpdateStreak(streak)
+    fun getStreakFlow(userId: String): Flow<StreakEntity?> = streakDao.getStreakFlow(userId)
+}
