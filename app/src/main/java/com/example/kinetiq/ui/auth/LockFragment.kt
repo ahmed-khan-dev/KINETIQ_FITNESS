@@ -1,6 +1,8 @@
 package com.example.kinetiq.ui.auth
 
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,8 +44,23 @@ class LockFragment : Fragment() {
 
         binding.btnSubmitPin.setOnClickListener {
             val pin = binding.etPin.text.toString().trim()
+            if (pin.length != 4 || pin.any { it !in '0'..'9' }) {
+                binding.tilPin.error = "Enter exactly 4 digits."
+                binding.etPin.requestFocus()
+                return@setOnClickListener
+            }
+            binding.tilPin.error = null
             viewModel.submitPin(pin)
         }
+
+        binding.etPin.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.tilPin.error = null
+                binding.tvError.visibility = View.GONE
+            }
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.lockState.collectLatest { state ->

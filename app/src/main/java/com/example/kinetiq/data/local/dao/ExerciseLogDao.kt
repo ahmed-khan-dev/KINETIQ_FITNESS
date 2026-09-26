@@ -18,6 +18,9 @@ interface ExerciseLogDao {
     @Query("SELECT * FROM exercise_logs WHERE userId = :userId AND completedAt >= :startTimestamp AND completedAt <= :endTimestamp")
     suspend fun getLogsForDateRange(userId: String, startTimestamp: Long, endTimestamp: Long): List<ExerciseLogEntity>
 
+    @Query("SELECT * FROM exercise_logs WHERE sessionExerciseId = :sessionExerciseId ORDER BY completedAt ASC")
+    suspend fun getLogsForSessionExercise(sessionExerciseId: String): List<ExerciseLogEntity>
+
     @Query("SELECT COUNT(*) FROM exercise_logs WHERE userId = :userId AND completedAt >= :startTimestamp AND completedAt <= :endTimestamp")
     suspend fun getCompletedWorkoutCountForToday(userId: String, startTimestamp: Long, endTimestamp: Long): Int
 }

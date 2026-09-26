@@ -1,22 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fillViewport="true">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Meal Logging"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:orientation="vertical"
+        android:padding="16dp">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Capture meal photos and record nutrition data here."
-        android:textSize="16sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Log a Meal"
+            android:textSize="26sp"
+            android:textStyle="bold" />
 
-</LinearLayout>
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="240dp"
+            android:layout_marginTop="16dp">
+
+            <androidx.camera.view.PreviewView
+                android:id="@+id/mealCameraPreview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="gone"
+                app:implementationMode="compatible" />
+
+            <ImageView
+                android:id="@+id/ivMealPhoto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="Captured meal photo"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <TextView
+                android:id="@+id/tvCameraPrompt"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="#20252B"
+                android:gravity="center"
+                android:padding="16dp"
+                android:text="Open the camera to take a meal photo"
+                android:textColor="@android:color/white"
+                android:textSize="16sp" />
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btnCaptureMealPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Open Camera" />
+
+        <Button
+            android:id="@+id/btnRetakeMealPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Retake Photo"
+            android:visibility="gone" />
+
+        <TextView
+            android:id="@+id/tvMealNameLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Meal name" />
+
+        <EditText
+            android:id="@+id/etMealName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="e.g. Vegetable bowl"
+            android:inputType="textCapSentences"
+            android:maxLength="100" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Meal slot" />
+
+        <Spinner
+            android:id="@+id/spinnerMealSlot"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Nutrition (enter totals for this meal)"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/etMealCalories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Calories (kcal)"
+            android:inputType="number" />
+
+        <EditText
+            android:id="@+id/etMealProtein"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Protein (g, optional)"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/etMealCarbs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Carbohydrates (g, optional)"
+            android:inputType="numberDecimal" />
+
+        <EditText
+            android:id="@+id/etMealFat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Fat (g, optional)"
+            android:inputType="numberDecimal" />
+
+        <TextView
+            android:id="@+id/tvMealMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:accessibilityLiveRegion="polite"
+            android:visibility="gone" />
+
+        <ProgressBar
+            android:id="@+id/pbSavingMeal"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/btnSaveMeal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Save Meal" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="Recent Meals"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/recentMealsContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingBottom="16dp" />
+    </LinearLayout>
+</ScrollView>

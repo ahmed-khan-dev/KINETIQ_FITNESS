@@ -9,6 +9,7 @@ import com.example.kinetiq.data.local.entity.ExerciseLibraryEntity
 import com.example.kinetiq.data.local.entity.ExerciseLogEntity
 import com.example.kinetiq.data.local.entity.GpsLogEntity
 import com.example.kinetiq.data.local.entity.SessionExerciseEntity
+import com.example.kinetiq.data.local.entity.StreakEntity
 import com.example.kinetiq.data.local.entity.UserProfileEntity
 import com.example.kinetiq.data.local.entity.WorkoutPlanEntity
 import com.example.kinetiq.data.local.entity.WorkoutSessionEntity
@@ -18,6 +19,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import java.util.UUID
+import java.util.Calendar
+import kotlin.math.max
 
 data class WorkoutDayUi(
     val sessionId: String,
@@ -27,7 +30,9 @@ data class WorkoutDayUi(
     val estimatedMinutes: Int,
     val exerciseCount: Int,
     val totalSets: Int,
-    val exercises: List<WorkoutExerciseUi>
+    val exercises: List<WorkoutExerciseUi>,
+    val completedSets: Int = 0,
+    val isComplete: Boolean = false
 )
 
 data class WorkoutExerciseUi(
@@ -38,7 +43,8 @@ data class WorkoutExerciseUi(
     val sets: Int,
     val reps: Int,
     val restSeconds: Int,
-    val notes: String
+    val notes: String,
+    val completedSets: Int = 0
 )
 
 data class WorkoutUiState(
@@ -58,6 +64,7 @@ data class WorkoutUiState(
 data class WorkoutSessionUiState(
     val hasWorkoutData: Boolean = false,
     val isComplete: Boolean = false,
+    val isSaving: Boolean = false,
     val sessionName: String = "",
     val sessionIndex: Int = 0,
     val totalSessions: Int = 0,
@@ -89,6 +96,8 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
 
     private var cachedSessions: List<WorkoutDayUi> = emptyList()
     private var selectedSessionIndex: Int = 0
+    private var activeSessionExercises: List<WorkoutExerciseUi> = emptyList()
+    private var completedSetsByExercise: Map<String, Int> = emptyMap()
 
     fun loadWorkout(forceGenerate: Boolean = false) {
         viewModelScope.launch {
@@ -158,6 +167,45 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         loadWorkout(forceGenerate = force)
     }
 
+    /** Loads the selected, persisted workout session and its linked exercise records. */
+    fun loadSession(sessionId: String) {
+        viewModelScope.launch {
+            val session = repository.getWorkoutSession(sessionId)
+            if (session == null) {
+                activeSessionExercises = emptyList()
+                completedSetsByExercise = emptyMap()
+                _sessionState.value = WorkoutSessionUiState()
+                return@launch
+            }
+
+            val exerciseMap = repository.getAllExercises().associateBy { it.id }
+            activeSessionExercises = repository.getSessionExercises(sessionId).mapNotNull { sessionExercise ->
+                val exercise = exerciseMap[sessionExercise.exerciseId] ?: return@mapNotNull null
+                WorkoutExerciseUi(
+                    sessionExerciseId = sessionExercise.id,
+                    exerciseId = exercise.id,
+                    name = exercise.name,
+                    targetMuscles = exercise.muscleGroup,
+                    sets = sessionExercise.targetSets,
+                    reps = sessionExercise.targetReps,
+                    restSeconds = sessionExercise.targetRestSec,
+                    notes = exercise.instructions
+                )
+            }
+            completedSetsByExercise = activeSessionExercises.associate { exercise ->
+                val savedLogs = repository.getExerciseLogsForSessionExercise(exercise.sessionExerciseId)
+                exercise.sessionExerciseId to savedLogs.sumOf { log ->
+                    log.loggedSets.substringBefore('x').trim().toIntOrNull() ?: 1
+                }
+            }
+
+            val nextExerciseIndex = activeSessionExercises.indexOfFirst { exercise ->
+                (completedSetsByExercise[exercise.sessionExerciseId] ?: 0) < exercise.sets
+            }.let { if (it < 0) activeSessionExercises.size else it }
+            updateSessionState(session.sessionName, sessionId, nextExerciseIndex)
+        }
+    }
+
     fun openSession(sessionIndex: Int) {
         if (cachedSessions.isEmpty()) return
         selectedSessionIndex = sessionIndex.coerceIn(0, cachedSessions.lastIndex)
@@ -205,73 +253,131 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         )
     }
 
-    fun completeCurrentExercise(weight: String = "", repsOverride: Int? = null, setsOverride: Int? = null) {
-         val currentState = _sessionState.value
-         if (!currentState.hasWorkoutData) return
+    fun completeCurrentSet(weight: String = "", reps: Int) {
+        val currentState = _sessionState.value
+        if (!currentState.hasWorkoutData || currentState.isSaving || currentState.isComplete) return
+        val exercise = activeSessionExercises.getOrNull(currentState.currentExerciseIndex) ?: return
+        if (reps !in 1..500) return
+        val weightValue = weight.trim().takeIf { it.isNotEmpty() }?.toDoubleOrNull()
+        if (weight.isNotBlank() && (weightValue == null || !weightValue.isFinite() || weightValue <= 0.0 || weightValue > 1000.0)) return
 
-         val session = cachedSessions.getOrNull(currentState.sessionIndex) ?: return
-         val exercise = session.exercises.getOrNull(currentState.currentExerciseIndex) ?: return
+        _sessionState.value = currentState.copy(isSaving = true)
+        viewModelScope.launch {
+            val gpsLog = LocationUtils.getCurrentLocation(getApplication())
+            repository.saveGpsLog(gpsLog)
+            val weightText = weight.trim().takeIf { it.isNotBlank() }?.let { " @ $it kg" } ?: ""
+            repository.saveExerciseLog(
+                ExerciseLogEntity(
+                    id = UUID.randomUUID().toString(),
+                    sessionExerciseId = exercise.sessionExerciseId,
+                    userId = userId,
+                    loggedSets = "1 x $reps$weightText",
+                    rpe = 7,
+                    completedAt = System.currentTimeMillis(),
+                    gpsLogId = gpsLog.id
+                )
+            )
 
-         val exerciseCompletedSets = setsOverride ?: exercise.sets
-         val completedTotal = currentState.completedSets + exerciseCompletedSets.coerceAtLeast(0)
-         val logEntry = if (repsOverride != null || weight.isNotBlank()) {
-             val repsText = repsOverride ?: exercise.reps
-             val weightText = if (weight.isNotBlank()) " @ ${weight.trim()} kg" else ""
-             "$exerciseCompletedSets x $repsText$weightText"
-         } else {
-             "${exerciseCompletedSets} x ${exercise.reps}"
-         }
+            completedSetsByExercise = completedSetsByExercise + (
+                exercise.sessionExerciseId to ((completedSetsByExercise[exercise.sessionExerciseId] ?: 0) + 1)
+            )
+            val nextIndex = if ((completedSetsByExercise[exercise.sessionExerciseId] ?: 0) >= exercise.sets) {
+                currentState.currentExerciseIndex + 1
+            } else {
+                currentState.currentExerciseIndex
+            }
+            updateSessionState(
+                sessionName = currentState.sessionName,
+                sessionId = currentState.currentSessionId,
+                exerciseIndex = nextIndex,
+                completionSummary = "Saved set: 1 x $reps$weightText"
+            )
+            if (nextIndex >= activeSessionExercises.size) {
+                recordCompletedWorkoutForStreak()
+            }
+        }
+    }
 
-         viewModelScope.launch {
-             // Capture GPS location
-             val gpsLog = LocationUtils.getCurrentLocation(getApplication())
-             val savedGpsId = if (gpsLog.gpsOk) {
-                 repository.saveGpsLog(gpsLog)
-                 gpsLog.id
-             } else {
-                 repository.saveGpsLog(gpsLog)
-                 gpsLog.id
-             }
+    private suspend fun recordCompletedWorkoutForStreak() {
+        val now = System.currentTimeMillis()
+        val today = startOfLocalDay(now)
+        val existing = repository.streakDao.getStreak(userId)
+        val previousActiveDay = existing?.let { startOfLocalDay(it.lastActiveDate) }
+        if (previousActiveDay == today) return
 
-             val log = ExerciseLogEntity(
-                 id = UUID.randomUUID().toString(),
-                 sessionExerciseId = exercise.sessionExerciseId,
-                 userId = userId,
-                 loggedSets = logEntry,
-                 rpe = 7,
-                 completedAt = System.currentTimeMillis(),
-                 gpsLogId = savedGpsId,
-                 createdAt = System.currentTimeMillis(),
-                 updatedAt = System.currentTimeMillis()
-             )
-             repository.saveExerciseLog(log)
-         }
+        val yesterday = Calendar.getInstance().apply {
+            timeInMillis = today
+            add(Calendar.DAY_OF_YEAR, -1)
+        }.timeInMillis
+        val current = if (previousActiveDay == yesterday) (existing?.currentStreak ?: 0) + 1 else 1
+        val streak = existing?.copy(
+            currentStreak = current,
+            longestStreak = max(existing.longestStreak, current),
+            lastActiveDate = today,
+            updatedAt = now
+        ) ?: StreakEntity(
+            userId = userId,
+            currentStreak = current,
+            longestStreak = current,
+            lastActiveDate = today,
+            createdAt = now,
+            updatedAt = now
+        )
+        repository.saveStreak(streak)
+    }
 
-         val nextIndex = currentState.currentExerciseIndex + 1
-         if (nextIndex < session.exercises.size) {
-             val nextExercise = session.exercises[nextIndex]
-             _sessionState.value = currentState.copy(
-                 exerciseName = nextExercise.name,
-                 currentExerciseIndex = nextIndex,
-                 totalExercises = session.exercises.size,
-                 targetMuscles = nextExercise.targetMuscles,
-                 sets = nextExercise.sets,
-                 reps = nextExercise.reps,
-                 restSeconds = nextExercise.restSeconds,
-                 notes = nextExercise.notes,
-                 sessionExerciseId = nextExercise.sessionExerciseId,
-                 completedSets = completedTotal.coerceAtMost(session.totalSets),
-                 completionSummary = logEntry,
-                 isComplete = false
-             )
-         } else {
-             _sessionState.value = currentState.copy(
-                 completedSets = session.totalSets,
-                 completionSummary = "Workout complete: ${session.title} finished.",
-                 isComplete = true
-             )
-         }
-     }
+    private fun startOfLocalDay(timestamp: Long): Long = Calendar.getInstance().apply {
+        timeInMillis = timestamp
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }.timeInMillis
+
+    private fun updateSessionState(
+        sessionName: String,
+        sessionId: String,
+        exerciseIndex: Int,
+        completionSummary: String = ""
+    ) {
+        val completedTotal = activeSessionExercises.sumOf { exercise ->
+            (completedSetsByExercise[exercise.sessionExerciseId] ?: 0).coerceAtMost(exercise.sets)
+        }
+        val exercise = activeSessionExercises.getOrNull(exerciseIndex)
+        if (exercise == null) {
+            _sessionState.value = WorkoutSessionUiState(
+                hasWorkoutData = activeSessionExercises.isNotEmpty(),
+                isComplete = activeSessionExercises.isNotEmpty(),
+                sessionName = sessionName,
+                totalSessions = 1,
+                totalExercises = activeSessionExercises.size,
+                totalSets = activeSessionExercises.sumOf { it.sets },
+                completedSets = completedTotal,
+                completionSummary = completionSummary.ifBlank { "Workout complete: $sessionName finished." },
+                currentSessionId = sessionId
+            )
+            return
+        }
+        _sessionState.value = WorkoutSessionUiState(
+            hasWorkoutData = true,
+            isSaving = false,
+            sessionName = sessionName,
+            totalSessions = 1,
+            exerciseName = exercise.name,
+            currentExerciseIndex = exerciseIndex,
+            totalExercises = activeSessionExercises.size,
+            targetMuscles = exercise.targetMuscles,
+            sets = exercise.sets,
+            reps = exercise.reps,
+            totalSets = exercise.sets,
+            completedSets = (completedSetsByExercise[exercise.sessionExerciseId] ?: 0).coerceAtMost(exercise.sets),
+            restSeconds = exercise.restSeconds,
+            notes = exercise.notes,
+            sessionExerciseId = exercise.sessionExerciseId,
+            completionSummary = completionSummary,
+            currentSessionId = sessionId
+        )
+    }
 
     private suspend fun buildDayUiFromPlanAsync(plan: WorkoutPlanEntity): List<WorkoutDayUi> {
          val sessions = repository.getSessionsForPlan(plan.id)
@@ -280,6 +386,8 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
              val exerciseMap = repository.getAllExercises().associateBy { it.id }
             val mappedExercises = sessionExercises.mapNotNull { sessionExercise ->
                 val exercise = exerciseMap[sessionExercise.exerciseId] ?: return@mapNotNull null
+                val completedSetCount = repository.getExerciseLogsForSessionExercise(sessionExercise.id)
+                    .sumOf(::completedSetCountFromLog)
                 WorkoutExerciseUi(
                     sessionExerciseId = sessionExercise.id,
                     exerciseId = exercise.id,
@@ -288,7 +396,8 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                     sets = sessionExercise.targetSets,
                     reps = sessionExercise.targetReps,
                     restSeconds = sessionExercise.targetRestSec,
-                    notes = exercise.instructions
+                    notes = exercise.instructions,
+                    completedSets = completedSetCount.coerceAtMost(sessionExercise.targetSets)
                 )
             }
             if (mappedExercises.isEmpty()) return@mapNotNull null
@@ -300,7 +409,9 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                 estimatedMinutes = session.estimatedDurationMin,
                 exerciseCount = mappedExercises.size,
                 totalSets = mappedExercises.sumOf { it.sets },
-                exercises = mappedExercises
+                exercises = mappedExercises,
+                completedSets = mappedExercises.sumOf { it.completedSets },
+                isComplete = mappedExercises.isNotEmpty() && mappedExercises.all { it.completedSets >= it.sets }
             )
         }
     }
@@ -522,4 +633,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             else -> "Day $dayOfWeek"
         }
     }
+
+    private fun completedSetCountFromLog(log: ExerciseLogEntity): Int =
+        log.loggedSets.substringBefore('x').trim().toIntOrNull() ?: 1
 }

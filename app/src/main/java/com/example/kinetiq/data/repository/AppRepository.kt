@@ -78,8 +78,14 @@ class AppRepository(private val database: AppDatabase) {
     suspend fun getSessionsForPlan(planId: String): List<WorkoutSessionEntity> =
         workoutPlanDao.getSessionsForPlan(planId)
 
+    suspend fun getWorkoutSession(sessionId: String): WorkoutSessionEntity? =
+        workoutPlanDao.getSessionById(sessionId)
+
     suspend fun getSessionExercises(sessionId: String): List<SessionExerciseEntity> =
         workoutPlanDao.getSessionExercises(sessionId)
+
+    suspend fun getExerciseLogsForSessionExercise(sessionExerciseId: String): List<ExerciseLogEntity> =
+        exerciseLogDao.getLogsForSessionExercise(sessionExerciseId)
 
     suspend fun saveWorkoutPlanWithSessions(
         plan: WorkoutPlanEntity,
@@ -99,22 +105,28 @@ class AppRepository(private val database: AppDatabase) {
 
     // Meals
     suspend fun saveMealLog(mealLog: MealLogEntity, items: List<MealLogItemEntity> = emptyList()): Long {
-        val id = mealLogDao.insertMealLog(mealLog)
-        if (items.isNotEmpty()) {
-            mealLogDao.insertMealLogItems(items)
+        return database.withTransaction {
+            val id = mealLogDao.insertMealLog(mealLog)
+            if (items.isNotEmpty()) {
+                mealLogDao.insertMealLogItems(items)
+            }
+            id
         }
-        return id
     }
     fun getTodayMealsFlow(userId: String, startTimestamp: Long, endTimestamp: Long): Flow<List<MealLogEntity>> =
         mealLogDao.getMealsForTodayFlow(userId, startTimestamp, endTimestamp)
 
+    fun getAllMealsFlow(userId: String): Flow<List<MealLogEntity>> = mealLogDao.getAllMealsFlow(userId)
+
     // Weight
     suspend fun saveWeightLog(weightLog: WeightLogEntity) = weightLogDao.insertWeightLog(weightLog)
     fun getLatestWeightFlow(userId: String): Flow<WeightLogEntity?> = weightLogDao.getLatestWeightFlow(userId)
+    fun getAllWeightLogsFlow(userId: String): Flow<List<WeightLogEntity>> = weightLogDao.getAllWeightLogsFlow(userId)
 
     // Progress Photos
     suspend fun saveProgressPhoto(photo: ProgressPhotoEntity) = progressPhotoDao.insertProgressPhoto(photo)
     fun getLatestProgressPhotoFlow(userId: String): Flow<ProgressPhotoEntity?> = progressPhotoDao.getLatestProgressPhotoFlow(userId)
+    fun getAllProgressPhotosFlow(userId: String): Flow<List<ProgressPhotoEntity>> = progressPhotoDao.getAllProgressPhotosFlow(userId)
 
     // GPS Logs
     suspend fun saveGpsLog(gpsLog: GpsLogEntity) = gpsLogDao.insertGpsLog(gpsLog)

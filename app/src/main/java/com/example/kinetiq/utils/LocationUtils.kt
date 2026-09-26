@@ -69,7 +69,8 @@ object LocationUtils {
                 LocationManager.NETWORK_PROVIDER
             )
 
-            var bestLocation = getLastKnownLocation(locationManager, providers, fineLocationGranted)
+            val hasLocationPermission = fineLocationGranted || coarseLocationGranted
+            val bestLocation = getLastKnownLocation(locationManager, providers, hasLocationPermission)
 
             if (bestLocation != null) {
                 continuation.resume(GpsLogEntity(
@@ -119,7 +120,7 @@ object LocationUtils {
             } catch (e: Exception) {
                 null
             }
-        }.maxByOrNull { it.accuracy }
+        }.minByOrNull { it.accuracy }
     }
 }
 

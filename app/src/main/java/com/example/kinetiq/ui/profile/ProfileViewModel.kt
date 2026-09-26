@@ -209,20 +209,28 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
         val state = _uiState.value
         when (state.currentStep) {
             1 -> {
-                if (state.age <= 0 || state.age > 120) {
+                if (state.age !in 1..120) {
                     _uiState.value = state.copy(errorMessage = "Please enter a valid age between 1 and 120.")
                     return false
                 }
-                if (state.heightCm <= 0 || state.heightCm > 300) {
+                if (!state.heightCm.isFinite() || state.heightCm <= 0 || state.heightCm > 300) {
                     _uiState.value = state.copy(errorMessage = "Please enter a valid height in cm.")
                     return false
                 }
-                if (state.weightKg <= 0 || state.weightKg > 500) {
+                if (!state.weightKg.isFinite() || state.weightKg <= 0 || state.weightKg > 500) {
                     _uiState.value = state.copy(errorMessage = "Please enter a valid weight in kg.")
                     return false
                 }
             }
             3 -> {
+                if (state.allergies.length > 200) {
+                    _uiState.value = state.copy(errorMessage = "Allergies and dietary restrictions must be 200 characters or fewer.")
+                    return false
+                }
+                if (state.medicalFlags.length > 500) {
+                    _uiState.value = state.copy(errorMessage = "Medical restrictions must be 500 characters or fewer.")
+                    return false
+                }
                 if (!state.disclaimerAcknowledged) {
                     _uiState.value = state.copy(errorMessage = "You must acknowledge the medical disclaimer to continue.")
                     return false
@@ -287,6 +295,20 @@ class ProfileViewModel(application: Application) : AndroidViewModel(application)
     }
 
     fun saveFullProfile() {
+        val stateBeforeSave = _uiState.value
+        if (stateBeforeSave.age !in 1..120 || !stateBeforeSave.heightCm.isFinite() || stateBeforeSave.heightCm <= 0 || stateBeforeSave.heightCm > 300 ||
+            !stateBeforeSave.weightKg.isFinite() || stateBeforeSave.weightKg <= 0 || stateBeforeSave.weightKg > 500) {
+            _uiState.value = stateBeforeSave.copy(errorMessage = "Review age, height, and weight in Step 1 before saving.")
+            return
+        }
+        if (stateBeforeSave.allergies.length > 200 || stateBeforeSave.medicalFlags.length > 500) {
+            _uiState.value = stateBeforeSave.copy(errorMessage = "Shorten the allergy or medical restriction text before saving.")
+            return
+        }
+        if (!stateBeforeSave.disclaimerAcknowledged) {
+            _uiState.value = stateBeforeSave.copy(errorMessage = "You must acknowledge the medical disclaimer before saving.")
+            return
+        }
         if (!validateCurrentStep()) return
 
         viewModelScope.launch {

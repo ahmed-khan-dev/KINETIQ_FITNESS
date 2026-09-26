@@ -29,6 +29,9 @@ interface WorkoutPlanDao {
     @Query("SELECT * FROM workout_sessions WHERE planId = :planId ORDER BY dayOfWeek ASC")
     suspend fun getSessionsForPlan(planId: String): List<WorkoutSessionEntity>
 
+    @Query("SELECT * FROM workout_sessions WHERE id = :sessionId LIMIT 1")
+    suspend fun getSessionById(sessionId: String): WorkoutSessionEntity?
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertSessionExercises(sessionExercises: List<SessionExerciseEntity>)
 

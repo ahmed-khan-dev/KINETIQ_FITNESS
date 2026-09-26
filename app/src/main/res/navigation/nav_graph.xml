@@ -62,7 +62,11 @@
         android:id="@+id/workoutSessionFragment"
         android:name="com.example.kinetiq.ui.workout.WorkoutSessionFragment"
         android:label="Workout Session"
-        tools:layout="@layout/fragment_workout_session" />
+        tools:layout="@layout/fragment_workout_session">
+        <argument
+            android:name="sessionId"
+            app:argType="string" />
+    </fragment>
 
     <fragment
         android:id="@+id/logMealFragment"

@@ -58,7 +58,7 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
 
     fun submitPin(pin: String) {
         viewModelScope.launch {
-            if (pin.length < 4) {
+            if (pin.length != 4 || pin.any { it !in '0'..'9' }) {
                 _lockState.value = LockState.Error("PIN must be 4 digits")
                 return@launch
             }

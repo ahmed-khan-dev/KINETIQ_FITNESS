@@ -221,7 +221,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etAllergies"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:maxLength="200" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -233,7 +234,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etMedicalFlags"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:maxLength="500" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <CheckBox

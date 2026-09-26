@@ -70,11 +70,32 @@ Kinetiq/
 - **Medical Restrictions**: Exercise filtering based on medical flags (knee injury, lower-back injury, shoulder injury)
 - **Equipment Considerations**: Respects user's available equipment (home gym, full gym, minimal, etc.)
 
-### Planned Features (Phase 7+)
+### Phase 7: Meal Logging (Device Verification Pending)
+- **CameraX Meal Photos**: Capture photos in-app and store them under private `files/images/meals`
+- **Manual Meal Entry**: Record meal name, slot, calories, protein, carbohydrates, and fat
+- **Room Persistence**: Save meal details and photo path locally with a version 1 to 2 Room migration
+- **GPS Logging**: Attach a location record when available while still saving meals without location
+- **Recent Meals**: Display locally saved meal entries and their captured photos
+- **Input Validation**: Require a meal name and calories; validate optional macro values before saving
+
+### Phase 8: Progress Tracking (Device Verification Pending)
+- **Weight History**: Record weight in kilograms and review recent dated entries
+- **Progress Photos**: Capture front, side, or back photos and review saved thumbnails
+- **Private Photo Storage**: Keep photos under the app's private `files/images/progress` directory
+- **GPS Logging**: Attach a location record when available; weight and photo saving still work without it
+- **Input Validation**: Check the weight range and show an error at the field
+
+### Phase 9: Home Dashboard (Device Verification Pending)
+- **Today's Workout**: Show the first saved workout session, exercise set progress, and completion state
+- **Meals Today**: Show today's meal count, calorie and macro totals, and logged meal names
+- **Workout Streak**: Track consecutive local calendar days with fully completed workouts and show the longest streak
+- **Latest Progress Photo**: Preview the newest saved photo with its angle and timestamp
+- **Latest GPS**: Show the newest recorded coordinates or location-unavailable status and timestamp
+- **Quick Navigation**: Open Workout, Meal, and Progress from the dashboard
+
+### Planned Features (Phase 10+)
 - Advanced exercise customization and replacement
 - Workout history and progress analytics
-- Meal planning and nutrition tracking
-- Photo-based progress tracking
 - Social features and badges/streaks
 
 ## Build Instructions
@@ -195,7 +216,8 @@ Comprehensive documentation is available in the `docs/` directory:
 
 - Device-level manual testing of all features remains outstanding
 - No external API integrations (fully local/offline)
-- No Phase 7+ features implemented yet
+- Phase 7 meal photo and logging flow is implemented but still needs device verification
+- Progress-photo and advanced workout features remain planned
 
 ## Future Enhancements
 

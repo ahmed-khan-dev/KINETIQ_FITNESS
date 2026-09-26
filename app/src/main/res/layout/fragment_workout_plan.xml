@@ -117,6 +117,22 @@
                         android:layout_height="wrap_content"
                         android:text="Workout focus: Chest, Back" />
 
+                    <TextView
+                        android:id="@+id/tvTodayWorkoutStatus"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="0 / 0 sets completed"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvTodayWorkoutExercises"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:lineSpacingExtra="4dp"
+                        android:text="Today's exercises" />
+
                     <Button
                         android:id="@+id/btnStartWorkout"
                         android:layout_width="match_parent"

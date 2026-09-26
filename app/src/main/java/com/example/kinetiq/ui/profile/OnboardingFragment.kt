@@ -71,6 +71,9 @@ class OnboardingFragment : Fragment() {
         val textWatcher = object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                binding.etAge.error = null
+                binding.etHeightCm.error = null
+                binding.etWeightKg.error = null
                 collectAndSyncViewModelInput()
             }
             override fun afterTextChanged(s: Editable?) {}
@@ -98,7 +101,8 @@ class OnboardingFragment : Fragment() {
         binding.spSessionMinutes.onItemSelectedListener = spinnerListener
         binding.spDietType.onItemSelectedListener = spinnerListener
 
-        binding.cbDisclaimer.setOnCheckedChangeListener { _, _ ->
+        binding.cbDisclaimer.setOnCheckedChangeListener { _, checked ->
+            if (checked) binding.cbDisclaimer.error = null
             collectAndSyncViewModelInput()
         }
 
@@ -107,8 +111,15 @@ class OnboardingFragment : Fragment() {
         }
 
         binding.btnNextStep.setOnClickListener {
+            collectAndSyncViewModelInput()
             val currentState = viewModel.uiState.value
             if (currentState.currentStep < 4) {
+                if (currentState.currentStep == 1 && !validateMetricFields()) return@setOnClickListener
+                if (currentState.currentStep == 3 && !binding.cbDisclaimer.isChecked) {
+                    binding.cbDisclaimer.error = "Please acknowledge this before continuing."
+                    binding.cbDisclaimer.requestFocus()
+                    return@setOnClickListener
+                }
                 viewModel.nextStep()
             } else {
                 viewModel.saveFullProfile()
@@ -139,6 +150,24 @@ class OnboardingFragment : Fragment() {
         val disclaimer = binding.cbDisclaimer.isChecked
 
         viewModel.updateNutritionAndHealth(dietType, allergies, medicalFlags, disclaimer)
+    }
+
+    private fun validateMetricFields(): Boolean {
+        val age = binding.etAge.text.toString().trim().toIntOrNull()
+        val height = binding.etHeightCm.text.toString().trim().toDoubleOrNull()
+        val weight = binding.etWeightKg.text.toString().trim().toDoubleOrNull()
+        binding.etAge.error = if (age == null || age !in 1..120) "Enter an age from 1 to 120." else null
+        binding.etHeightCm.error = if (height == null || !height.isFinite() || height <= 0.0 || height > 300.0) "Enter a height above 0 and no more than 300 cm." else null
+        binding.etWeightKg.error = if (weight == null || !weight.isFinite() || weight <= 0.0 || weight > 500.0) "Enter a weight above 0 and no more than 500 kg." else null
+        val valid = binding.etAge.error == null && binding.etHeightCm.error == null && binding.etWeightKg.error == null
+        if (!valid) {
+            when {
+                binding.etAge.error != null -> binding.etAge.requestFocus()
+                binding.etHeightCm.error != null -> binding.etHeightCm.requestFocus()
+                else -> binding.etWeightKg.requestFocus()
+            }
+        }
+        return valid
     }
 
     private fun renderState(state: ProfileUiState) {

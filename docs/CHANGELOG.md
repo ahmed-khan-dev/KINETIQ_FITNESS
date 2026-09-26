@@ -1,5 +1,30 @@
 # Kinetiq Changelog
 
+## 2026-09-26 — Phase 9 Home Dashboard
+
+- Replaced the Home placeholder with a dashboard for the saved workout, today's meals, workout streak, latest progress photo, and latest GPS result.
+- Added quick links from Home to Workout, Meal, and Progress.
+- Updated the saved workout streak when all sets in a workout session are completed; duplicate completions on the same day do not increment it again.
+- `:app:assembleDebug` succeeded; on-device verification remains pending.
+
+## 2026-09-26 — Input Validation Hardening Before Phase 9
+
+- Added field-level age, height, weight, and disclaimer validation to profile setup and editing, with save-time guards and length limits for optional restriction fields.
+- Added required meal name and calorie checks; optional macro values now reject malformed, negative, non-finite, or out-of-range values instead of silently becoming zero.
+- Added reps and optional weight validation before workout set logging.
+- Added exact four-digit numeric validation to PIN entry.
+- Added inline weight range feedback to progress logging.
+- `:app:assembleDebug` succeeded; on-device validation remains pending.
+
+## 2026-09-26 — Phase 8 Progress Tracking
+
+- Added weight entry and recent weight history using the existing Room table.
+- Added CameraX progress photo capture with Front, Side, and Back angle selection.
+- Saved progress images in app-private storage and linked Room records to GPS logs when available.
+- Added permission fallback so weight and photo records can be saved without location access.
+- Added progress history and photo thumbnails to the Progress screen.
+- `:app:assembleDebug` succeeded; device verification remains pending.
+
 ## 2026-09-26 (SUBMISSION VERSION)
 
 ### Phase 6 — Workout Plan & Logging (COMPLETE)
@@ -141,3 +166,28 @@
 - Added an empty-state path that tells the user to complete their profile before generating a personalized workout plan and keeps the Phase 5 first-launch onboarding flow intact.
 - Verified compile status in this environment: `:app:assembleDebug` — BUILD SUCCESSFUL.
 - Device-level runtime verification of exercise completion, saved plan state, and live navigation on an emulator/physical device was not performed in this environment, so those remain unverified until an actual device run is completed.
+
+## 2026-09-26 — Phase 6 Workout Data-Flow Correction (Verification Pending)
+
+- Source inspection found why the exercise screen showed zero/default values: the session fragment used a new fragment-scoped `WorkoutViewModel` with no loaded session and called `prepareSession(0)` on an empty in-memory cache.
+- Navigation now passes the selected persisted workout session ID. The session screen reloads the linked session exercises and their exercise library data from Room.
+- Set completion now writes one log per set with reps and optional weight, saves a GPS record (including unavailable status), and restores progress from saved logs when reopened.
+- `:app:compileDebugKotlin` passed. `:app:assembleDebug` remains blocked by the environment's missing JDK 21 `jlink.exe` under the configured VS Code JDK path. No emulator/device runtime test was available, so runtime behavior and persistence are not marked verified.
+- This entry supersedes earlier Phase 6 completion and build-success claims until runtime verification is completed.
+## 2026-09-26 — Workout Plan Preview and Completion Status
+
+- The persisted weekly plan now shows each session's actual exercises, target muscles, sets, reps, and rest rather than only session counts.
+- Set progress is rebuilt from saved exercise logs. The Today card displays completed sets, refreshes after returning from a workout, and shows a completed state after the planned sets are logged.
+- `:app:compileDebugKotlin` and `:app:assembleDebug` passed after this change. The expanded plan preview and completion card still need a device check.
+
+## 2026-09-26 — Gradle JDK and Workout Flow Update
+
+- Gradle JVM criteria now select the JetBrains vendor at JDK 21, avoiding the incomplete VS Code JRE. `:app:assembleDebug` succeeds, including Java compilation and APK packaging.
+- The user reports that real exercises now appear in the active workout. Full completion, GPS fallback, restart persistence, and the new weekly exercise preview remain to be checked on device.
+## 2026-09-26 — Phase 7 Meal Logging MVP
+
+- Added CameraX 1.6.2 preview/capture using a lifecycle-bound camera controller and runtime camera permission.
+- Meal photos are written to private `files/images/meals`; the Room meal row stores the path, meal name, slot, calories, macros, and GPS log ID.
+- Added Room 1-to-2 migration and kept older calorie-item totals readable.
+- Added manual nutrition entry, location permission request with unavailable-location fallback, and a recent-meal list.
+- `:app:assembleDebug` succeeds. Device verification of camera capture, migration from an installed version 1 database, GPS fallback, and saved meals after restart remains pending.

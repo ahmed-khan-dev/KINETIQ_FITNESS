@@ -19,6 +19,7 @@ class WorkoutPlanFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: WorkoutViewModel by viewModels()
+    private var refreshWhenResumed = false
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,7 +34,9 @@ class WorkoutPlanFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.btnStartWorkout.setOnClickListener {
-            findNavController().navigate(R.id.action_workoutPlanFragment_to_workoutSessionFragment)
+            val sessionId = viewModel.uiState.value.todayWorkout?.sessionId ?: return@setOnClickListener
+            val args = Bundle().apply { putString("sessionId", sessionId) }
+            findNavController().navigate(R.id.action_workoutPlanFragment_to_workoutSessionFragment, args)
         }
 
         binding.btnGeneratePlan.setOnClickListener {
@@ -47,6 +50,19 @@ class WorkoutPlanFragment : Fragment() {
         }
 
         viewModel.loadWorkout()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        refreshWhenResumed = true
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (refreshWhenResumed && _binding != null) {
+            refreshWhenResumed = false
+            viewModel.loadWorkout()
+        }
     }
 
     private fun render(state: WorkoutUiState) {
@@ -67,20 +83,33 @@ class WorkoutPlanFragment : Fragment() {
         binding.tvWorkoutTitle.text = state.planTitle.ifBlank { "Workout" }
         binding.tvWorkoutSummary.text = state.planSummary
         binding.tvWorkoutMinutes.text = "~${workoutMinutes} min"
-        binding.tvExerciseCount.text = "${exerciseCount} exercises • ${totalSets} sets"
+        binding.tvExerciseCount.text = "${exerciseCount} exercises | ${totalSets} sets"
         binding.tvWorkoutFocus.text = today?.focus ?: "Workout focus: Balanced"
 
         if (today != null) {
             binding.tvTodayWorkoutTitle.text = today.title
-            binding.tvTodayWorkoutMeta.text = "${today.dayName} • ${today.exerciseCount} exercises • ${today.totalSets} sets • ~${today.estimatedMinutes} min"
+            binding.tvTodayWorkoutMeta.text = "${today.dayName} | ${today.exerciseCount} exercises | ${today.totalSets} sets | ~${today.estimatedMinutes} min"
+            binding.tvTodayWorkoutStatus.text = if (today.isComplete) {
+                "Workout complete | ${today.completedSets}/${today.totalSets} sets"
+            } else {
+                "${today.completedSets}/${today.totalSets} sets completed"
+            }
+            binding.tvTodayWorkoutExercises.text = today.exercises.joinToString("\n") { exercise ->
+                "${exercise.name} | ${exercise.targetMuscles} | ${exercise.sets} x ${exercise.reps} reps | Rest ${exercise.restSeconds}s"
+            }
+            binding.btnStartWorkout.text = if (today.isComplete) "Workout Complete" else "Start Workout"
+            binding.btnStartWorkout.isEnabled = !today.isComplete
         }
 
-        val weekText = state.weeklyPlan.joinToString("\n") { day ->
-            "${day.dayName} — ${day.title} (${day.exerciseCount} exercises • ${day.totalSets} sets • ~${day.estimatedMinutes} min)"
+        val weekText = state.weeklyPlan.joinToString("\n\n") { day ->
+            val status = if (day.isComplete) "Complete" else "${day.completedSets}/${day.totalSets} sets"
+            val exercises = day.exercises.joinToString("\n") { exercise ->
+                "  - ${exercise.name} | ${exercise.targetMuscles} | ${exercise.sets} x ${exercise.reps} reps | Rest ${exercise.restSeconds}s"
+            }
+            "${day.dayName} - ${day.title} (${day.exerciseCount} exercises | $status | ~${day.estimatedMinutes} min)\n$exercises"
         }
         binding.tvWeeklyPlan.text = weekText.ifBlank { "No workout plan generated yet." }
     }
-
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

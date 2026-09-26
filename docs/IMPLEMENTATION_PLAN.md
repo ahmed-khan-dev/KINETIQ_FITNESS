@@ -49,6 +49,7 @@ PHASE 4 — Authentication
 [ ] PIN fallback
 
 [ ] Session timeout
+[x] Validate PIN is exactly four numeric digits
 
 
 
@@ -70,7 +71,7 @@ PHASE 5 — Profile
 [ ] Allergies
 [ ] Medical flags
 [ ] Medical disclaimer
-[ ] Form validation
+[x] Form validation
 [ ] Save user_profiles
 [ ] Save dietary_preferences
 [ ] Calculate BMR/TDEE
@@ -96,43 +97,48 @@ PHASE 6 — Workout
 [ ] Log workout
 
 [ ] Save GPS
+[x] Validate reps and optional weight before logging a set
 
 PHASE 7 — Meal
 
-[ ] CameraX
-
-[ ] Capture photo
-
-[ ] Save file
-
-[ ] Save meal in Room
-
-[ ] Save GPS
-
-
+[x] CameraX preview and capture flow
+[x] Capture photo
+[x] Save photo under filesDir/images/meals
+[x] Enter meal name, slot, and manual nutrition
+[x] Save meal in Room with schema migration
+[x] Save GPS success or unavailable status
+[x] Validate meal name, calories, and optional nutrition values
+[ ] Device verification
 
 PHASE 8 — Progress
 
-[ ] Weight
+[x] Weight
 
-[ ] Progress photo
+[x] Weight history
 
-[ ] Save photo
+[x] Front, side, and back photo angle selection
 
-[ ] Save GPS
+[x] Save progress photo in app-private storage
+
+[x] Save GPS success or unavailable status
+[x] Validate weight input
+
+[ ] Device verification
 
 
 PHASE 9 — Home
 
-[ ] Today's workout
+[x] Today's workout
 
-[ ] Meals today
+[x] Meals today
 
-[ ] Streak
+[x] Workout streak
 
-[ ] Last photo
+[x] Last photo
 
-[ ] Last GPS
+[x] Last GPS
+
+[ ] Device verification
 
 PHASE 10 — Testing
 
