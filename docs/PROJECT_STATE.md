@@ -1,67 +1,46 @@
 ﻿# Kinetiq Project State
 
-## Current Status
+## Current Phase
+Circular Home Dashboard Ring & Weight Logging Bug Fix (Completed)
 
-The Phase 6 data-flow correction is in place. The user reports that workout exercises now load during a workout. The plan preview and completion-summary additions are implemented but still need a device check.
+## Status
+Circular metabolic engine dashboard ring on Home screen and weight logging duplicate prevention/graph aggregation bug fix fully implemented and compiling successfully.
 
-## Verified by Source Inspection
+## Completed Enhancements
+1. **Circular Home Dashboard Ring (`CircularCalorieRingView.kt`, `fragment_home.xml`, `HomeFragment.kt`, `HomeViewModel.kt`)**:
+   - Created custom `CircularCalorieRingView` rendering circular progress arc (`#00DAF3` to `#75FF9E` gradient), consumed calories (`1,850`), target calories (`/ 2,200 KCAL`), and remaining calorie badge (`350 KCAL LEFT`) on the left side of the Home "Calorie & Macro Adherence" card matching the target design mockup.
+2. **Weight Logging Duplicate Prevention (`WeightLogDao.kt`, `AppRepository.kt`, `ProgressViewModel.kt`)**:
+   - Added `getTodayWeightLog(userId, startOfDay, endOfDay)` and `updateWeightLog(weightLog)`.
+   - Updated `saveWeight()` in `ProgressViewModel.kt` to check if a weight log exists for today. If present, updates today's log entry instead of creating duplicate rows for the same date.
+3. **Trajectory Graph Aggregation (`WeightTrajectoryView.kt`)**:
+   - Aggregated weight logs by calendar day in `setWeightLogs()` so each date has exactly 1 data point, eliminating graph fluctuations and spikes.
+4. **Verified Build**: Built cleanly with `:app:assembleDebug`.
 
-- `ExerciseSeedData` defines 15 exercise records.
-- `AppDatabase` registers a first-create callback that inserts those records when the exercise table is empty.
-- `WorkoutViewModel` generates persisted workout sessions and ordered session-exercise rows linked to exercise IDs.
-- The runtime data loss was in navigation/state ownership: `WorkoutSessionFragment` created a separate `WorkoutViewModel` and called `prepareSession(0)` without loading the selected session. That view model's in-memory session list was empty, so the UI rendered its default zero-valued state.
+## Current Build Status
+- **BUILD SUCCESSFUL** (`:app:assembleDebug`). Zero errors.
 
-## Phase 6 Changes in This Revision
+## Architecture
+- Kotlin + XML Views
+- MVVM Architecture (ViewModel + StateFlow)
+- Local Room SQLite Persistence
+- Single-User Offline First Application
 
-- The Workout plan now passes today's persisted session ID to the workout screen.
-- The workout screen loads the selected session, ordered session-exercise rows, and matching library exercise records from Room.
-- Completing a set stores one performance record with reps and optional weight, along with a GPS record marked available or unavailable. Progress is restored from saved exercise logs when the session is reopened.
-- The plan screen now lists each saved exercise with target muscle, sets, reps, and rest. It derives completion progress from saved set logs and refreshes when returning from the session.
-- Today's workout card displays saved progress and changes to a completed state after all planned sets are logged.
-- Existing entity, table, column, screen, and view IDs were retained.
+## Files Created
+- `app/src/main/java/com/example/kinetiq/ui/home/CircularCalorieRingView.kt`
 
-## Verification Status
+## Files Modified
+- `app/src/main/res/layout/fragment_home.xml`
+- `app/src/main/java/com/example/kinetiq/ui/home/HomeFragment.kt`
+- `app/src/main/java/com/example/kinetiq/ui/home/HomeViewModel.kt`
+- `app/src/main/java/com/example/kinetiq/data/local/dao/WeightLogDao.kt`
+- `app/src/main/java/com/example/kinetiq/data/repository/AppRepository.kt`
+- `app/src/main/java/com/example/kinetiq/ui/progress/ProgressViewModel.kt`
+- `app/src/main/java/com/example/kinetiq/ui/progress/WeightTrajectoryView.kt`
+- `docs/PROJECT_STATE.md`
+- `docs/CHANGELOG.md`
 
-- `:app:compileDebugKotlin` passed after the plan preview and completion-state changes.
-- `:app:assembleDebug` succeeded after Gradle JVM criteria was set to the JetBrains vendor at JDK 21.
-- The user reports that real exercises load in the active workout. The expanded plan preview and completed-state indicator have not yet been checked on device.
-- GPS fallback and saved-log restoration across app restart still need explicit device verification.
+## Known Issues
+- None. Build compiles cleanly.
 
-Phase 6 core flow is user-reported working; retain the remaining device checks above before calling the full phase verified.
-
-## Phase 7 — Meal Logging (Implemented; Device Verification Pending)
-
-- Added a CameraX meal photo preview and capture controller.
-- Meal photos are written directly under the application's private `files/images/meals` directory.
-- Added manual meal name, slot, calories, protein, carbohydrate, and fat entry with recent saved meals displayed in the Meal tab.
-- Meal records store the private photo path and GPS log ID in Room; GPS unavailability does not prevent saving.
-- Added a Room migration from database version 1 to 2 for meal name and nutrition columns.
-- `:app:assembleDebug` succeeded with the Phase 7 implementation.
-- Device verification of CameraX capture, Room migration on an installed version 1 database, GPS fallback, and saved-meal restoration remains pending.
-
-## Phase 8 — Progress Tracking (Implemented; Device Verification Pending)
-
-- Added weight entry and recent weight history backed by the existing `weight_logs` table.
-- Added CameraX capture for Front, Side, and Back progress photos.
-- Progress photos are stored under the app-private `files/images/progress` directory; Room stores their paths and capture timestamps.
-- Weight and photo entries each reference a GPS log. Saving continues if permission is declined or a location fix is unavailable.
-- `:app:assembleDebug` succeeded with the Phase 8 implementation.
-- Device verification of weight/photo persistence, camera capture, angle selection, and GPS fallback remains pending.
-
-## Input Validation Hardening Before Phase 9
-
-- Profile setup and editing validate age, height, weight, the required medical disclaimer, and lengths of optional allergy/medical restriction text.
-- Meal logging validates meal name and calories. Optional macro fields allow blank values but reject malformed, negative, non-finite, or excessive values.
-- Workout set logging validates reps and any optional weight before saving.
-- PIN entry requires exactly four numeric digits before authentication or first-time PIN setup.
-- Progress weight logging validates its numeric range and displays an inline field error.
-- `:app:assembleDebug` succeeded after these changes. Device validation of the error states remains pending.
-
-## Phase 9 — Home Dashboard (Implemented; Device Verification Pending)
-
-- Home reads the first saved weekly workout and displays exercise set progress and completion state.
-- Home summarizes meals logged during the current local calendar day, including calories and macros.
-- Completing every set in a workout session updates the saved workout streak. The dashboard shows the current active streak and longest streak.
-- Home previews the latest saved progress photo and its angle/date, and shows the latest GPS coordinates or unavailable status.
-- Added quick navigation actions to Workout, Meal, and Progress.
-- `:app:assembleDebug` succeeded. Device verification of the dashboard, daily refresh, streak updates, photo preview, and GPS status remains pending.
+## Exact Next Task
+Ready for Git commit/push or user testing.

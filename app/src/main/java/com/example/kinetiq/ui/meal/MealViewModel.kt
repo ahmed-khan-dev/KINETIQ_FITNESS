@@ -115,6 +115,17 @@ class MealViewModel(application: Application) : AndroidViewModel(application) {
         }
     }
 
+    fun deleteMeal(meal: MealLogEntity) {
+        viewModelScope.launch {
+            try {
+                repository.deleteMealLog(meal)
+                showMessage("Meal '${meal.mealName}' deleted.")
+            } catch (error: Exception) {
+                showMessage("Could not delete meal: ${error.localizedMessage}")
+            }
+        }
+    }
+
     fun showMessage(message: String) {
         _uiState.value = _uiState.value.copy(message = message)
     }

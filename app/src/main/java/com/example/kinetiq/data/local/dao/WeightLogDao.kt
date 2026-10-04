@@ -20,4 +20,10 @@ interface WeightLogDao {
 
     @Query("SELECT * FROM weight_logs WHERE userId = :userId ORDER BY loggedAt DESC")
     fun getAllWeightLogsFlow(userId: String): Flow<List<WeightLogEntity>>
+
+    @Query("SELECT * FROM weight_logs WHERE userId = :userId AND loggedAt >= :startTimestamp AND loggedAt <= :endTimestamp ORDER BY loggedAt DESC LIMIT 1")
+    suspend fun getTodayWeightLog(userId: String, startTimestamp: Long, endTimestamp: Long): WeightLogEntity?
+
+    @androidx.room.Update
+    suspend fun updateWeightLog(weightLog: WeightLogEntity)
 }

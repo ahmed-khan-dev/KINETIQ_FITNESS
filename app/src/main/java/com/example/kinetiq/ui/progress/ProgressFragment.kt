@@ -19,6 +19,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import com.example.kinetiq.R
 import com.example.kinetiq.data.local.entity.ProgressPhotoEntity
 import com.example.kinetiq.data.local.entity.WeightLogEntity
 import com.example.kinetiq.databinding.FragmentProgressBinding
@@ -39,6 +40,22 @@ class ProgressFragment : Fragment() {
 
     private val cameraPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
         if (granted) openCameraPreview() else viewModel.showMessage("Camera permission is needed to capture a progress photo.")
+    }
+
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            try {
+                val destinationFile = viewModel.createPhotoFile()
+                requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                    destinationFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                viewModel.setCapturedPhoto(destinationFile.absolutePath)
+            } catch (e: Exception) {
+                viewModel.showMessage("Could not import photo from gallery.")
+            }
+        }
     }
 
     private val locationPermissionLauncher = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) {
@@ -62,11 +79,17 @@ class ProgressFragment : Fragment() {
             if (hasCameraPermission()) openCameraPreview()
             else cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
         }
+
+        binding.btnChooseProgressGallery.setOnClickListener {
+            galleryLauncher.launch("image/*")
+        }
+
         binding.btnRetakeProgressPhoto.setOnClickListener {
             binding.ivProgressPhoto.visibility = View.GONE
             viewModel.clearCapturedPhoto()
             openCameraPreview()
         }
+
         binding.btnSaveWeight.setOnClickListener {
             val weight = binding.etProgressWeight.text.toString()
             val parsedWeight = weight.trim().toDoubleOrNull()
@@ -79,11 +102,13 @@ class ProgressFragment : Fragment() {
             }
             withLocationPermission { viewModel.saveWeight(weight) }
         }
+
         binding.etProgressWeight.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) { binding.etProgressWeight.error = null }
             override fun afterTextChanged(s: Editable?) = Unit
         })
+
         binding.btnSaveProgressPhoto.setOnClickListener {
             val angle = binding.spinnerProgressAngle.selectedItem?.toString().orEmpty()
             withLocationPermission { viewModel.saveProgressPhoto(angle) }
@@ -139,6 +164,8 @@ class ProgressFragment : Fragment() {
         binding.tvProgressMessage.text = state.message.orEmpty()
         binding.tvProgressMessage.visibility = if (state.message.isNullOrBlank()) View.GONE else View.VISIBLE
 
+        binding.weightTrajectoryGraph.setWeightLogs(state.weightLogs)
+
         state.capturedPhotoPath?.let { path ->
             val file = File(path)
             if (file.isFile) {
@@ -161,12 +188,16 @@ class ProgressFragment : Fragment() {
     private fun renderWeightHistory(logs: List<WeightLogEntity>) {
         binding.weightHistoryContainer.removeAllViews()
         if (logs.isEmpty()) {
-            binding.weightHistoryContainer.addView(TextView(requireContext()).apply { text = "No weight entries yet." })
+            binding.weightHistoryContainer.addView(TextView(requireContext()).apply {
+                text = "No weight entries yet."
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_muted))
+            })
             return
         }
         logs.forEach { log ->
             binding.weightHistoryContainer.addView(TextView(requireContext()).apply {
                 text = "${formatWeight(log.weightKg)} kg  •  ${formatDate(log.loggedAt)}"
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_primary))
                 setPadding(0, dp(8), 0, dp(8))
             })
         }
@@ -177,6 +208,7 @@ class ProgressFragment : Fragment() {
         if (photos.isEmpty()) {
             binding.progressPhotosContainer.addView(TextView(requireContext()).apply {
                 text = "No progress photos yet."
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_muted))
                 setPadding(0, dp(8), 0, dp(8))
             })
             return
@@ -196,6 +228,7 @@ class ProgressFragment : Fragment() {
             val details = TextView(requireContext()).apply {
                 layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply { marginStart = dp(12) }
                 text = "${photo.angle} view\n${formatDate(photo.takenAt)}"
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_primary))
             }
             row.addView(image)
             row.addView(details)

@@ -64,6 +64,24 @@ class AppRepository(private val database: AppDatabase) {
     fun getAllExercisesFlow(): Flow<List<ExerciseLibraryEntity>> = exerciseLibraryDao.getAllExercisesFlow()
     suspend fun getAllExercises(): List<ExerciseLibraryEntity> = exerciseLibraryDao.getAllExercises()
 
+    suspend fun saveCustomExercise(
+        name: String,
+        muscleGroup: String = "General",
+        equipment: String = "Bodyweight",
+        instructions: String = "Custom exercise added by user."
+    ): ExerciseLibraryEntity {
+        val exercise = ExerciseLibraryEntity(
+            id = java.util.UUID.randomUUID().toString(),
+            name = name.trim(),
+            muscleGroup = muscleGroup,
+            equipmentTag = equipment,
+            difficulty = "Intermediate",
+            instructions = instructions
+        )
+        exerciseLibraryDao.insertExercise(exercise)
+        return exercise
+    }
+
     // Workout Plans & Logs
     suspend fun saveWorkoutPlan(plan: WorkoutPlanEntity) = workoutPlanDao.insertWorkoutPlan(plan)
     fun getActiveWorkoutPlanFlow(userId: String = "default_user_id"): Flow<WorkoutPlanEntity?> = workoutPlanDao.getActiveWorkoutPlanFlow(userId)
@@ -118,8 +136,14 @@ class AppRepository(private val database: AppDatabase) {
 
     fun getAllMealsFlow(userId: String): Flow<List<MealLogEntity>> = mealLogDao.getAllMealsFlow(userId)
 
+    suspend fun deleteMealLog(mealLog: MealLogEntity) = mealLogDao.deleteMealLog(mealLog)
+
+    suspend fun updateMealLog(mealLog: MealLogEntity) = mealLogDao.updateMealLog(mealLog)
+
     // Weight
     suspend fun saveWeightLog(weightLog: WeightLogEntity) = weightLogDao.insertWeightLog(weightLog)
+    suspend fun updateWeightLog(weightLog: WeightLogEntity) = weightLogDao.updateWeightLog(weightLog)
+    suspend fun getTodayWeightLog(userId: String, startTimestamp: Long, endTimestamp: Long) = weightLogDao.getTodayWeightLog(userId, startTimestamp, endTimestamp)
     fun getLatestWeightFlow(userId: String): Flow<WeightLogEntity?> = weightLogDao.getLatestWeightFlow(userId)
     fun getAllWeightLogsFlow(userId: String): Flow<List<WeightLogEntity>> = weightLogDao.getAllWeightLogsFlow(userId)
 

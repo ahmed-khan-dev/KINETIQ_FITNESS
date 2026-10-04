@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/kinetic_surface"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,156 +12,455 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Log a Meal"
-            android:textSize="26sp"
-            android:textStyle="bold" />
-
-        <FrameLayout
+        <!-- SUB-HEADER & CALORIC BUDGET STATUS -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="240dp"
-            android:layout_marginTop="16dp">
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <androidx.camera.view.PreviewView
-                android:id="@+id/mealCameraPreview"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="gone"
-                app:implementationMode="compatible" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <ImageView
-                android:id="@+id/ivMealPhoto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:contentDescription="Captured meal photo"
-                android:scaleType="centerCrop"
-                android:visibility="gone" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="METABOLIC SYNC"
+                    android:textColor="@color/kinetic_primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Log Meal &amp; Nutrition"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/tvCameraPrompt"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_stadium_pill"
+                android:backgroundTint="@color/kinetic_card_high"
+                android:paddingHorizontal="12dp"
+                android:paddingVertical="6dp"
+                android:text="⚡ NUTRITION SYNC"
+                android:textColor="@color/kinetic_primary"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
+
+        <!-- CAMERA VISION SCANNING HERO CARD -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="12dp">
+
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="#20252B"
-                android:gravity="center"
-                android:padding="16dp"
-                android:text="Open the camera to take a meal photo"
-                android:textColor="@android:color/white"
-                android:textSize="16sp" />
-        </FrameLayout>
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnCaptureMealPhoto"
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="220dp"
+                    android:background="@color/kinetic_surface_container_lowest">
+
+                    <androidx.camera.view.PreviewView
+                        android:id="@+id/mealCameraPreview"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:visibility="gone"
+                        app:implementationMode="compatible" />
+
+                    <ImageView
+                        android:id="@+id/ivMealPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Captured meal photo"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+
+                    <LinearLayout
+                        android:id="@+id/tvCameraPromptContainer"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:orientation="vertical"
+                        android:padding="16dp">
+
+                        <TextView
+                            android:layout_width="44dp"
+                            android:layout_height="44dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
+                            android:gravity="center"
+                            android:text="📷"
+                            android:textSize="22sp" />
+
+                        <TextView
+                            android:id="@+id/tvCameraPrompt"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:gravity="center"
+                            android:text="Tap below to open camera and snap your meal"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="13sp" />
+
+                    </LinearLayout>
+
+                    <!-- AI Optical Scan HUD Badge -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="top|start"
+                        android:layout_margin="10dp"
+                        android:background="@color/kinetic_card_high"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp">
+
+                        <View
+                            android:layout_width="7dp"
+                            android:layout_height="7dp"
+                            android:layout_marginEnd="6dp"
+                            android:background="@drawable/bg_pulsing_dot" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="AI OPTICAL SCAN READY"
+                            android:textColor="@color/kinetic_primary"
+                            android:textSize="9sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </FrameLayout>
+
+                <!-- Camera & Gallery Trigger Buttons -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btnCaptureMealPhoto"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/kinetic_card_highest"
+                        android:text="📷 Camera"
+                        android:textColor="@color/kinetic_text_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnChooseMealGallery"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/kinetic_card_highest"
+                        android:text="🖼 Gallery"
+                        android:textColor="@color/kinetic_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnRetakeMealPhoto"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Retake"
+                        android:textColor="@color/kinetic_secondary"
+                        android:visibility="gone" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- MEAL DETAILS CARD -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Open Camera" />
+            android:layout_marginTop="14dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
 
-        <Button
-            android:id="@+id/btnRetakeMealPhoto"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Retake Photo"
-            android:visibility="gone" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
+                <!-- Meal Name Label & Input -->
+                <TextView
+                    android:id="@+id/tvMealNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="IDENTIFIED DISH TITLE"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <EditText
+                    android:id="@+id/etMealName"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_day_tab_normal"
+                    android:hint="e.g. Grilled Chicken &amp; Quinoa Bowl"
+                    android:inputType="textCapSentences"
+                    android:maxLength="100"
+                    android:paddingHorizontal="12dp"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textColorHint="@color/kinetic_text_muted"
+                    android:textSize="14sp" />
+
+                <!-- Meal Slot Window -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:text="MEAL TIMING WINDOW"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <Spinner
+                    android:id="@+id/spinnerMealSlot"
+                    android:layout_width="match_parent"
+                    android:layout_height="44dp"
+                    android:layout_marginTop="6dp"
+                    android:background="@drawable/bg_day_tab_normal" />
+
+                <!-- Macronutrient Profile Section -->
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="MACRONUTRIENT PROFILE"
+                    android:textColor="@color/kinetic_primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <!-- 2x2 Bento Grid for Macros -->
+                <GridLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:columnCount="2">
+
+                    <!-- Calories Box -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/bg_day_tab_normal"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🔥 ENERGY (KCAL)"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/etMealCalories"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="@null"
+                            android:hint="0"
+                            android:inputType="number"
+                            android:textColor="@color/kinetic_primary"
+                            android:textColorHint="@color/kinetic_text_muted"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!-- Protein Box -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginStart="4dp"
+                        android:layout_marginBottom="8dp"
+                        android:background="@drawable/bg_day_tab_normal"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="💪 PROTEIN (G)"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/etMealProtein"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="@null"
+                            android:hint="0"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/kinetic_secondary"
+                            android:textColorHint="@color/kinetic_text_muted"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!-- Carbohydrates Box -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginEnd="4dp"
+                        android:background="@drawable/bg_day_tab_normal"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🌾 CARBS (G)"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/etMealCarbs"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="@null"
+                            android:hint="0"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/kinetic_text_primary"
+                            android:textColorHint="@color/kinetic_text_muted"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <!-- Fats Box -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_columnWeight="1"
+                        android:layout_marginStart="4dp"
+                        android:background="@drawable/bg_day_tab_normal"
+                        android:orientation="vertical"
+                        android:padding="10dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="🥑 FATS (G)"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <EditText
+                            android:id="@+id/etMealFat"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:background="@null"
+                            android:hint="0"
+                            android:inputType="numberDecimal"
+                            android:textColor="@color/kinetic_tertiary"
+                            android:textColorHint="@color/kinetic_text_muted"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                </GridLayout>
+
+                <TextView
+                    android:id="@+id/tvMealMessage"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:accessibilityLiveRegion="polite"
+                    android:textColor="@color/kinetic_error"
+                    android:textSize="12sp"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/pbSavingMeal"
+                    style="?android:attr/progressBarStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="8dp"
+                    android:indeterminateTint="@color/kinetic_primary"
+                    android:visibility="gone" />
+
+                <!-- Primary Save Action Button -->
+                <Button
+                    android:id="@+id/btnSaveMeal"
+                    android:layout_width="match_parent"
+                    android:layout_height="52dp"
+                    android:layout_marginTop="16dp"
+                    android:backgroundTint="@color/kinetic_primary"
+                    android:text="✓  SAVE MEAL LOG"
+                    android:textColor="@color/black"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- RECENT MEALS HISTORY SECTION -->
         <TextView
-            android:id="@+id/tvMealNameLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Meal name" />
-
-        <EditText
-            android:id="@+id/etMealName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="e.g. Vegetable bowl"
-            android:inputType="textCapSentences"
-            android:maxLength="100" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Meal slot" />
-
-        <Spinner
-            android:id="@+id/spinnerMealSlot"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:text="Nutrition (enter totals for this meal)"
-            android:textStyle="bold" />
-
-        <EditText
-            android:id="@+id/etMealCalories"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Calories (kcal)"
-            android:inputType="number" />
-
-        <EditText
-            android:id="@+id/etMealProtein"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Protein (g, optional)"
-            android:inputType="numberDecimal" />
-
-        <EditText
-            android:id="@+id/etMealCarbs"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Carbohydrates (g, optional)"
-            android:inputType="numberDecimal" />
-
-        <EditText
-            android:id="@+id/etMealFat"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Fat (g, optional)"
-            android:inputType="numberDecimal" />
-
-        <TextView
-            android:id="@+id/tvMealMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:accessibilityLiveRegion="polite"
-            android:visibility="gone" />
-
-        <ProgressBar
-            android:id="@+id/pbSavingMeal"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:visibility="gone" />
-
-        <Button
-            android:id="@+id/btnSaveMeal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Save Meal" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Recent Meals"
-            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:text="RECENT LOGGED MEALS"
+            android:textColor="@color/kinetic_secondary"
+            android:textSize="11sp"
             android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/recentMealsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
             android:orientation="vertical"
-            android:paddingBottom="16dp" />
+            android:paddingBottom="24dp" />
+
     </LinearLayout>
+
 </ScrollView>

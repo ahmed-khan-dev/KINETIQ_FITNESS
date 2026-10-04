@@ -3,6 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/kinetic_surface"
     android:fillViewport="true">
 
     <LinearLayout
@@ -11,21 +12,50 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvHomeTitle"
-            android:layout_width="wrap_content"
+        <!-- Header / Greeting -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Today"
-            android:textSize="28sp"
-            android:textStyle="bold" />
+            android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvHomeDate"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:text="Today's summary"
-            android:textSize="15sp" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvHomeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Hello, Fitness Athlete!"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textSize="24sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHomeDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Today's summary"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="14sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/kinetic_card_high"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp"
+                android:text="LIVE SYNC"
+                android:textColor="@color/kinetic_primary"
+                android:textSize="10sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <ProgressBar
             android:id="@+id/pbHomeLoading"
@@ -45,11 +75,14 @@
             android:textColor="@android:color/holo_red_dark"
             android:visibility="gone" />
 
+        <!-- HERO CARD: AI METABOLIC & MACRO ADHERENCE -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
             app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             app:contentPadding="16dp">
 
             <LinearLayout
@@ -57,20 +90,145 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Today's Workout" android:textSize="19sp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvHomeWorkoutTitle" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="No workout plan yet" android:textSize="17sp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvHomeWorkoutMeta" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" />
-                <TextView android:id="@+id/tvHomeWorkoutStatus" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvHomeWorkoutExercises" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:lineSpacingExtra="4dp" />
-                <Button android:id="@+id/btnHomeWorkout" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Open Workout" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="KINETIQ METABOLIC ENGINE"
+                    android:textColor="@color/kinetic_primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:text="Calorie &amp; Macro Adherence"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Circular Progress Ring on Left -->
+                    <com.example.kinetiq.ui.home.CircularCalorieRingView
+                        android:id="@+id/circularCalorieRing"
+                        android:layout_width="0dp"
+                        android:layout_height="140dp"
+                        android:layout_marginEnd="12dp"
+                        android:layout_weight="0.45" />
+
+                    <!-- Macro Progress Bars on Right -->
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="0.55"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:id="@+id/tvProteinText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Protein Goal"
+                            android:textColor="@color/kinetic_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <ProgressBar
+                            android:id="@+id/pbProteinProgress"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_marginTop="4dp"
+                            android:progress="78"
+                            android:progressTint="@color/kinetic_primary" />
+
+                        <TextView
+                            android:id="@+id/tvCarbsText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Carbohydrates Goal"
+                            android:textColor="@color/kinetic_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <ProgressBar
+                            android:id="@+id/pbCarbsProgress"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_marginTop="4dp"
+                            android:progress="75"
+                            android:progressTint="@color/kinetic_secondary" />
+
+                        <TextView
+                            android:id="@+id/tvFatText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:text="Fats Goal"
+                            android:textColor="@color/kinetic_tertiary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <ProgressBar
+                            android:id="@+id/pbFatProgress"
+                            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                            android:layout_width="match_parent"
+                            android:layout_height="6dp"
+                            android:layout_marginTop="4dp"
+                            android:progress="80"
+                            android:progressTint="@color/kinetic_tertiary" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- AI Coaching Callout Box -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/kinetic_card_high"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💡 HYPERTROPHY DIRECTIVE"
+                        android:textColor="@color/kinetic_primary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvCoachingTip"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="Stay on track with your daily protein goal to maximize muscle hypertrophy."
+                        android:textColor="@color/kinetic_text_primary"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- SCHEDULED WORKOUT CARD -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
             app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             app:contentPadding="16dp">
 
             <LinearLayout
@@ -78,18 +236,176 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Meals Today" android:textSize="19sp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvHomeMealSummary" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="No meals logged today." />
-                <TextView android:id="@+id/tvHomeMealDetails" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:lineSpacingExtra="4dp" />
-                <Button android:id="@+id/btnHomeMeal" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Log a Meal" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="SCHEDULED TRAINING"
+                    android:textColor="@color/kinetic_primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHomeWorkoutTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="No workout plan yet"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textSize="18sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHomeWorkoutMeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="2dp"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvHomeWorkoutStatus"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/kinetic_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHomeWorkoutExercises"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btnHomeWorkout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:backgroundTint="@color/kinetic_primary"
+                    android:text="Open Workout"
+                    android:textColor="@color/black"
+                    android:textStyle="bold" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- 2-COLUMN BENTO GRID: STREAK & MEALS SUMMARY -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="horizontal">
+
+            <!-- Streak Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="6dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/kinetic_card_surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:contentPadding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🔥 STREAK"
+                        android:textColor="@color/kinetic_tertiary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvHomeStreak"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="0 days"
+                        android:textColor="@color/kinetic_text_primary"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvHomeLongestStreak"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Longest: 0 days"
+                        android:textColor="@color/kinetic_text_muted"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Quick Meal Log Card -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="6dp"
+                android:layout_weight="1"
+                app:cardBackgroundColor="@color/kinetic_card_surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="2dp"
+                app:contentPadding="14dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🥗 MEALS LOGGED"
+                        android:textColor="@color/kinetic_secondary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvHomeMealSummary"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="6dp"
+                        android:text="0 meals"
+                        android:textColor="@color/kinetic_text_primary"
+                        android:textSize="15sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/btnHomeMeal"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Log Meal"
+                        android:textColor="@color/kinetic_secondary"
+                        android:textSize="12sp" />
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+        </LinearLayout>
+
+        <!-- MEAL DETAILS LIST CARD -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
             app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             app:contentPadding="16dp">
 
             <LinearLayout
@@ -97,17 +413,35 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Workout Streak" android:textSize="19sp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvHomeStreak" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="0 days" android:textSize="20sp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvHomeLongestStreak" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="Longest: 0 days" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="MEAL BREAKDOWN TODAY"
+                    android:textColor="@color/kinetic_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHomeMealDetails"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:lineSpacingExtra="4dp"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="13sp" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- PROGRESS PHOTO CARD -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
             app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             app:contentPadding="16dp">
 
             <LinearLayout
@@ -115,22 +449,67 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Latest Progress Photo" android:textSize="19sp" android:textStyle="bold" />
-                <FrameLayout android:layout_width="match_parent" android:layout_height="220dp" android:layout_marginTop="8dp">
-                    <ImageView android:id="@+id/ivHomeProgressPhoto" android:layout_width="match_parent" android:layout_height="match_parent" android:contentDescription="Latest progress photo" android:scaleType="centerCrop" android:visibility="gone" />
-                    <TextView android:id="@+id/tvHomePhotoEmpty" android:layout_width="match_parent" android:layout_height="match_parent" android:gravity="center" android:text="No progress photo saved yet." />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LATEST PHYSIQUE CHECK-IN"
+                    android:textColor="@color/kinetic_primary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="8dp">
+
+                    <ImageView
+                        android:id="@+id/ivHomeProgressPhoto"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="Latest progress photo"
+                        android:scaleType="centerCrop"
+                        android:visibility="gone" />
+
+                    <TextView
+                        android:id="@+id/tvHomePhotoEmpty"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:text="No progress photo saved yet."
+                        android:textColor="@color/kinetic_text_muted" />
+
                 </FrameLayout>
-                <TextView android:id="@+id/tvHomePhotoMeta" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" />
-                <Button android:id="@+id/btnHomeProgress" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="Open Progress" />
+
+                <TextView
+                    android:id="@+id/tvHomePhotoMeta"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/btnHomeProgress"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Open Progress"
+                    android:textColor="@color/kinetic_primary" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
 
+        <!-- LOCATION TELEMETRY CARD -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="16dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
             app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
             app:contentPadding="16dp">
 
             <LinearLayout
@@ -138,9 +517,27 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Latest Location" android:textSize="19sp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvHomeGps" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:text="No location recorded yet." />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="LATEST LOCATION TELEMETRY"
+                    android:textColor="@color/kinetic_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvHomeGps"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="No location recorded yet."
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="13sp" />
+
             </LinearLayout>
+
         </com.google.android.material.card.MaterialCardView>
+
     </LinearLayout>
+
 </ScrollView>

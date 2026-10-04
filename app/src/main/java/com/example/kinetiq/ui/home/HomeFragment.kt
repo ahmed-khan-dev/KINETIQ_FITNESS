@@ -51,6 +51,23 @@ class HomeFragment : Fragment() {
         binding.tvHomeError.text = state.errorMessage.orEmpty()
         binding.tvHomeError.visibility = if (state.errorMessage.isNullOrBlank()) View.GONE else View.VISIBLE
 
+        binding.circularCalorieRing.setCalories(state.consumedCalories, state.targetCalories)
+
+        val proteinPct = if (state.targetProteinG > 0) ((state.proteinG / state.targetProteinG) * 100).toInt().coerceIn(0, 100) else 0
+        val carbsPct = if (state.targetCarbsG > 0) ((state.carbsG / state.targetCarbsG) * 100).toInt().coerceIn(0, 100) else 0
+        val fatPct = if (state.targetFatG > 0) ((state.fatG / state.targetFatG) * 100).toInt().coerceIn(0, 100) else 0
+
+        binding.pbProteinProgress.progress = proteinPct
+        binding.tvProteinText.text = "Protein: ${state.proteinG.toInt()}g / ${state.targetProteinG.toInt()}g"
+
+        binding.pbCarbsProgress.progress = carbsPct
+        binding.tvCarbsText.text = "Carbs: ${state.carbsG.toInt()}g / ${state.targetCarbsG.toInt()}g"
+
+        binding.pbFatProgress.progress = fatPct
+        binding.tvFatText.text = "Fats: ${state.fatG.toInt()}g / ${state.targetFatG.toInt()}g"
+
+        binding.tvCoachingTip.text = state.coachingTip.ifBlank { "Stay consistent with your nutrition and exercise schedule!" }
+
         binding.tvHomeWorkoutTitle.text = state.workoutTitle
         binding.tvHomeWorkoutMeta.text = state.workoutMeta
         binding.tvHomeWorkoutStatus.text = state.workoutStatus

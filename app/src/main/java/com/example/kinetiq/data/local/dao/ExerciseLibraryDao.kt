@@ -12,6 +12,9 @@ interface ExerciseLibraryDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insertExercises(exercises: List<ExerciseLibraryEntity>)
 
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    suspend fun insertExercise(exercise: ExerciseLibraryEntity)
+
     @Query("SELECT COUNT(*) FROM exercise_library")
     suspend fun getExerciseCount(): Int
 

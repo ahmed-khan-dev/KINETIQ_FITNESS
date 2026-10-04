@@ -61,6 +61,12 @@ data class WorkoutUiState(
     val errorMessage: String? = null
 )
 
+data class LoggedSetDetail(
+    val setIndex: Int,
+    val text: String,
+    val rpe: Int = 8
+)
+
 data class WorkoutSessionUiState(
     val hasWorkoutData: Boolean = false,
     val isComplete: Boolean = false,
@@ -80,7 +86,10 @@ data class WorkoutSessionUiState(
     val notes: String = "",
     val sessionExerciseId: String = "",
     val completionSummary: String = "",
-    val currentSessionId: String = ""
+    val currentSessionId: String = "",
+    val loggedSetsHistory: List<LoggedSetDetail> = emptyList(),
+    val sessionCompletedSetsTotal: Int = 0,
+    val sessionSetsTotal: Int = 0
 )
 
 class WorkoutViewModel(application: Application) : AndroidViewModel(application) {
@@ -122,10 +131,11 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             }
 
             val activePlan = repository.getActiveWorkoutPlan(userId)
-             if (!forceGenerate && activePlan != null) {
-                 val mapped = buildDayUiFromPlanAsync(activePlan)
-                 cachedSessions = mapped
-                 selectedSessionIndex = mapped.indices.firstOrNull() ?: 0
+            if (!forceGenerate && activePlan != null) {
+                val mapped = buildDayUiFromPlanAsync(activePlan)
+                cachedSessions = mapped
+                selectedSessionIndex = findTodayOrNextSessionIndex(mapped)
+                val todaySession = mapped.getOrNull(selectedSessionIndex) ?: mapped.firstOrNull()
                 _uiState.value = _uiState.value.copy(
                     isLoading = false,
                     hasProfile = true,
@@ -134,7 +144,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                     planTitle = activePlan.splitType,
                     planSummary = "${mapped.size} workout sessions planned for this week",
                     weeklyPlan = mapped,
-                    todayWorkout = mapped.firstOrNull(),
+                    todayWorkout = todaySession,
                     totalWorkoutMinutes = mapped.sumOf { it.estimatedMinutes },
                     totalExercises = mapped.sumOf { it.exerciseCount },
                     errorMessage = null
@@ -145,7 +155,8 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
 
             val generatedPlan = generateWorkoutPlan(profile, dietaryPreference)
             cachedSessions = generatedPlan.second
-            selectedSessionIndex = cachedSessions.indices.firstOrNull() ?: 0
+            selectedSessionIndex = findTodayOrNextSessionIndex(cachedSessions)
+            val todaySession = cachedSessions.getOrNull(selectedSessionIndex) ?: cachedSessions.firstOrNull()
             _uiState.value = _uiState.value.copy(
                 isLoading = false,
                 hasProfile = true,
@@ -154,13 +165,63 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                 planTitle = generatedPlan.first.splitType,
                 planSummary = "${generatedPlan.second.size} workout sessions planned for this week",
                 weeklyPlan = generatedPlan.second,
-                todayWorkout = generatedPlan.second.firstOrNull(),
+                todayWorkout = todaySession,
                 totalWorkoutMinutes = generatedPlan.second.sumOf { it.estimatedMinutes },
                 totalExercises = generatedPlan.second.sumOf { it.exerciseCount },
                 errorMessage = null
             )
             prepareSession(selectedSessionIndex)
         }
+    }
+
+    fun addCustomExercise(
+        name: String,
+        muscleGroup: String = "General",
+        equipment: String = "Bodyweight"
+    ) {
+        viewModelScope.launch {
+            if (name.isBlank()) return@launch
+            repository.saveCustomExercise(name, muscleGroup, equipment)
+            loadWorkout(forceGenerate = false)
+        }
+    }
+
+    fun addCustomExerciseToSession(
+        sessionId: String,
+        exerciseName: String,
+        muscleGroup: String = "Chest",
+        targetSets: Int = 3,
+        targetReps: Int = 10
+    ) {
+        viewModelScope.launch {
+            if (exerciseName.isBlank()) return@launch
+            val exercise = repository.saveCustomExercise(exerciseName, muscleGroup, "Dumbbell")
+            val sessionExercise = com.example.kinetiq.data.local.entity.SessionExerciseEntity(
+                id = java.util.UUID.randomUUID().toString(),
+                sessionId = sessionId,
+                exerciseId = exercise.id,
+                orderIndex = 99,
+                targetSets = targetSets,
+                targetReps = targetReps,
+                targetRestSec = 60,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis()
+            )
+            repository.workoutPlanDao.insertSessionExercises(listOf(sessionExercise))
+            loadWorkout(forceGenerate = false)
+        }
+    }
+
+    private fun findTodayOrNextSessionIndex(mapped: List<WorkoutDayUi>): Int {
+        if (mapped.isEmpty()) return 0
+        val currentDay = currentDayOfWeekIndex()
+        val todayMatchIndex = mapped.indexOfFirst { day ->
+            day.dayName.equals(dayOfWeekLabel(currentDay), ignoreCase = true)
+        }
+        if (todayMatchIndex >= 0) return todayMatchIndex
+
+        val incompleteIndex = mapped.indexOfFirst { !it.isComplete }
+        return if (incompleteIndex >= 0) incompleteIndex else 0
     }
 
     fun generateWorkoutPlan(force: Boolean = false) {
@@ -202,7 +263,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             val nextExerciseIndex = activeSessionExercises.indexOfFirst { exercise ->
                 (completedSetsByExercise[exercise.sessionExerciseId] ?: 0) < exercise.sets
             }.let { if (it < 0) activeSessionExercises.size else it }
-            updateSessionState(session.sessionName, sessionId, nextExerciseIndex)
+            updateSessionStateAsync(session.sessionName, sessionId, nextExerciseIndex)
         }
     }
 
@@ -249,11 +310,13 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             restSeconds = firstExercise.restSeconds,
             notes = firstExercise.notes,
             sessionExerciseId = firstExercise.sessionExerciseId,
-            currentSessionId = session.sessionId
+            currentSessionId = session.sessionId,
+            sessionSetsTotal = sessionTotalSets,
+            sessionCompletedSetsTotal = 0
         )
     }
 
-    fun completeCurrentSet(weight: String = "", reps: Int) {
+    fun completeCurrentSet(weight: String = "", reps: Int, rpe: Int = 8) {
         val currentState = _sessionState.value
         if (!currentState.hasWorkoutData || currentState.isSaving || currentState.isComplete) return
         val exercise = activeSessionExercises.getOrNull(currentState.currentExerciseIndex) ?: return
@@ -272,7 +335,7 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                     sessionExerciseId = exercise.sessionExerciseId,
                     userId = userId,
                     loggedSets = "1 x $reps$weightText",
-                    rpe = 7,
+                    rpe = rpe.coerceIn(1, 10),
                     completedAt = System.currentTimeMillis(),
                     gpsLogId = gpsLog.id
                 )
@@ -286,11 +349,28 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             } else {
                 currentState.currentExerciseIndex
             }
-            updateSessionState(
+            updateSessionStateAsync(
                 sessionName = currentState.sessionName,
                 sessionId = currentState.currentSessionId,
                 exerciseIndex = nextIndex,
                 completionSummary = "Saved set: 1 x $reps$weightText"
+            )
+            if (nextIndex >= activeSessionExercises.size) {
+                recordCompletedWorkoutForStreak()
+            }
+        }
+    }
+
+    fun skipCurrentExercise() {
+        val currentState = _sessionState.value
+        if (!currentState.hasWorkoutData || currentState.isComplete) return
+        val nextIndex = currentState.currentExerciseIndex + 1
+        viewModelScope.launch {
+            updateSessionStateAsync(
+                sessionName = currentState.sessionName,
+                sessionId = currentState.currentSessionId,
+                exerciseIndex = nextIndex,
+                completionSummary = "Skipped ${currentState.exerciseName}."
             )
             if (nextIndex >= activeSessionExercises.size) {
                 recordCompletedWorkoutForStreak()
@@ -334,13 +414,14 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         set(Calendar.MILLISECOND, 0)
     }.timeInMillis
 
-    private fun updateSessionState(
+    private suspend fun updateSessionStateAsync(
         sessionName: String,
         sessionId: String,
         exerciseIndex: Int,
         completionSummary: String = ""
     ) {
-        val completedTotal = activeSessionExercises.sumOf { exercise ->
+        val totalSessionSets = activeSessionExercises.sumOf { it.sets }
+        val completedSessionSets = activeSessionExercises.sumOf { exercise ->
             (completedSetsByExercise[exercise.sessionExerciseId] ?: 0).coerceAtMost(exercise.sets)
         }
         val exercise = activeSessionExercises.getOrNull(exerciseIndex)
@@ -351,13 +432,29 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                 sessionName = sessionName,
                 totalSessions = 1,
                 totalExercises = activeSessionExercises.size,
-                totalSets = activeSessionExercises.sumOf { it.sets },
-                completedSets = completedTotal,
+                totalSets = totalSessionSets,
+                completedSets = completedSessionSets,
                 completionSummary = completionSummary.ifBlank { "Workout complete: $sessionName finished." },
-                currentSessionId = sessionId
+                currentSessionId = sessionId,
+                sessionCompletedSetsTotal = completedSessionSets,
+                sessionSetsTotal = totalSessionSets
             )
             return
         }
+
+        val logs = repository.getExerciseLogsForSessionExercise(exercise.sessionExerciseId)
+        val history = logs.mapIndexed { idx, log ->
+            val setNumber = idx + 1
+            val cleanText = log.loggedSets.removePrefix("1 x ").trim()
+            LoggedSetDetail(
+                setIndex = setNumber,
+                text = "${exercise.reps} reps${if (cleanText.contains("@")) " • " + cleanText.substringAfter("@").trim() else ""}",
+                rpe = log.rpe ?: 8
+            )
+        }
+
+        val exerciseCompletedSets = (completedSetsByExercise[exercise.sessionExerciseId] ?: 0).coerceAtMost(exercise.sets)
+
         _sessionState.value = WorkoutSessionUiState(
             hasWorkoutData = true,
             isSaving = false,
@@ -370,12 +467,15 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             sets = exercise.sets,
             reps = exercise.reps,
             totalSets = exercise.sets,
-            completedSets = (completedSetsByExercise[exercise.sessionExerciseId] ?: 0).coerceAtMost(exercise.sets),
+            completedSets = exerciseCompletedSets,
             restSeconds = exercise.restSeconds,
             notes = exercise.notes,
             sessionExerciseId = exercise.sessionExerciseId,
             completionSummary = completionSummary,
-            currentSessionId = sessionId
+            currentSessionId = sessionId,
+            loggedSetsHistory = history,
+            sessionCompletedSetsTotal = completedSessionSets,
+            sessionSetsTotal = totalSessionSets
         )
     }
 
@@ -632,6 +732,12 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             7 -> "Sun"
             else -> "Day $dayOfWeek"
         }
+    }
+
+    private fun currentDayOfWeekIndex(): Int {
+        val calendar = Calendar.getInstance()
+        val day = calendar.get(Calendar.DAY_OF_WEEK)
+        return if (day == Calendar.SUNDAY) 7 else day - 1
     }
 
     private fun completedSetCountFromLog(log: ExerciseLogEntity): Int =

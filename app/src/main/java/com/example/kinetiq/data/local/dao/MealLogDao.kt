@@ -27,4 +27,10 @@ interface MealLogDao {
 
     @Query("SELECT SUM(CASE WHEN m.calories > 0 THEN m.calories ELSE COALESCE((SELECT SUM(i.calories) FROM meal_log_items i WHERE i.mealLogId = m.id), 0) END) FROM meal_logs m WHERE m.userId = :userId AND m.loggedAt >= :startTimestamp AND m.loggedAt <= :endTimestamp")
     suspend fun getTodayTotalCalories(userId: String, startTimestamp: Long, endTimestamp: Long): Int?
+
+    @androidx.room.Delete
+    suspend fun deleteMealLog(mealLog: MealLogEntity)
+
+    @androidx.room.Update
+    suspend fun updateMealLog(mealLog: MealLogEntity)
 }

@@ -1,7 +1,15 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.Kinetiq" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+        <!-- Stitch Kinetic Obsidian Dark Theme Base -->
+        <item name="colorPrimary">@color/kinetic_primary</item>
+        <item name="colorSecondary">@color/kinetic_secondary</item>
+        <item name="colorTertiary">@color/kinetic_tertiary</item>
+        <item name="android:windowBackground">@color/kinetic_surface</item>
+        <item name="colorSurface">@color/kinetic_card_surface</item>
+        <item name="colorOnSurface">@color/kinetic_text_primary</item>
+        <item name="colorOnBackground">@color/kinetic_text_primary</item>
+        <item name="android:statusBarColor">@color/kinetic_surface_container_lowest</item>
+        <item name="android:navigationBarColor">@color/kinetic_surface_container_lowest</item>
     </style>
 </resources>

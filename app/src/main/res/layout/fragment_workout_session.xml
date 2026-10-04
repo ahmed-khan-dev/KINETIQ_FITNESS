@@ -1,118 +1,767 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/kinetic_surface"
     android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="20dp">
+        android:padding="16dp">
 
-        <TextView
-            android:id="@+id/tvWorkoutSessionTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Exercise 1 of 1"
-            android:textSize="22sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvSessionName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Workout Session"
-            android:textColor="?attr/colorPrimary"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvExerciseName"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Bench Press"
-            android:textSize="28sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/tvExerciseSets"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="3 sets × 10 reps"
-            android:textSize="18sp" />
-
-        <TextView
-            android:id="@+id/tvRestSeconds"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Rest: 90 sec"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/tvExerciseNotes"
+        <!-- TOP SESSION BAR / LIVE EXECUTION METRICS -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="Exercise instructions"
-            android:textSize="16sp" />
+            app:cardBackgroundColor="@color/kinetic_surface_container_low"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="2dp"
+            app:contentPadding="14dp">
 
-        <EditText
-            android:id="@+id/etWeight"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:hint="Weight (kg, optional)"
-            android:inputType="numberDecimal" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
-        <EditText
-            android:id="@+id/etCompletedReps"
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <!-- Pulsing green dot indicator -->
+                    <View
+                        android:layout_width="10dp"
+                        android:layout_height="10dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@drawable/bg_pulsing_dot" />
+
+                    <!-- Session Name -->
+                    <TextView
+                        android:id="@+id/tvSessionName"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Upper Body A"
+                        android:textColor="@color/kinetic_text_primary"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <!-- Live Timer Badge -->
+                    <TextView
+                        android:id="@+id/tvLiveWorkoutTimer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="10dp"
+                        android:background="@color/kinetic_card_highest"
+                        android:paddingHorizontal="10dp"
+                        android:paddingVertical="4dp"
+                        android:text="00:00"
+                        android:textColor="@color/kinetic_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+
+                    <!-- End Session Button -->
+                    <TextView
+                        android:id="@+id/btnEndSession"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:background="@color/kinetic_card_highest"
+                        android:clickable="true"
+                        android:focusable="true"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="5dp"
+                        android:text="✕ END"
+                        android:textColor="@color/kinetic_error"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <!-- Session Progress Bar & Meta -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+
+                        <!-- Exercise X of Y -->
+                        <TextView
+                            android:id="@+id/tvWorkoutSessionTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Exercise 1 of 5"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvSessionPercentText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="0% Complete"
+                            android:textColor="@color/kinetic_primary"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <ProgressBar
+                        android:id="@+id/pbSessionProgress"
+                        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="6dp"
+                        android:progress="0"
+                        android:progressTint="@color/kinetic_primary" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- CENTER STAGE: CURRENT EXERCISE HERO CARD -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Completed reps"
-            android:inputType="number" />
+            app:cardBackgroundColor="@color/kinetic_card_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
 
-        <EditText
-            android:id="@+id/etCompletedSets"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <!-- Muscle Focus Chip -->
+                <TextView
+                    android:id="@+id/tvExerciseMuscles"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/bg_stadium_pill"
+                    android:backgroundTint="@color/kinetic_card_high"
+                    android:paddingHorizontal="10dp"
+                    android:paddingVertical="4dp"
+                    android:text="CHEST • TRICEPS"
+                    android:textColor="@color/kinetic_secondary"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+                <!-- Exercise Name -->
+                <TextView
+                    android:id="@+id/tvExerciseName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Dumbbell Bench Press"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <!-- Sets, Reps & Rest -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/tvExerciseSets"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="3 sets × 10 reps"
+                        android:textColor="@color/kinetic_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="6dp"
+                        android:text="•"
+                        android:textColor="@color/kinetic_text_muted" />
+
+                    <TextView
+                        android:id="@+id/tvRestSeconds"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Rest: 90 sec"
+                        android:textColor="@color/kinetic_secondary"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <!-- AI Coach Interactive Form Cue Callout Box -->
+                <LinearLayout
+                    android:id="@+id/cardCoachCue"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:background="@drawable/bg_day_tab_normal"
+                    android:orientation="vertical"
+                    android:padding="12dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="💡 COACH FORM CUE"
+                        android:textColor="@color/kinetic_primary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/tvExerciseNotes"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:lineSpacingExtra="3dp"
+                        android:text="Maintain neutral spine, drive feet firmly into the floor, and control the eccentric descent."
+                        android:textColor="@color/kinetic_text_primary"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- LIVE REST COUNTDOWN COMPONENT CARD -->
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardRestTimer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Completed sets"
-            android:inputType="number" />
+            android:visibility="gone"
+            app:cardBackgroundColor="@color/kinetic_surface_container_low"
+            app:cardCornerRadius="14dp"
+            app:cardElevation="2dp"
+            app:contentPadding="14dp">
 
-        <Button
-            android:id="@+id/btnCompleteExercise"
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:background="@drawable/bg_stadium_pill"
+                    android:backgroundTint="@color/kinetic_card_highest"
+                    android:gravity="center"
+                    android:text="⏳"
+                    android:textSize="16sp" />
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="12dp"
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvRestCountdownText"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="01:30"
+                            android:textColor="@color/kinetic_text_primary"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:text="REST RECOVERY"
+                            android:textColor="@color/kinetic_secondary"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Hydrate and catch breath for next set"
+                        android:textColor="@color/kinetic_text_muted"
+                        android:textSize="11sp" />
+
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/btnAddRest30s"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:layout_marginEnd="6dp"
+                    android:paddingHorizontal="10dp"
+                    android:text="+30s"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textSize="11sp" />
+
+                <Button
+                    android:id="@+id/btnSkipRest"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:paddingHorizontal="10dp"
+                    android:text="Skip"
+                    android:textColor="@color/kinetic_secondary"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- SET-BY-SET EXECUTION SECTION -->
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:text="Complete Exercise" />
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="TARGET SETS"
+                    android:textColor="@color/kinetic_text_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="REPS / LOAD"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="10sp"
+                    android:textStyle="bold" />
+
+            </LinearLayout>
+
+            <!-- Container for completed sets -->
+            <LinearLayout
+                android:id="@+id/llCompletedSetsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical" />
+
+            <!-- ACTIVE SET HIGHLIGHTED CARD -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardActiveSet"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:cardBackgroundColor="@color/kinetic_card_surface"
+                app:cardCornerRadius="16dp"
+                app:cardElevation="3dp"
+                app:contentPadding="16dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/tvActiveSetTitle"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Active Set 1"
+                            android:textColor="@color/kinetic_text_primary"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvActiveSetBadge"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_primary"
+                            android:paddingHorizontal="10dp"
+                            android:paddingVertical="3dp"
+                            android:text="ACTIVE"
+                            android:textColor="@color/black"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/tvActiveSetPrescribed"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:text="Prescribed: 10 reps"
+                        android:textColor="@color/kinetic_text_muted"
+                        android:textSize="12sp" />
+
+                    <!-- STEPPERS ROW (REPS & LOAD) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:orientation="horizontal">
+
+                        <!-- Reps Stepper Box -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginEnd="6dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_day_tab_normal"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="REPS FINISHED"
+                                android:textColor="@color/kinetic_text_muted"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <Button
+                                    android:id="@+id/btnRepDec"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="38dp"
+                                    android:layout_height="38dp"
+                                    android:insetLeft="0dp"
+                                    android:insetTop="0dp"
+                                    android:insetRight="0dp"
+                                    android:insetBottom="0dp"
+                                    android:padding="0dp"
+                                    android:text="−"
+                                    android:textColor="@color/kinetic_text_primary"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvRepVal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="10"
+                                    android:textColor="@color/kinetic_primary"
+                                    android:textSize="20sp"
+                                    android:textStyle="bold" />
+
+                                <Button
+                                    android:id="@+id/btnRepInc"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="38dp"
+                                    android:layout_height="38dp"
+                                    android:insetLeft="0dp"
+                                    android:insetTop="0dp"
+                                    android:insetRight="0dp"
+                                    android:insetBottom="0dp"
+                                    android:padding="0dp"
+                                    android:text="+"
+                                    android:textColor="@color/kinetic_text_primary"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                        <!-- Load / Weight Stepper Box -->
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:layout_weight="1"
+                            android:background="@drawable/bg_day_tab_normal"
+                            android:orientation="vertical"
+                            android:padding="10dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="LOAD (KG)"
+                                android:textColor="@color/kinetic_text_muted"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="6dp"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+
+                                <Button
+                                    android:id="@+id/btnWeightDec"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="38dp"
+                                    android:layout_height="38dp"
+                                    android:insetLeft="0dp"
+                                    android:insetTop="0dp"
+                                    android:insetRight="0dp"
+                                    android:insetBottom="0dp"
+                                    android:padding="0dp"
+                                    android:text="−"
+                                    android:textColor="@color/kinetic_text_primary"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                                <TextView
+                                    android:id="@+id/tvWeightVal"
+                                    android:layout_width="0dp"
+                                    android:layout_height="wrap_content"
+                                    android:layout_weight="1"
+                                    android:gravity="center"
+                                    android:text="0.0"
+                                    android:textColor="@color/kinetic_text_primary"
+                                    android:textSize="17sp"
+                                    android:textStyle="bold" />
+
+                                <Button
+                                    android:id="@+id/btnWeightInc"
+                                    style="?attr/materialButtonOutlinedStyle"
+                                    android:layout_width="38dp"
+                                    android:layout_height="38dp"
+                                    android:insetLeft="0dp"
+                                    android:insetTop="0dp"
+                                    android:insetRight="0dp"
+                                    android:insetBottom="0dp"
+                                    android:padding="0dp"
+                                    android:text="+"
+                                    android:textColor="@color/kinetic_text_primary"
+                                    android:textSize="18sp"
+                                    android:textStyle="bold" />
+
+                            </LinearLayout>
+
+                        </LinearLayout>
+
+                    </LinearLayout>
+
+                    <!-- RPE SELECTION ROW -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="EFFORT LEVEL (RPE)"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btnRpe7"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="36dp"
+                            android:layout_height="34dp"
+                            android:layout_marginEnd="4dp"
+                            android:insetLeft="0dp"
+                            android:insetTop="0dp"
+                            android:insetRight="0dp"
+                            android:insetBottom="0dp"
+                            android:padding="0dp"
+                            android:text="7"
+                            android:textColor="@color/kinetic_text_primary"
+                            android:textSize="12sp" />
+
+                        <Button
+                            android:id="@+id/btnRpe8"
+                            android:layout_width="36dp"
+                            android:layout_height="34dp"
+                            android:layout_marginEnd="4dp"
+                            android:backgroundTint="@color/kinetic_primary"
+                            android:insetLeft="0dp"
+                            android:insetTop="0dp"
+                            android:insetRight="0dp"
+                            android:insetBottom="0dp"
+                            android:padding="0dp"
+                            android:text="8"
+                            android:textColor="@color/black"
+                            android:textSize="12sp"
+                            android:textStyle="bold" />
+
+                        <Button
+                            android:id="@+id/btnRpe9"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="36dp"
+                            android:layout_height="34dp"
+                            android:layout_marginEnd="4dp"
+                            android:insetLeft="0dp"
+                            android:insetTop="0dp"
+                            android:insetRight="0dp"
+                            android:insetBottom="0dp"
+                            android:padding="0dp"
+                            android:text="9"
+                            android:textColor="@color/kinetic_text_primary"
+                            android:textSize="12sp" />
+
+                        <Button
+                            android:id="@+id/btnRpe10"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="36dp"
+                            android:layout_height="34dp"
+                            android:insetLeft="0dp"
+                            android:insetTop="0dp"
+                            android:insetRight="0dp"
+                            android:insetBottom="0dp"
+                            android:padding="0dp"
+                            android:text="10"
+                            android:textColor="@color/kinetic_text_primary"
+                            android:textSize="12sp" />
+
+                    </LinearLayout>
+
+                    <!-- PRESERVED EDIT TEXT FIELDS (SYNCHRONIZED WITH STEPPERS) -->
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:visibility="gone">
+
+                        <EditText
+                            android:id="@+id/etWeight"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Weight (kg)"
+                            android:inputType="numberDecimal" />
+
+                        <EditText
+                            android:id="@+id/etCompletedReps"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Completed reps"
+                            android:inputType="number" />
+
+                        <EditText
+                            android:id="@+id/etCompletedSets"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:hint="Completed sets"
+                            android:inputType="number" />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Container for pending sets -->
+            <LinearLayout
+                android:id="@+id/llPendingSetsContainer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="vertical" />
+
+        </LinearLayout>
+
+        <!-- COMPLETION SUMMARY MESSAGE -->
         <TextView
             android:id="@+id/tvCompletionStatus"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/bg_card_outline"
+            android:padding="12dp"
+            android:textColor="@color/kinetic_primary"
+            android:textSize="13sp"
+            android:textStyle="bold"
             android:visibility="gone" />
 
-        <TextView
-            android:id="@+id/tvExerciseMuscles"
-            android:layout_width="wrap_content"
+        <!-- BOTTOM CONTROLLER ACTIONS -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="Chest • Triceps"
-            android:textSize="16sp" />
+            android:layout_marginTop="16dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/tvProgress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="0 / 15 sets completed"
-            android:textSize="16sp" />
+            <!-- Primary Action Button: Complete Set -->
+            <Button
+                android:id="@+id/btnCompleteExercise"
+                android:layout_width="match_parent"
+                android:layout_height="52dp"
+                android:backgroundTint="@color/kinetic_primary"
+                android:text="✓  COMPLETE SET 1"
+                android:textColor="@color/black"
+                android:textSize="15sp"
+                android:textStyle="bold" />
+
+            <!-- Secondary Actions -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btnSkipExercise"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Skip Exercise"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="12sp" />
+
+            </LinearLayout>
+
+            <!-- Overall Session Progress Summary -->
+            <TextView
+                android:id="@+id/tvProgress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="0 / 15 sets completed"
+                android:textColor="@color/kinetic_text_muted"
+                android:textSize="13sp" />
+
+        </LinearLayout>
 
     </LinearLayout>
+
 </ScrollView>

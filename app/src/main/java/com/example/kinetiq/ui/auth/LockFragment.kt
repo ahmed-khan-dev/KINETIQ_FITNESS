@@ -53,14 +53,7 @@ class LockFragment : Fragment() {
             viewModel.submitPin(pin)
         }
 
-        binding.etPin.addTextChangedListener(object : TextWatcher {
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                binding.tilPin.error = null
-                binding.tvError.visibility = View.GONE
-            }
-            override fun afterTextChanged(s: Editable?) = Unit
-        })
+        setupKeypadListeners()
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewModel.lockState.collectLatest { state ->
@@ -69,6 +62,62 @@ class LockFragment : Fragment() {
         }
 
         viewModel.checkSession()
+    }
+
+    private fun setupKeypadListeners() {
+        val numberButtons = mapOf(
+            binding.btnKey0 to "0",
+            binding.btnKey1 to "1",
+            binding.btnKey2 to "2",
+            binding.btnKey3 to "3",
+            binding.btnKey4 to "4",
+            binding.btnKey5 to "5",
+            binding.btnKey6 to "6",
+            binding.btnKey7 to "7",
+            binding.btnKey8 to "8",
+            binding.btnKey9 to "9"
+        )
+
+        numberButtons.forEach { (button, digit) ->
+            button.setOnClickListener {
+                val currentPin = binding.etPin.text.toString()
+                if (currentPin.length < 4) {
+                    val updatedPin = currentPin + digit
+                    binding.etPin.setText(updatedPin)
+                    updatePinDots(updatedPin.length)
+                }
+            }
+        }
+
+        binding.btnKeyBackspace.setOnClickListener {
+            val currentPin = binding.etPin.text.toString()
+            if (currentPin.isNotEmpty()) {
+                val updatedPin = currentPin.dropLast(1)
+                binding.etPin.setText(updatedPin)
+                updatePinDots(updatedPin.length)
+            }
+        }
+
+        binding.etPin.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) = Unit
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                val len = s?.length ?: 0
+                updatePinDots(len)
+                binding.tilPin.error = null
+                binding.tvError.visibility = View.GONE
+            }
+            override fun afterTextChanged(s: Editable?) = Unit
+        })
+    }
+
+    private fun updatePinDots(pinLength: Int) {
+        val activeColor = ContextCompat.getColor(requireContext(), R.color.kinetic_primary)
+        val inactiveColor = ContextCompat.getColor(requireContext(), R.color.kinetic_card_highest)
+
+        binding.pinDot1.backgroundTintList = android.content.res.ColorStateList.valueOf(if (pinLength >= 1) activeColor else inactiveColor)
+        binding.pinDot2.backgroundTintList = android.content.res.ColorStateList.valueOf(if (pinLength >= 2) activeColor else inactiveColor)
+        binding.pinDot3.backgroundTintList = android.content.res.ColorStateList.valueOf(if (pinLength >= 3) activeColor else inactiveColor)
+        binding.pinDot4.backgroundTintList = android.content.res.ColorStateList.valueOf(if (pinLength >= 4) activeColor else inactiveColor)
     }
 
     private fun handleLockState(state: LockState) {

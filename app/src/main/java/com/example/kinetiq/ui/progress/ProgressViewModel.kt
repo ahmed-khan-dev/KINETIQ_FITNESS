@@ -73,13 +73,40 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
         _uiState.value = _uiState.value.copy(isSaving = true, message = null)
         viewModelScope.launch {
             try {
+                val now = System.currentTimeMillis()
+                val calendar = java.util.Calendar.getInstance().apply {
+                    timeInMillis = now
+                    set(java.util.Calendar.HOUR_OF_DAY, 0)
+                    set(java.util.Calendar.MINUTE, 0)
+                    set(java.util.Calendar.SECOND, 0)
+                    set(java.util.Calendar.MILLISECOND, 0)
+                }
+                val startOfDay = calendar.timeInMillis
+                calendar.add(java.util.Calendar.DAY_OF_YEAR, 1)
+                val endOfDay = calendar.timeInMillis - 1
+
                 val gps = LocationUtils.getCurrentLocation(getApplication())
                 repository.saveGpsLog(gps)
-                repository.saveWeightLog(WeightLogEntity(userId = userId, weightKg = weight, gpsLogId = gps.id))
-                _uiState.value = _uiState.value.copy(
-                    isSaving = false,
-                    message = if (gps.gpsOk) "Weight saved with location." else "Weight saved. Location unavailable."
-                )
+
+                val existingTodayLog = repository.getTodayWeightLog(userId, startOfDay, endOfDay)
+                if (existingTodayLog != null) {
+                    val updatedLog = existingTodayLog.copy(
+                        weightKg = weight,
+                        gpsLogId = gps.id,
+                        loggedAt = now
+                    )
+                    repository.updateWeightLog(updatedLog)
+                    _uiState.value = _uiState.value.copy(
+                        isSaving = false,
+                        message = "Today's weight updated to ${weight} kg."
+                    )
+                } else {
+                    repository.saveWeightLog(WeightLogEntity(userId = userId, weightKg = weight, gpsLogId = gps.id, loggedAt = now))
+                    _uiState.value = _uiState.value.copy(
+                        isSaving = false,
+                        message = "Weight saved (${weight} kg)."
+                    )
+                }
             } catch (error: Exception) {
                 _uiState.value = _uiState.value.copy(isSaving = false, message = error.localizedMessage ?: "Could not save weight.")
             }

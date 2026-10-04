@@ -5,6 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/kinetic_surface"
     tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
@@ -23,6 +24,10 @@
         android:id="@+id/bottomNav"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="@color/kinetic_surface_container_lowest"
+        app:itemIconTint="@color/nav_item_color"
+        app:itemRippleColor="@color/kinetic_chip_active_bg"
+        app:itemTextColor="@color/nav_item_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

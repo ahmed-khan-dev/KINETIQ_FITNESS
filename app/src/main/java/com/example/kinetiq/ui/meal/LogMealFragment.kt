@@ -6,6 +6,7 @@ import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.widget.PopupMenu
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -40,6 +42,22 @@ class LogMealFragment : Fragment() {
             openCameraPreview()
         } else {
             viewModel.showMessage("Camera permission is needed to capture a meal photo.")
+        }
+    }
+
+    private val galleryLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri ->
+        if (uri != null) {
+            try {
+                val destinationFile = viewModel.createPhotoFile()
+                requireContext().contentResolver.openInputStream(uri)?.use { input ->
+                    destinationFile.outputStream().use { output ->
+                        input.copyTo(output)
+                    }
+                }
+                viewModel.setCapturedPhoto(destinationFile.absolutePath)
+            } catch (e: Exception) {
+                viewModel.showMessage("Could not import photo from gallery.")
+            }
         }
     }
 
@@ -74,6 +92,10 @@ class LogMealFragment : Fragment() {
             ) == PackageManager.PERMISSION_GRANTED
             if (hasCameraPermission) openCameraPreview()
             else cameraPermissionLauncher.launch(Manifest.permission.CAMERA)
+        }
+
+        binding.btnChooseMealGallery.setOnClickListener {
+            galleryLauncher.launch("image/*")
         }
 
         binding.btnRetakeMealPhoto.setOnClickListener {
@@ -224,7 +246,8 @@ class LogMealFragment : Fragment() {
         if (meals.isEmpty()) {
             binding.recentMealsContainer.addView(TextView(requireContext()).apply {
                 text = "No meals logged yet."
-                setPadding(0, 8, 0, 8)
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_muted))
+                setPadding(0, dp(8), 0, dp(8))
             })
             return
         }
@@ -232,10 +255,11 @@ class LogMealFragment : Fragment() {
         meals.forEach { meal ->
             val row = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
-                setPadding(0, 12, 0, 12)
+                setPadding(0, dp(10), 0, dp(10))
+                gravity = Gravity.CENTER_VERTICAL
             }
             val photo = ImageView(requireContext()).apply {
-                layoutParams = LinearLayout.LayoutParams(dp(72), dp(72))
+                layoutParams = LinearLayout.LayoutParams(dp(64), dp(64))
                 contentDescription = "${meal.mealName} photo"
                 scaleType = ImageView.ScaleType.CENTER_CROP
                 meal.photoUrl?.let { path ->
@@ -247,10 +271,32 @@ class LogMealFragment : Fragment() {
                 layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f).apply {
                     marginStart = dp(12)
                 }
-                text = "${meal.mealName} | ${meal.mealSlot}\n${meal.calories} kcal | P ${meal.proteinG}g | C ${meal.carbsG}g | F ${meal.fatG}g\n${DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(meal.loggedAt))}"
+                text = "${meal.mealName} · ${meal.mealSlot}\n${meal.calories} kcal · P ${meal.proteinG.toInt()}g · C ${meal.carbsG.toInt()}g · F ${meal.fatG.toInt()}g\n${DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(meal.loggedAt))}"
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_primary))
+                textSize = 13f
             }
+
+            val overflowBtn = TextView(requireContext()).apply {
+                text = "⋮"
+                textSize = 22f
+                setPadding(dp(12), dp(8), dp(12), dp(8))
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_muted))
+                setOnClickListener { anchor ->
+                    val popup = PopupMenu(requireContext(), anchor)
+                    popup.menu.add("Delete Meal")
+                    popup.setOnMenuItemClickListener { item ->
+                        if (item.title == "Delete Meal") {
+                            viewModel.deleteMeal(meal)
+                        }
+                        true
+                    }
+                    popup.show()
+                }
+            }
+
             row.addView(photo)
             row.addView(details)
+            row.addView(overflowBtn)
             binding.recentMealsContainer.addView(row)
         }
     }

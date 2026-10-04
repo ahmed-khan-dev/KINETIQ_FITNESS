@@ -32,20 +32,24 @@ class LockViewModel(application: Application) : AndroidViewModel(application) {
     fun checkSession() {
         viewModelScope.launch {
             _lockState.value = LockState.CheckingSession
-            val session = repository.getAppSession()
-            currentSession = session
+            try {
+                val session = repository.getAppSession()
+                currentSession = session
 
-            if (session != null && session.isAuthenticated) {
-                val now = System.currentTimeMillis()
-                if (now < session.sessionExpiryTimestamp) {
-                    repository.updateSessionSuccess()
-                    _lockState.value = LockState.AutoBypassed
-                    return@launch
+                if (session != null && session.isAuthenticated) {
+                    val now = System.currentTimeMillis()
+                    if (now < session.sessionExpiryTimestamp) {
+                        repository.updateSessionSuccess()
+                        _lockState.value = LockState.AutoBypassed
+                        return@launch
+                    }
                 }
-            }
 
-            val hasPin = !session?.pinHash.isNullOrEmpty()
-            _lockState.value = LockState.PinRequired(hasPin = hasPin)
+                val hasPin = !session?.pinHash.isNullOrEmpty()
+                _lockState.value = LockState.PinRequired(hasPin = hasPin)
+            } catch (e: Exception) {
+                _lockState.value = LockState.PinRequired(hasPin = false)
+            }
         }
     }
 

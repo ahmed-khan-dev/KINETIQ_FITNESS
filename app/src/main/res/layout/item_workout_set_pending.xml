@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="8dp"
+    android:background="@drawable/bg_day_tab_normal"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:padding="12dp">
+
+    <!-- Gray Circle Number -->
+    <TextView
+        android:id="@+id/tvPendingSetNumber"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        android:background="@drawable/bg_stadium_pill"
+        android:backgroundTint="@color/kinetic_card_highest"
+        android:gravity="center"
+        android:text="3"
+        android:textColor="@color/kinetic_text_muted"
+        android:textSize="12sp"
+        android:textStyle="bold" />
+
+    <!-- Set Title -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tvPendingSetTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Set 3"
+            android:textColor="@color/kinetic_text_muted"
+            android:textSize="14sp" />
+
+        <TextView
+            android:id="@+id/tvPendingSetSub"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:text="Target: 10 reps"
+            android:textColor="@color/kinetic_text_muted"
+            android:textSize="12sp" />
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="PENDING"
+        android:textColor="@color/kinetic_text_muted"
+        android:textSize="10sp"
+        android:textStyle="bold" />
+
+</LinearLayout>

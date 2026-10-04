@@ -1,15 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/kinetic_surface"
     android:gravity="center"
     android:orientation="vertical"
-    android:padding="24dp">
+    android:padding="20dp">
 
     <ProgressBar
         android:id="@+id/pbCheckingSession"
+        style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:indeterminateTint="@color/kinetic_primary"
         android:visibility="visible" />
 
     <LinearLayout
@@ -20,11 +24,22 @@
         android:orientation="vertical"
         android:visibility="gone">
 
+        <!-- BRAND LOGO -->
+        <ImageView
+            android:id="@+id/ivLockLogo"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_marginBottom="12dp"
+            android:contentDescription="Kinetiq Logo"
+            android:src="@drawable/ic_kinetiq_logo" />
+
+        <!-- HEADER TITLE -->
         <TextView
             android:id="@+id/tvLockTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Kinetiq App Lock"
+            android:textColor="@color/kinetic_text_primary"
             android:textSize="24sp"
             android:textStyle="bold" />
 
@@ -32,57 +47,274 @@
             android:id="@+id/tvLockSubtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="4dp"
+            android:gravity="center"
             android:text="Authenticate to unlock your AI Fitness &amp; Diet Coach"
-            android:textColor="?android:attr/textColorSecondary" />
+            android:textColor="@color/kinetic_text_muted"
+            android:textSize="13sp" />
 
-        <Button
-            android:id="@+id/btnBiometricUnlock"
+        <!-- BIOMETRIC TOUCH SENSOR CARD -->
+        <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Unlock with Biometrics" />
+            android:layout_marginTop="20dp"
+            app:cardBackgroundColor="@color/kinetic_card_surface"
+            app:cardCornerRadius="16dp"
+            app:cardElevation="2dp"
+            app:contentPadding="16dp">
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <Button
+                    android:id="@+id/btnBiometricUnlock"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="@color/kinetic_card_high"
+                    android:text="Unlock with Biometrics"
+                    android:textColor="@color/kinetic_primary"
+                    android:textSize="14sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:text="Touch sensor or tap above to use Biometrics"
+                    android:textColor="@color/kinetic_text_muted"
+                    android:textSize="11sp" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- DIVIDER -->
         <TextView
             android:id="@+id/tvOrPinLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
+            android:background="@color/kinetic_card_high"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="4dp"
             android:text="— OR USE PIN —"
-            android:textColor="?android:attr/textColorSecondary"
-            android:textSize="12sp" />
+            android:textColor="@color/kinetic_text_muted"
+            android:textSize="10sp"
+            android:textStyle="bold" />
 
+        <!-- PIN DISPLAY DOTS -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal">
+
+            <View
+                android:id="@+id/pinDot1"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/ic_launcher_background"
+                android:backgroundTint="@color/kinetic_card_highest" />
+
+            <View
+                android:id="@+id/pinDot2"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/ic_launcher_background"
+                android:backgroundTint="@color/kinetic_card_highest" />
+
+            <View
+                android:id="@+id/pinDot3"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/ic_launcher_background"
+                android:backgroundTint="@color/kinetic_card_highest" />
+
+            <View
+                android:id="@+id/pinDot4"
+                android:layout_width="14dp"
+                android:layout_height="14dp"
+                android:layout_margin="6dp"
+                android:background="@drawable/ic_launcher_background"
+                android:backgroundTint="@color/kinetic_card_highest" />
+
+        </LinearLayout>
+
+        <!-- HIDDEN INPUT TEXT FOR BACKWARD COMPATIBILITY -->
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilPin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:hint="Enter 4-Digit PIN">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="numberPassword"
                 android:digits="0123456789"
+                android:inputType="numberPassword"
                 android:maxLength="4" />
 
         </com.google.android.material.textfield.TextInputLayout>
+
+        <!-- NUMERIC KEYPAD 3x4 GRID -->
+        <GridLayout
+            android:layout_width="280dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:columnCount="3"
+            android:rowCount="4">
+
+            <Button
+                android:id="@+id/btnKey1"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="1"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey2"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="2"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey3"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="3"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey4"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="4"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey5"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="5"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey6"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="6"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey7"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="7"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey8"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="8"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey9"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_margin="4dp"
+                android:text="9"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKey0"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_column="1"
+                android:layout_margin="4dp"
+                android:text="0"
+                android:textColor="@color/kinetic_text_primary"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/btnKeyBackspace"
+                style="?attr/materialButtonOutlinedStyle"
+                android:layout_width="80dp"
+                android:layout_height="52dp"
+                android:layout_column="2"
+                android:layout_margin="4dp"
+                android:text="⌫"
+                android:textColor="@color/kinetic_tertiary"
+                android:textSize="18sp" />
+
+        </GridLayout>
 
         <Button
             android:id="@+id/btnSubmitPin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Submit PIN" />
+            android:backgroundTint="@color/kinetic_primary"
+            android:text="Submit PIN"
+            android:textColor="@color/black"
+            android:textStyle="bold" />
 
         <TextView
             android:id="@+id/tvError"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="12dp"
             android:textColor="@android:color/holo_red_dark"
             android:visibility="gone" />
+
+        <!-- SECURITY BADGE -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@color/kinetic_card_surface"
+            android:paddingHorizontal="12dp"
+            android:paddingVertical="6dp"
+            android:text="🔒 15-Minute Session Lock · Encrypted Vault"
+            android:textColor="@color/kinetic_text_muted"
+            android:textSize="11sp" />
 
     </LinearLayout>
 

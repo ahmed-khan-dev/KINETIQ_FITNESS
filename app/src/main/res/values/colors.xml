@@ -2,4 +2,23 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <!-- Stitch Kinetic Dark Theme Colors -->
+    <color name="kinetic_surface">#111317</color>
+    <color name="kinetic_surface_container_lowest">#0C0E12</color>
+    <color name="kinetic_surface_container_low">#1A1C20</color>
+    <color name="kinetic_card_surface">#1E2024</color>
+    <color name="kinetic_card_high">#282A2E</color>
+    <color name="kinetic_card_highest">#333539</color>
+    <color name="kinetic_outline">#2F3642</color>
+    <color name="kinetic_primary">#00E676</color>
+    <color name="kinetic_primary_dim">#75FF9E</color>
+    <color name="kinetic_primary_container">#00612E</color>
+    <color name="kinetic_secondary">#00DAF3</color>
+    <color name="kinetic_secondary_container">#004F58</color>
+    <color name="kinetic_tertiary">#FFB6B1</color>
+    <color name="kinetic_error">#FF5252</color>
+    <color name="kinetic_text_primary">#E2E2E8</color>
+    <color name="kinetic_text_muted">#BACBB9</color>
+    <color name="kinetic_chip_active_bg">#2A00E676</color>
 </resources>

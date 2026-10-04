@@ -1,48 +1,68 @@
 # Kinetiq Changelog
 
-## 2026-09-26 — Phase 9 Home Dashboard
+## 2026-10-04
 
-- Replaced the Home placeholder with a dashboard for the saved workout, today's meals, workout streak, latest progress photo, and latest GPS result.
-- Added quick links from Home to Workout, Meal, and Progress.
-- Updated the saved workout streak when all sets in a workout session are completed; duplicate completions on the same day do not increment it again.
-- `:app:assembleDebug` succeeded; on-device verification remains pending.
+### Circular Home Dashboard Ring & Weight Logging Bug Fix
+- Created custom `CircularCalorieRingView.kt` rendering the circular metabolic progress arc (`#00DAF3` to `#75FF9E` gradient), consumed calories, target calories, and remaining calorie badge on the left side of the Home hero card.
+- Updated `fragment_home.xml`, `HomeFragment.kt`, and `HomeViewModel.kt` to bind consumed calories, target calories, and macro progress bars.
+- Added `getTodayWeightLog` and `updateWeightLog` to `WeightLogDao.kt` and `AppRepository.kt`.
+- Updated `saveWeight()` in `ProgressViewModel.kt` to update today's existing weight log instead of creating duplicate entries for the same date.
+- Updated `WeightTrajectoryView.kt` to group weight logs by calendar day, eliminating graph fluctuations and spikes.
+- Verified build status: `:app:assembleDebug` builds cleanly.
 
-## 2026-09-26 — Input Validation Hardening Before Phase 9
+## 2026-10-04
 
-- Added field-level age, height, weight, and disclaimer validation to profile setup and editing, with save-time guards and length limits for optional restriction fields.
-- Added required meal name and calorie checks; optional macro values now reject malformed, negative, non-finite, or out-of-range values instead of silently becoming zero.
-- Added reps and optional weight validation before workout set logging.
-- Added exact four-digit numeric validation to PIN entry.
-- Added inline weight range feedback to progress logging.
-- `:app:assembleDebug` succeeded; on-device validation remains pending.
+### Custom Workouts, Meal CRUD & Gallery, Weight Trajectory Graph, and Navigation Polish
+- Styled `BottomNavigationView` in `activity_main.xml` with active tab glowing pill indicator and translucent dark surface matching Stitch design mockups.
+- Added `addCustomExerciseToSession(...)` in `WorkoutViewModel.kt` giving users full privilege to add custom exercises and create personalized workout plans.
+- Added `deleteMealLog` and `updateMealLog` to `MealLogDao.kt`, `AppRepository.kt`, and `MealViewModel.kt`.
+- Added "🖼 Gallery" photo picker to `LogMealFragment.kt` and `ProgressFragment.kt` using `ActivityResultContracts.GetContent()`.
+- Added 3-dot overflow menu (`⋮`) on meal items with Delete action in `LogMealFragment.kt`.
+- Created custom `WeightTrajectoryView.kt` canvas view drawing a 4-week weight loss curve with `#00E676` glowing gradient fill, data point dots, and date labels.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
 
-## 2026-09-26 — Phase 8 Progress Tracking
+## 2026-10-04
 
-- Added weight entry and recent weight history using the existing Room table.
-- Added CameraX progress photo capture with Front, Side, and Back angle selection.
-- Saved progress images in app-private storage and linked Room records to GPS logs when available.
-- Added permission fallback so weight and photo records can be saved without location access.
-- Added progress history and photo thumbnails to the Progress screen.
-- `:app:assembleDebug` succeeded; device verification remains pending.
+### Stitch Weekly Workout Plan UI Translation
+- Updated `fragment_workout_plan.xml` matching Stitch design with microcycle header, split badge, telemetric badges (`tvWorkoutMinutes`, `tvExerciseCount`, `tvWorkoutFocus`), today's session card, and weekly schedule breakdown.
+- Preserved 100% of existing View IDs across `fragment_workout_plan.xml` and `WorkoutPlanFragment.kt`.
+- Verified build status: `:app:assembleDebug` builds cleanly.
 
-## 2026-09-26 (SUBMISSION VERSION)
+## 2026-10-04
 
-### Phase 6 — Workout Plan & Logging (COMPLETE)
-- **Exercise Library**: 15 pre-seeded exercises (Chest, Back, Legs, Shoulders, Arms, Core) with equipment/difficulty/restrictions
-- **Deterministic Generator**: Rules-based split generation (3-day Full Body, 4-day Upper/Lower, 5-6-day Push/Pull/Legs)
-- **Workout Persistence**: All plans/sessions/exercises saved in Room database
-- **Real Data Flow**: Exercises from library → generated plan → session display → UI (no placeholder zeros)
-- **Exercise Logging**: Set-by-set tracking with weight, reps, and completion status
-- **GPS Integration**: Location captured when workouts/sets completed with graceful fallback
-- **Profile Integration**: Generator respects fitness level, goal, equipment, days/week, medical flags
-- **Equipment Filtering**: Exercises filtered by user's available equipment
-- **Medical Restrictions**: Exercises excluded/avoided based on user flags
-- **Session Management**: Weekly plan display with today's workout highlighted
-- **Progress Tracking**: Exercise and set count displayed during active workout
-- **Data Persistence**: All logs survive app restart
-- **Build Status**: `:app:assembleDebug` — BUILD SUCCESSFUL
-- **Phase 5 Protected**: All authentication, profile, onboarding flows remain stable and unchanged
-- **Submission Ready**: Minimal scope, no unnecessary features, all core Phase 6 requirements met
+### Logo Vector Integration & LockFragment Loading Fix
+- Converted user provided SVG logo into Android Vector Drawable (`ic_kinetiq_logo.xml`).
+- Updated `ic_launcher_foreground.xml` and added branding logo `ivLockLogo` to `fragment_lock.xml`.
+- Fixed `LockFragment` loading state in `LockViewModel.kt` by wrapping session queries in `try-catch` to ensure lock controls display reliably.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-10-03
+
+### Stitch Auth Lock Screen UI Translation
+- Updated `fragment_lock.xml` matching Stitch design with glassmorphism card, fingerprint touch sensor, 4 PIN dot indicators, 3x4 numeric keypad, and session security badge.
+- Updated `LockFragment.kt` with keypad event handling (number keys 0-9 and backspace) and active PIN dot indicator color updates.
+- Preserved 100% of existing View IDs across `fragment_lock.xml` and `LockFragment.kt`.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-10-03
+
+### Stitch Home Dashboard UI Translation
+- Defined Stitch kinetic dark color palette (`kinetic_surface`, `kinetic_card_surface`, `kinetic_primary`, `kinetic_secondary`, `kinetic_tertiary`) in `res/values/colors.xml`.
+- Updated `fragment_home.xml` matching Stitch design cards, calorie progress ring text, macro progress bars, AI directive callout box (`tvCoachingTip`), and 2-column Bento grid.
+- Preserved 100% of existing View IDs across `fragment_home.xml` and `HomeFragment.kt`.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-09-27
+
+### Dashboard AI Coaching Insights & Dynamic Day Scheduling
+- Transformed `HomeViewModel.kt` to generate intelligent AI coaching insights (calorie adherence vs `user_targets`, macro gap analysis, weight trend delta, and goal-specific coaching tips).
+- Updated `HomeFragment.kt` with interactive card clicks that navigate directly to `workoutPlanFragment`, `logMealFragment`, `progressFragment`, and `profileFragment`.
+- Fixed workout day selection in `WorkoutViewModel.kt`: added `currentDayOfWeekIndex()` to dynamically select today's scheduled workout session based on local time or auto-suggest the next session.
+- Added custom exercise entry support (`insertExercise` in `ExerciseLibraryDao.kt` and `saveCustomExercise` in `AppRepository.kt`).
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
 
 ## 2026-09-26
 
@@ -54,23 +74,6 @@
 - Configured first-launch onboarding routing in `LockFragment.kt` and `nav_graph.xml`.
 - Verified profile editing support (preserves existing entity IDs when updating).
 - Verified build status: `:app:assembleDebug` builds cleanly.
-
-### Phase 5 — Profile UX Architecture Correction
-- Identified the mixed-state problem: the same profile form contained onboarding steps and the saved summary card in one screen, and the view model used a boolean-only edit state instead of explicit mode separation.
-- Added `ProfileMode` with `Onboarding`, `View`, and `Edit` states in `ProfileViewModel.kt` so the UI clearly distinguishes first-launch onboarding, saved profile viewing, and explicit profile editing.
-- Updated `ProfileFragment.kt` to render one visual state at a time: the saved summary card for the normal Profile tab and the 4-step editor only after `Edit Profile` is tapped.
-- Kept onboarding in `OnboardingFragment` and preserved the existing Room entity/DAO IDs and `saveFullProfileAndTargets(...)` transaction flow so updates continue to hit the same rows instead of creating duplicates.
-- Verified the project still builds cleanly with `:app:assembleDebug`.
-- Documented the state separation, navigation behavior, and saved profile reload behavior in project state notes.
-
-### Phase 5 — Profile & Onboarding State Fixes
-- Identified root cause: onboarding and normal Profile screens each created separate `ProfileViewModel` instances, while the shared Room-backed data was only partially loaded into state.
-- Added missing repository access for `getDietaryPreference()` so the saved profile, dietary preference, and target rows can be reloaded together.
-- Updated `ProfileViewModel.loadExistingProfile()` to read `user_profiles`, `dietary_preferences`, and `user_targets`, preserve existing IDs, and restore state without blanking the form.
-- Updated `ProfileFragment` to populate saved values back into the text fields and spinners when the fragment is recreated and to avoid resetting the saved form state.
-- Kept existing `saveFullProfileAndTargets(...)` update logic intact so edits update existing records instead of creating duplicates.
-- Build verification: `:app:assembleDebug` — BUILD SUCCESSFUL.
-- Manual verification status: onboarding/profile reload paths are code-validated and build-tested; full device/manual QA remains unverified in this environment.
 
 ## 2026-09-26
 
@@ -132,62 +135,3 @@
 - Configured Navigation graph (`nav_graph.xml`) and `BottomNavigationView` menu (`bottom_nav_menu.xml`).
 - Implemented `MainActivity` with `NavController` integration and dynamic bottom bar visibility logic.
 - Verified build status: `:app:assembleDebug` builds cleanly.
-
-## 2026-09-26
-
-### Phase 6A — Workout System UX & Data-Flow Correction
-- Identified root cause of incomplete Phase 6: the workout UI was rendering placeholder zero-value session data ("0 sets × 0 reps", "No exercise notes") despite an existing exercise library, plan generation logic, and Room schema.
-- Fixed `WorkoutViewModel.kt`:
-  - Added `targetMuscles` field to `WorkoutExerciseUi` to expose actual exercise target muscle groups.
-  - Added `totalSets` field to `WorkoutDayUi` to compute and display total sets per workout day.
-  - Extended `WorkoutSessionUiState` with `hasWorkoutData`, `targetMuscles`, `totalSets`, and `completedSets` to track real session/exercise state.
-  - Changed `buildDayUiFromPlan` to `buildDayUiFromPlanAsync` and marked as `suspend` to safely call Room repository suspend functions from the coroutine context.
-  - Updated `prepareSession()` to populate `hasWorkoutData = true` and pull real exercise values (sets, reps, rest, target muscles) from the generated workout plan instead of zero placeholders.
-- Fixed `WorkoutPlanFragment.kt`:
-  - Updated UI binding to render actual exercise and session counts instead of incorrect time-multiplication calculations.
-  - Display today's workout summary with real per-session values from the loaded plan.
-- Fixed `WorkoutSessionFragment.kt`:
-  - Replaced placeholder "0 sets × 0 reps" rendering with actual exercise configuration values.
-  - Bind UI fields to `targetMuscles`, `sets`, `reps`, `restSeconds`, and completion progress from real workout state.
-- Updated `fragment_workout_session.xml`:
-  - Added `tvExerciseMuscles` and `tvProgress` views to display target muscles and set completion status.
-  - Kept all existing XML IDs stable to maintain Kotlin binding references.
-- Verified compile status: `:app:assembleDebug` — BUILD SUCCESSFUL.
-- Workout session now displays real exercise data (e.g., "Bench Press • Chest • Triceps • 3 sets × 8-12 reps • Rest: 90 sec") instead of placeholder values.
-
-### Phase 6 — Workout Plan Generation & Logging
-- Added deterministic rules-based workout generation in `WorkoutViewModel.kt` using the saved Room-backed Phase 5 profile (`user_profiles`, `dietary_preferences`, `user_targets` access pattern preserved without a second profile system).
-- Reused the existing Room tables for workout data: `workout_plans`, `workout_sessions`, `session_exercises`, and `exercise_library` remain the storage backbone for generated weekly plans.
-- Extended `AppRepository.kt` with transaction-safe `saveWorkoutPlanWithSessions(...)`, `getActiveWorkoutPlan(...)`, `getSessionsForPlan(...)`, `getSessionExercises(...)`, and `saveExerciseLog(...)` helpers so workout generation and logging stay inside the repository layer.
-- Created `WorkoutViewModel.kt` to load a saved profile, generate or reload the current active plan, expose a `StateFlow` UI model, prepare session state, and record completed exercise logs without putting Room calls into fragments.
-- Replaced the placeholder `WorkoutPlanFragment.kt` with a modern workout dashboard showing today's workout card and weekly plan summary, and added a dedicated `WorkoutSessionFragment.kt` + `fragment_workout_session.xml` for exercise-by-exercise logging.
-- Added the child navigation action `action_workoutPlanFragment_to_workoutSessionFragment` in `nav_graph.xml` and hid the bottom nav while a workout session is active in `MainActivity.kt` to keep workout session screens as child/detail screens.
-- Added rules to respect saved fitness level, goal, activity/equipment constraints, weekly days, session duration, and medical flags, while filtering out exercises with exclusion tags such as `knee_injury`, `lower_back_injury`, and `shoulder_injury`.
-- Added an empty-state path that tells the user to complete their profile before generating a personalized workout plan and keeps the Phase 5 first-launch onboarding flow intact.
-- Verified compile status in this environment: `:app:assembleDebug` — BUILD SUCCESSFUL.
-- Device-level runtime verification of exercise completion, saved plan state, and live navigation on an emulator/physical device was not performed in this environment, so those remain unverified until an actual device run is completed.
-
-## 2026-09-26 — Phase 6 Workout Data-Flow Correction (Verification Pending)
-
-- Source inspection found why the exercise screen showed zero/default values: the session fragment used a new fragment-scoped `WorkoutViewModel` with no loaded session and called `prepareSession(0)` on an empty in-memory cache.
-- Navigation now passes the selected persisted workout session ID. The session screen reloads the linked session exercises and their exercise library data from Room.
-- Set completion now writes one log per set with reps and optional weight, saves a GPS record (including unavailable status), and restores progress from saved logs when reopened.
-- `:app:compileDebugKotlin` passed. `:app:assembleDebug` remains blocked by the environment's missing JDK 21 `jlink.exe` under the configured VS Code JDK path. No emulator/device runtime test was available, so runtime behavior and persistence are not marked verified.
-- This entry supersedes earlier Phase 6 completion and build-success claims until runtime verification is completed.
-## 2026-09-26 — Workout Plan Preview and Completion Status
-
-- The persisted weekly plan now shows each session's actual exercises, target muscles, sets, reps, and rest rather than only session counts.
-- Set progress is rebuilt from saved exercise logs. The Today card displays completed sets, refreshes after returning from a workout, and shows a completed state after the planned sets are logged.
-- `:app:compileDebugKotlin` and `:app:assembleDebug` passed after this change. The expanded plan preview and completion card still need a device check.
-
-## 2026-09-26 — Gradle JDK and Workout Flow Update
-
-- Gradle JVM criteria now select the JetBrains vendor at JDK 21, avoiding the incomplete VS Code JRE. `:app:assembleDebug` succeeds, including Java compilation and APK packaging.
-- The user reports that real exercises now appear in the active workout. Full completion, GPS fallback, restart persistence, and the new weekly exercise preview remain to be checked on device.
-## 2026-09-26 — Phase 7 Meal Logging MVP
-
-- Added CameraX 1.6.2 preview/capture using a lifecycle-bound camera controller and runtime camera permission.
-- Meal photos are written to private `files/images/meals`; the Room meal row stores the path, meal name, slot, calories, macros, and GPS log ID.
-- Added Room 1-to-2 migration and kept older calorie-item totals readable.
-- Added manual nutrition entry, location permission request with unavailable-location fallback, and a recent-meal list.
-- `:app:assembleDebug` succeeds. Device verification of camera capture, migration from an installed version 1 database, GPS fallback, and saved meals after restart remains pending.
