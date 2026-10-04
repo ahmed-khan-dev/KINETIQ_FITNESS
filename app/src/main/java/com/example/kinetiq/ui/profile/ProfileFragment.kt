@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Spinner
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -17,12 +16,12 @@ import com.example.kinetiq.databinding.FragmentProfileBinding
 import com.example.kinetiq.R
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.util.Locale
 
 class ProfileFragment : Fragment() {
 
     private var _binding: FragmentProfileBinding? = null
     private val binding get() = _binding!!
-
     private val viewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(
@@ -133,6 +132,7 @@ class ProfileFragment : Fragment() {
         }
     }
 
+
     private fun collectAndSyncViewModelInput() {
         val age = binding.etAge.text.toString().toIntOrNull() ?: 0
         val gender = binding.spGender.selectedItem?.toString() ?: "Male"
@@ -179,7 +179,7 @@ class ProfileFragment : Fragment() {
     private fun renderState(state: ProfileUiState) {
         val hasProfile = state.hasProfile || state.age > 0 || state.weightKg > 0.0
 
-        if (state.mode == ProfileMode.Edit) {
+        if (state.mode == ProfileMode.Edit || state.mode == ProfileMode.Onboarding) {
             showEditorState(state)
             bindEditorState(state)
         } else {
@@ -200,12 +200,16 @@ class ProfileFragment : Fragment() {
     }
 
     private fun showEditorState(state: ProfileUiState) {
+        binding.headerProgressCard.visibility = View.VISIBLE
+        binding.tvProfileTitle.text = if (state.mode == ProfileMode.Onboarding) "Onboarding" else "Edit Profile"
         binding.summaryContainer.visibility = View.GONE
         binding.editorContainer.visibility = View.GONE
         binding.step1Container.visibility = if (state.currentStep == 1) View.VISIBLE else View.GONE
         binding.step2Container.visibility = if (state.currentStep == 2) View.VISIBLE else View.GONE
         binding.step3Container.visibility = if (state.currentStep == 3) View.VISIBLE else View.GONE
         binding.step4Container.visibility = if (state.currentStep == 4) View.VISIBLE else View.GONE
+
+        updateProgressUi(state.currentStep)
 
         binding.tvStepIndicator.visibility = View.VISIBLE
         binding.tvStepIndicator.text = when (state.currentStep) {
@@ -221,7 +225,42 @@ class ProfileFragment : Fragment() {
         binding.btnNextStep.text = if (state.currentStep == 4) "Save Profile" else "Next Step"
     }
 
+    private fun updateProgressUi(currentStep: Int) {
+        val stepLabels = arrayOf(
+            "Step 1 of 4: Physical Metrics",
+            "Step 2 of 4: Fitness & Goal Configuration",
+            "Step 3 of 4: Nutrition & Health Disclaimer",
+            "Step 4 of 4: Calculated Targets Summary"
+        )
+        val badges = arrayOf(
+            "25% Calibrated",
+            "50% Calibrated",
+            "75% Calibrated",
+            "100% Calibrated"
+        )
+
+        binding.tvHeaderStepCounter.text = stepLabels.getOrElse(currentStep - 1) { stepLabels.last() }
+        binding.tvHeaderCompletionBadge.text = badges.getOrElse(currentStep - 1) { badges.last() }
+
+        val indicatorViews = listOf(
+            binding.progressIndicator1,
+            binding.progressIndicator2,
+            binding.progressIndicator3,
+            binding.progressIndicator4
+        )
+
+        indicatorViews.forEachIndexed { index, view ->
+            val isActive = index < currentStep
+            view.setBackgroundColor(
+                if (isActive) resources.getColor(R.color.kinetic_primary, requireContext().theme)
+                else resources.getColor(R.color.kinetic_card_highest, requireContext().theme)
+            )
+        }
+    }
+
     private fun showSummaryState(hasProfile: Boolean, state: ProfileUiState) {
+        binding.headerProgressCard.visibility = View.GONE
+        binding.tvProfileTitle.text = "Profile"
         binding.summaryContainer.visibility = View.VISIBLE
         binding.editorContainer.visibility = View.GONE
         binding.step1Container.visibility = View.GONE
@@ -236,8 +275,8 @@ class ProfileFragment : Fragment() {
             binding.tvSummaryTitle.text = "Profile Summary"
             binding.tvSummaryAge.text = "Age: ${state.age}"
             binding.tvSummaryGender.text = "Gender: ${state.gender}"
-            binding.tvSummaryHeight.text = "Height: ${state.heightCm} cm"
-            binding.tvSummaryWeight.text = "Weight: ${state.weightKg} kg"
+            binding.tvSummaryHeight.text = "Height: ${String.format(Locale.US, "%.0f", state.heightCm)} cm"
+            binding.tvSummaryWeight.text = "Weight: ${String.format(Locale.US, "%.1f", state.weightKg)} kg"
             binding.tvSummaryGoal.text = "Goal: ${state.goal}"
             binding.tvSummaryFitness.text = "Fitness Level: ${state.fitnessLevel}"
             binding.tvSummaryActivity.text = "Activity Level: ${state.activityLevel}"
@@ -248,12 +287,12 @@ class ProfileFragment : Fragment() {
             binding.tvSummaryAllergies.text = "Allergies: ${state.allergies.ifBlank { "None" }}"
             binding.tvSummaryMedical.text = "Medical Restrictions: ${state.medicalFlags.ifBlank { "None" }}"
             binding.tvSummaryDisclaimer.text = "Medical Disclaimer: ${if (state.disclaimerAcknowledged) "Accepted" else "Not accepted"}"
-            binding.tvSummaryBmr.text = "BMR: ${String.format("%.0f", state.bmr)} kcal"
-            binding.tvSummaryTdee.text = "TDEE: ${String.format("%.0f", state.tdee)} kcal"
+            binding.tvSummaryBmr.text = "BMR: ${String.format(Locale.US, "%.0f", state.bmr)} kcal"
+            binding.tvSummaryTdee.text = "TDEE: ${String.format(Locale.US, "%.0f", state.tdee)} kcal"
             binding.tvSummaryCalorie.text = "Calorie Target: ${state.calorieTarget} kcal"
-            binding.tvSummaryProtein.text = "Protein: ${String.format("%.0f", state.proteinG)}g"
-            binding.tvSummaryCarbs.text = "Carbs: ${String.format("%.0f", state.carbsG)}g"
-            binding.tvSummaryFat.text = "Fat: ${String.format("%.0f", state.fatG)}g"
+            binding.tvSummaryProtein.text = "Protein: ${String.format(Locale.US, "%.0f", state.proteinG)}g"
+            binding.tvSummaryCarbs.text = "Carbs: ${String.format(Locale.US, "%.0f", state.carbsG)}g"
+            binding.tvSummaryFat.text = "Fat: ${String.format(Locale.US, "%.0f", state.fatG)}g"
         } else {
             binding.tvSummaryTitle.text = "Profile Not Set Up"
             binding.tvSummaryAge.text = "No saved profile yet."
@@ -280,14 +319,15 @@ class ProfileFragment : Fragment() {
     }
 
     private fun bindEditorState(state: ProfileUiState) {
+        val weightKg = state.weightKg.coerceIn(0.0, 500.0)
         if (binding.etAge.text?.toString() != state.age.toString()) {
             binding.etAge.setText(state.age.toString())
         }
         if (binding.etHeightCm.text?.toString() != state.heightCm.toString()) {
             binding.etHeightCm.setText(state.heightCm.toString())
         }
-        if (binding.etWeightKg.text?.toString() != state.weightKg.toString()) {
-            binding.etWeightKg.setText(state.weightKg.toString())
+        if (binding.etWeightKg.text?.toString() != weightKg.toString()) {
+            binding.etWeightKg.setText(String.format(Locale.US, "%.1f", weightKg))
         }
         if (binding.etAllergies.text?.toString() != state.allergies) {
             binding.etAllergies.setText(state.allergies)
