@@ -566,13 +566,25 @@
                         android:textSize="14sp"
                         android:textStyle="bold" />
 
-                    <!-- DYNAMIC EXERCISE CARDS CONTAINER (Matching Stitch Preview Cards!) -->
+                    <!-- DYNAMIC EXERCISE CARDS CONTAINER -->
                     <LinearLayout
                         android:id="@+id/llExerciseCardsContainer"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="12dp"
                         android:orientation="vertical" />
+
+                    <!-- ADD CUSTOM EXERCISE BUTTON -->
+                    <Button
+                        android:id="@+id/btnAddExerciseToSession"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="44dp"
+                        android:layout_marginTop="10dp"
+                        android:text="⊕  ADD CUSTOM EXERCISE"
+                        android:textColor="@color/kinetic_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
 
                     <!-- Fallback / Accessibility TextView with preserved ID -->
                     <TextView
@@ -589,91 +601,53 @@
                         android:id="@+id/btnStartWorkout"
                         android:layout_width="match_parent"
                         android:layout_height="52dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="14dp"
                         android:backgroundTint="@color/kinetic_primary"
                         android:text="▶  START WORKOUT"
                         android:textColor="@color/black"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <!-- WEEKLY BREAKDOWN LIST CARD -->
-            <com.google.android.material.card.MaterialCardView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="24dp"
-                app:cardBackgroundColor="@color/kinetic_card_surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:contentPadding="16dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:text="WEEKLY SCHEDULE BREAKDOWN"
-                            android:textColor="@color/kinetic_secondary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvScheduleCycleSummary"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="4 Workouts • 3 Rest"
-                            android:textColor="@color/kinetic_text_muted"
-                            android:textSize="11sp" />
-
-                    </LinearLayout>
-
-                    <!-- DYNAMIC WEEKLY SCHEDULE CARDS CONTAINER -->
-                    <LinearLayout
-                        android:id="@+id/llWeeklyScheduleContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="vertical" />
-
                     <!-- START NEW WEEK CYCLE / REPEAT PLAN CTA -->
                     <Button
                         android:id="@+id/btnStartNewWeek"
                         android:layout_width="match_parent"
                         android:layout_height="48dp"
-                        android:layout_marginTop="16dp"
+                        android:layout_marginTop="10dp"
                         android:backgroundTint="@color/kinetic_card_high"
                         android:text="⚡ START NEW WEEK / REPEAT PLAN"
                         android:textColor="@color/kinetic_primary"
                         android:textSize="13sp"
                         android:textStyle="bold" />
 
-                    <!-- Fallback / Preserved ID TextView -->
-                    <TextView
-                        android:id="@+id/tvWeeklyPlan"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingExtra="6dp"
-                        android:textColor="@color/kinetic_text_primary"
-                        android:textSize="13sp"
-                        android:visibility="gone" />
-
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
+
+            <!-- HIDDEN PRESERVED CONTAINER FOR BACKWARD COMPATIBILITY -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <TextView
+                    android:id="@+id/tvScheduleCycleSummary"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+                <LinearLayout
+                    android:id="@+id/llWeeklyScheduleContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical" />
+
+                <TextView
+                    android:id="@+id/tvWeeklyPlan"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
 
         </LinearLayout>
 

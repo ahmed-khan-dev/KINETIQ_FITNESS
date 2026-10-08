@@ -122,8 +122,8 @@
                     android:id="@+id/etHeightCm"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:text="175.0" />
+                    android:inputType="number"
+                    android:text="175" />
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -136,8 +136,8 @@
                     android:id="@+id/etWeightKg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:text="70.0" />
+                    android:inputType="number"
+                    android:text="70" />
             </com.google.android.material.textfield.TextInputLayout>
 
         </LinearLayout>

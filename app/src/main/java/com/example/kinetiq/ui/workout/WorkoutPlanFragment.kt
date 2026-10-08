@@ -155,6 +155,10 @@ class WorkoutPlanFragment : Fragment() {
                 findNavController().navigate(R.id.action_workoutPlanFragment_to_workoutSessionFragment, args)
             }
 
+            binding.btnAddExerciseToSession.setOnClickListener {
+                showAddExerciseDialog(activeSession.sessionId)
+            }
+
             // Populate dynamic exercise cards matching Stitch design
             binding.llExerciseCardsContainer.removeAllViews()
             val inflater = LayoutInflater.from(requireContext())
@@ -163,6 +167,26 @@ class WorkoutPlanFragment : Fragment() {
                 itemBinding.tvExerciseNumber.text = (index + 1).toString()
                 itemBinding.tvItemExerciseName.text = exercise.name
                 itemBinding.tvItemExerciseMeta.text = "${exercise.targetMuscles} • ${exercise.sets} sets × ${exercise.reps} reps • Rest ${exercise.restSeconds}s"
+
+                itemBinding.root.setOnClickListener { anchor ->
+                    val popup = androidx.appcompat.widget.PopupMenu(requireContext(), anchor)
+                    popup.menu.add("Edit Target Sets/Reps")
+                    popup.menu.add("Delete Exercise")
+                    popup.setOnMenuItemClickListener { menuItem ->
+                        when (menuItem.title) {
+                            "Delete Exercise" -> {
+                                viewModel.deleteSessionExercise(exercise.sessionExerciseId)
+                                true
+                            }
+                            "Edit Target Sets/Reps" -> {
+                                showEditExerciseDialog(exercise)
+                                true
+                            }
+                            else -> false
+                        }
+                    }
+                    popup.show()
+                }
 
                 val isDone = exercise.completedSets >= exercise.sets
                 val hasProgress = exercise.completedSets > 0 && !isDone
@@ -305,6 +329,68 @@ class WorkoutPlanFragment : Fragment() {
             Calendar.SUNDAY -> "Sun"
             else -> "Mon"
         }
+    }
+
+    private fun showAddExerciseDialog(sessionId: String) {
+        val layout = android.widget.LinearLayout(requireContext()).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(48, 24, 48, 24)
+        }
+        val etName = android.widget.EditText(requireContext()).apply { hint = "Exercise Name (e.g. Incline Bench Press)" }
+        val etMuscle = android.widget.EditText(requireContext()).apply { hint = "Muscle Group / Type (e.g. Chest)" }
+        val etSets = android.widget.EditText(requireContext()).apply { hint = "Target Sets (e.g. 3)"; inputType = android.text.InputType.TYPE_CLASS_NUMBER }
+        val etReps = android.widget.EditText(requireContext()).apply { hint = "Target Reps (e.g. 10)"; inputType = android.text.InputType.TYPE_CLASS_NUMBER }
+
+        layout.addView(etName)
+        layout.addView(etMuscle)
+        layout.addView(etSets)
+        layout.addView(etReps)
+
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Add Custom Exercise")
+            .setView(layout)
+            .setPositiveButton("Add") { _, _ ->
+                val name = etName.text.toString().trim()
+                val muscle = etMuscle.text.toString().trim().ifBlank { "General" }
+                val sets = etSets.text.toString().toIntOrNull() ?: 3
+                val reps = etReps.text.toString().toIntOrNull() ?: 10
+                if (name.isNotEmpty()) {
+                    viewModel.addCustomExerciseToSession(sessionId, name, muscle, sets, reps)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showEditExerciseDialog(exercise: WorkoutExerciseUi) {
+        val layout = android.widget.LinearLayout(requireContext()).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(48, 24, 48, 24)
+        }
+        val etSets = android.widget.EditText(requireContext()).apply {
+            hint = "Target Sets"
+            setText(exercise.sets.toString())
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        }
+        val etReps = android.widget.EditText(requireContext()).apply {
+            hint = "Target Reps"
+            setText(exercise.reps.toString())
+            inputType = android.text.InputType.TYPE_CLASS_NUMBER
+        }
+
+        layout.addView(etSets)
+        layout.addView(etReps)
+
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Edit ${exercise.name}")
+            .setView(layout)
+            .setPositiveButton("Save") { _, _ ->
+                val sets = etSets.text.toString().toIntOrNull() ?: exercise.sets
+                val reps = etReps.text.toString().toIntOrNull() ?: exercise.reps
+                viewModel.updateSessionExercise(exercise.sessionExerciseId, sets, reps, exercise.restSeconds)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     override fun onDestroyView() {

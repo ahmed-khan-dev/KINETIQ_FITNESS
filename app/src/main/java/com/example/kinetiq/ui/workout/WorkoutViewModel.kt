@@ -212,6 +212,20 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun deleteSessionExercise(sessionExerciseId: String) {
+        viewModelScope.launch {
+            repository.deleteSessionExercise(sessionExerciseId)
+            loadWorkout(forceGenerate = false)
+        }
+    }
+
+    fun updateSessionExercise(sessionExerciseId: String, sets: Int, reps: Int, restSec: Int) {
+        viewModelScope.launch {
+            repository.updateSessionExercise(sessionExerciseId, sets, reps, restSec)
+            loadWorkout(forceGenerate = false)
+        }
+    }
+
     fun startNewWeekCycle() {
         viewModelScope.launch {
             val activePlan = repository.getActiveWorkoutPlan(userId) ?: return@launch

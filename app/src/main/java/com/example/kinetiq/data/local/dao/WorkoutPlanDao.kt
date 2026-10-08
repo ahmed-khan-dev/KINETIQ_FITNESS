@@ -40,4 +40,10 @@ interface WorkoutPlanDao {
 
     @Query("SELECT * FROM session_exercises WHERE sessionId = :sessionId ORDER BY orderIndex ASC")
     suspend fun getSessionExercises(sessionId: String): List<SessionExerciseEntity>
+
+    @Query("DELETE FROM session_exercises WHERE id = :sessionExerciseId")
+    suspend fun deleteSessionExercise(sessionExerciseId: String)
+
+    @Query("UPDATE session_exercises SET targetSets = :sets, targetReps = :reps, targetRestSec = :restSec, updatedAt = :updatedAt WHERE id = :sessionExerciseId")
+    suspend fun updateSessionExercise(sessionExerciseId: String, sets: Int, reps: Int, restSec: Int, updatedAt: Long = System.currentTimeMillis())
 }

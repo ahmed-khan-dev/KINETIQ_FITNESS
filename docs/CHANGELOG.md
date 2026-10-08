@@ -2,6 +2,17 @@
 
 ## 2026-10-08
 
+### Workout Screen Refinement, Unlimited Exercise CRUD & Weight Input UX Fix
+- Moved "⚡ START NEW WEEK / REPEAT PLAN" button directly inside the main session card in `fragment_workout_plan.xml`.
+- Added "⊕ ADD CUSTOM EXERCISE" button in `fragment_workout_plan.xml` and `WorkoutPlanFragment.kt` launching a dialog to add unlimited custom exercises of any type/muscle group.
+- Added `deleteSessionExercise` and `updateSessionExercise` in `WorkoutPlanDao.kt`, `AppRepository.kt`, and `WorkoutViewModel.kt`.
+- Added 3-dot overflow menu (`⋮`) on exercise items in `WorkoutPlanFragment.kt` with **Edit Target Sets/Reps** and **Delete Exercise** options.
+- Updated `etHeightCm` and `etWeightKg` `inputType` to `number` in `fragment_onboarding.xml` and `fragment_profile.xml` for clean integer typing UX.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-10-08
+
 ### Phase 6: Reusable Weekly Workout Cycle System & Phase 7: Profile Avatar Redesign
 - Added `planType` and `cycleWeekNumber` to `WorkoutPlanEntity.kt`.
 - Updated `AppDatabase.kt` version to 3 with `MIGRATION_2_3`.
