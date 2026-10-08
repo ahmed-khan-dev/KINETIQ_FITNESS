@@ -121,6 +121,59 @@ class AppRepository(private val database: AppDatabase) {
         }
     }
 
+    suspend fun repeatWorkoutPlanNewWeek(currentPlan: WorkoutPlanEntity): WorkoutPlanEntity {
+        return database.withTransaction {
+            val archivedPlan = currentPlan.copy(status = "completed", updatedAt = System.currentTimeMillis())
+            workoutPlanDao.insertWorkoutPlan(archivedPlan)
+
+            val newPlanId = java.util.UUID.randomUUID().toString()
+            val now = System.currentTimeMillis()
+            val newPlan = WorkoutPlanEntity(
+                id = newPlanId,
+                userId = currentPlan.userId,
+                weekStartDate = now,
+                splitType = currentPlan.splitType,
+                planType = currentPlan.planType,
+                cycleWeekNumber = currentPlan.cycleWeekNumber + 1,
+                status = "active",
+                createdAt = now,
+                updatedAt = now
+            )
+            workoutPlanDao.insertWorkoutPlan(newPlan)
+
+            val currentSessions = workoutPlanDao.getSessionsForPlan(currentPlan.id)
+            val newSessions = mutableListOf<WorkoutSessionEntity>()
+            val newExercises = mutableListOf<SessionExerciseEntity>()
+
+            currentSessions.forEach { oldSession ->
+                val newSessionId = java.util.UUID.randomUUID().toString()
+                val newSession = oldSession.copy(
+                    id = newSessionId,
+                    planId = newPlanId,
+                    createdAt = now,
+                    updatedAt = now
+                )
+                newSessions.add(newSession)
+
+                val oldExercises = workoutPlanDao.getSessionExercises(oldSession.id)
+                oldExercises.forEach { oldEx ->
+                    val newEx = oldEx.copy(
+                        id = java.util.UUID.randomUUID().toString(),
+                        sessionId = newSessionId,
+                        createdAt = now,
+                        updatedAt = now
+                    )
+                    newExercises.add(newEx)
+                }
+            }
+
+            if (newSessions.isNotEmpty()) workoutPlanDao.insertWorkoutSessions(newSessions)
+            if (newExercises.isNotEmpty()) workoutPlanDao.insertSessionExercises(newExercises)
+
+            newPlan
+        }
+    }
+
     // Meals
     suspend fun saveMealLog(mealLog: MealLogEntity, items: List<MealLogItemEntity> = emptyList()): Long {
         return database.withTransaction {

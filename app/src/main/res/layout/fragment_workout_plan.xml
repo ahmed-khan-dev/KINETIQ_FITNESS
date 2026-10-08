@@ -649,6 +649,18 @@
                         android:layout_marginTop="12dp"
                         android:orientation="vertical" />
 
+                    <!-- START NEW WEEK CYCLE / REPEAT PLAN CTA -->
+                    <Button
+                        android:id="@+id/btnStartNewWeek"
+                        android:layout_width="match_parent"
+                        android:layout_height="48dp"
+                        android:layout_marginTop="16dp"
+                        android:backgroundTint="@color/kinetic_card_high"
+                        android:text="⚡ START NEW WEEK / REPEAT PLAN"
+                        android:textColor="@color/kinetic_primary"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+
                     <!-- Fallback / Preserved ID TextView -->
                     <TextView
                         android:id="@+id/tvWeeklyPlan"

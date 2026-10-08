@@ -212,6 +212,15 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun startNewWeekCycle() {
+        viewModelScope.launch {
+            val activePlan = repository.getActiveWorkoutPlan(userId) ?: return@launch
+            _uiState.value = _uiState.value.copy(isLoading = true)
+            repository.repeatWorkoutPlanNewWeek(activePlan)
+            loadWorkout(forceGenerate = false)
+        }
+    }
+
     private fun findTodayOrNextSessionIndex(mapped: List<WorkoutDayUi>): Int {
         if (mapped.isEmpty()) return 0
         val currentDay = currentDayOfWeekIndex()

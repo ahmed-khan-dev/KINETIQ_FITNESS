@@ -43,6 +43,10 @@ class WorkoutPlanFragment : Fragment() {
             viewModel.generateWorkoutPlan(force = true)
         }
 
+        binding.btnStartNewWeek.setOnClickListener {
+            viewModel.startNewWeekCycle()
+        }
+
         setupRibbonClickListeners()
 
         viewLifecycleOwner.lifecycleScope.launch {

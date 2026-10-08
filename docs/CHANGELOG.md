@@ -1,5 +1,16 @@
 # Kinetiq Changelog
 
+## 2026-10-08
+
+### Phase 6: Reusable Weekly Workout Cycle System & Phase 7: Profile Avatar Redesign
+- Added `planType` and `cycleWeekNumber` to `WorkoutPlanEntity.kt`.
+- Updated `AppDatabase.kt` version to 3 with `MIGRATION_2_3`.
+- Added `repeatWorkoutPlanNewWeek(...)` in `AppRepository.kt` and `startNewWeekCycle()` in `WorkoutViewModel.kt`.
+- Added "⚡ START NEW WEEK / REPEAT PLAN" button in `fragment_workout_plan.xml` and `WorkoutPlanFragment.kt`.
+- Added `ivProfileAvatar` (`ShapeableImageView` with primary stroke and dummy avatar image) to `fragment_onboarding.xml` and `fragment_profile.xml`.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
 ## 2026-10-04
 
 ### Circular Home Dashboard Ring & Weight Logging Bug Fix

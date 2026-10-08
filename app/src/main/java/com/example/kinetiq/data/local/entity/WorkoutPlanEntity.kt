@@ -11,6 +11,8 @@ data class WorkoutPlanEntity(
     val userId: String,
     val weekStartDate: Long = System.currentTimeMillis(),
     val splitType: String,
+    val planType: String = "SYSTEM",
+    val cycleWeekNumber: Int = 1,
     val status: String = "active",
     val createdAt: Long = System.currentTimeMillis(),
     val updatedAt: Long = System.currentTimeMillis()
