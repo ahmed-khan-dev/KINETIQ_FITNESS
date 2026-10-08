@@ -226,6 +226,15 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun updateSessionName(sessionId: String, newName: String) {
+        viewModelScope.launch {
+            if (newName.isNotBlank()) {
+                repository.updateSessionName(sessionId, newName.trim())
+                loadWorkout(forceGenerate = false)
+            }
+        }
+    }
+
     fun startNewWeekCycle() {
         viewModelScope.launch {
             val activePlan = repository.getActiveWorkoutPlan(userId) ?: return@launch
@@ -523,7 +532,6 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                     completedSets = completedSetCount.coerceAtMost(sessionExercise.targetSets)
                 )
             }
-            if (mappedExercises.isEmpty()) return@mapNotNull null
             WorkoutDayUi(
                 sessionId = session.id,
                 dayName = dayOfWeekLabel(session.dayOfWeek),

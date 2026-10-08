@@ -132,7 +132,11 @@ class WorkoutPlanFragment : Fragment() {
                 "${activeSession.dayName.uppercase()} SCHEDULED SESSION"
             }
 
-            binding.tvTodayWorkoutTitle.text = activeSession.title
+            binding.tvTodayWorkoutTitle.text = "${activeSession.title} ✎"
+            binding.tvTodayWorkoutTitle.setOnClickListener {
+                showRenameSessionDialog(activeSession.sessionId, activeSession.title)
+            }
+
             binding.tvTodayWorkoutMeta.text = "${activeSession.dayName} · ${activeSession.exerciseCount} exercises · ${activeSession.totalSets} sets · ~${activeSession.estimatedMinutes} min"
             binding.tvWorkoutMinutes.text = "~${activeSession.estimatedMinutes} min"
             binding.tvExerciseCount.text = "${activeSession.exerciseCount} exercises"
@@ -329,6 +333,26 @@ class WorkoutPlanFragment : Fragment() {
             Calendar.SUNDAY -> "Sun"
             else -> "Mon"
         }
+    }
+
+    private fun showRenameSessionDialog(sessionId: String, currentName: String) {
+        val etInput = android.widget.EditText(requireContext()).apply {
+            hint = "Session Name (e.g. Chest & Triceps)"
+            setText(currentName)
+            setPadding(48, 24, 48, 24)
+        }
+
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Rename Workout Session")
+            .setView(etInput)
+            .setPositiveButton("Rename") { _, _ ->
+                val newName = etInput.text.toString().trim()
+                if (newName.isNotEmpty()) {
+                    viewModel.updateSessionName(sessionId, newName)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
     }
 
     private fun showAddExerciseDialog(sessionId: String) {

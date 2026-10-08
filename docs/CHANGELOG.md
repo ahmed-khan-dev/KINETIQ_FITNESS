@@ -2,6 +2,17 @@
 
 ## 2026-10-08
 
+### Empty Day Fix, Session Renaming & Strength Performance Graph
+- Fixed empty day selection bug in `WorkoutViewModel.kt` (`buildDayUiFromPlanAsync`), ensuring days with 0 exercises (like Thursday) remain selectable with the "⊕ ADD CUSTOM EXERCISE" button.
+- Added `updateSessionName` to `WorkoutPlanDao.kt`, `AppRepository.kt`, and `WorkoutViewModel.kt`.
+- Added custom session renaming dialog on `tvTodayWorkoutTitle` in `WorkoutPlanFragment.kt` allowing users to rename any workout session (e.g. from *"Pull A"* to *"Chest & Triceps"*).
+- Created custom `StrengthTrajectoryView.kt` canvas view drawing Estimated 1RM strength progression curve over time using Epley Formula ($1\text{RM} = \text{Weight} \times (1 + \text{Reps}/30)$).
+- Embedded `StrengthTrajectoryView` in `fragment_progress.xml` with strength gain badge (`⚡ +8.5% STRENGTH GAIN`).
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-10-08
+
 ### Workout Screen Refinement, Unlimited Exercise CRUD & Weight Input UX Fix
 - Moved "⚡ START NEW WEEK / REPEAT PLAN" button directly inside the main session card in `fragment_workout_plan.xml`.
 - Added "⊕ ADD CUSTOM EXERCISE" button in `fragment_workout_plan.xml` and `WorkoutPlanFragment.kt` launching a dialog to add unlimited custom exercises of any type/muscle group.

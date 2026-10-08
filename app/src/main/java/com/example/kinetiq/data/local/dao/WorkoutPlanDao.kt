@@ -46,4 +46,7 @@ interface WorkoutPlanDao {
 
     @Query("UPDATE session_exercises SET targetSets = :sets, targetReps = :reps, targetRestSec = :restSec, updatedAt = :updatedAt WHERE id = :sessionExerciseId")
     suspend fun updateSessionExercise(sessionExerciseId: String, sets: Int, reps: Int, restSec: Int, updatedAt: Long = System.currentTimeMillis())
+
+    @Query("UPDATE workout_sessions SET sessionName = :newName, updatedAt = :updatedAt WHERE id = :sessionId")
+    suspend fun updateSessionName(sessionId: String, newName: String, updatedAt: Long = System.currentTimeMillis())
 }

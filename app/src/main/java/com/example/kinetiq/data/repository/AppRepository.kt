@@ -108,6 +108,9 @@ class AppRepository(private val database: AppDatabase) {
     suspend fun updateSessionExercise(sessionExerciseId: String, sets: Int, reps: Int, restSec: Int) =
         workoutPlanDao.updateSessionExercise(sessionExerciseId, sets, reps, restSec)
 
+    suspend fun updateSessionName(sessionId: String, newName: String) =
+        workoutPlanDao.updateSessionName(sessionId, newName)
+
     suspend fun getExerciseLogsForSessionExercise(sessionExerciseId: String): List<ExerciseLogEntity> =
         exerciseLogDao.getLogsForSessionExercise(sessionExerciseId)
 

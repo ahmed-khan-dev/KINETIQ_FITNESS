@@ -1,22 +1,21 @@
 ﻿# Kinetiq Project State
 
 ## Current Phase
-Workout Screen Refinement, Unlimited Exercise CRUD & Weight Input UX Fix (Completed)
+Empty Day Fix, Session Renaming & Strength Performance Graph (Completed)
 
 ## Status
-Workout screen button placement refinement, unlimited exercise CRUD operations (Add, Edit, Delete), and onboarding weight input UX fixes fully implemented and compiling successfully.
+Thursday empty day selection bug fix, custom session renaming, and Strength Performance Tracking line graph (Estimated 1RM curve) fully implemented and compiling successfully.
 
 ## Completed Enhancements
-1. **Workout Screen Button Placement Refinement (`fragment_workout_plan.xml`, `WorkoutPlanFragment.kt`)**:
-   - Moved "⚡ START NEW WEEK / REPEAT PLAN" button (`btnStartNewWeek`) directly inside the main session card (`cardTodayWorkout`) right below the "▶ START WORKOUT" button.
-   - Added "⊕ ADD CUSTOM EXERCISE" button (`btnAddExerciseToSession`) inside `cardTodayWorkout`.
-   - Removed/hid the redundant separate "WEEKLY SCHEDULE BREAKDOWN" card block.
-2. **Unlimited Exercise CRUD Operations (`WorkoutPlanDao.kt`, `AppRepository.kt`, `WorkoutViewModel.kt`, `WorkoutPlanFragment.kt`)**:
-   - Added `deleteSessionExercise` and `updateSessionExercise` to Room DAO, Repository, and ViewModel.
-   - Bound "⊕ ADD CUSTOM EXERCISE" button to launch an interactive Material Dialog allowing users to enter Exercise Name, Muscle Group/Type, Target Sets, Target Reps, and Target Rest (sec).
-   - Added 3-dot overflow menu on exercise item cards with **Edit Target Sets/Reps** and **Delete Exercise** actions.
-3. **Onboarding & Profile Weight Input UX Fix (`fragment_onboarding.xml`, `fragment_profile.xml`)**:
-   - Updated `etHeightCm` and `etWeightKg` `inputType` to `number` with integer defaults (`175` cm and `70` kg), solving decimal keyboard locks and improving typing UX.
+1. **Empty Day Selection Bug Fix (Thursday Bug)**:
+   - Fixed `buildDayUiFromPlanAsync` in `WorkoutViewModel.kt` by removing `mappedExercises.isEmpty()` filter. Every day in the weekly plan remains selectable in the ribbon even when all exercises are deleted, displaying the "⊕ ADD CUSTOM EXERCISE" button.
+2. **Custom Day / Session Renaming (`WorkoutPlanDao.kt`, `AppRepository.kt`, `WorkoutViewModel.kt`, `WorkoutPlanFragment.kt`)**:
+   - Added `updateSessionName(sessionId, newName)` to Room DAO, Repository, and ViewModel.
+   - Tapping `tvTodayWorkoutTitle` in `WorkoutPlanFragment.kt` opens a Material Dialog allowing users to rename any session (e.g., from *"Pull A"* to *"Chest & Triceps"*).
+3. **Strength Performance Tracking Graph (`StrengthTrajectoryView.kt`, `fragment_progress.xml`)**:
+   - Created custom `StrengthTrajectoryView` canvas view plotting Estimated 1RM strength progression curve over time using Epley Formula:
+     $$\text{Estimated 1RM} = \text{Weight} \times \left(1 + \frac{\text{Reps}}{30}\right)$$
+   - Embedded `StrengthTrajectoryView` in `fragment_progress.xml` with strength gain badge (`⚡ +8.5% STRENGTH GAIN`).
 4. **100% View ID Preservation**:
    - Preserved all existing View IDs across all layouts for 100% code compatibility.
 5. **Verified Build**: Built cleanly with `:app:assembleDebug`.
@@ -30,14 +29,15 @@ Workout screen button placement refinement, unlimited exercise CRUD operations (
 - Local Room SQLite Persistence (Version 3 Database)
 - Single-User Offline First Application
 
+## Files Created
+- `app/src/main/java/com/example/kinetiq/ui/progress/StrengthTrajectoryView.kt`
+
 ## Files Modified
-- `app/src/main/res/layout/fragment_workout_plan.xml`
-- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutPlanFragment.kt`
 - `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutViewModel.kt`
+- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutPlanFragment.kt`
 - `app/src/main/java/com/example/kinetiq/data/local/dao/WorkoutPlanDao.kt`
 - `app/src/main/java/com/example/kinetiq/data/repository/AppRepository.kt`
-- `app/src/main/res/layout/fragment_onboarding.xml`
-- `app/src/main/res/layout/fragment_profile.xml`
+- `app/src/main/res/layout/fragment_progress.xml`
 - `docs/PROJECT_STATE.md`
 - `docs/CHANGELOG.md`
 
