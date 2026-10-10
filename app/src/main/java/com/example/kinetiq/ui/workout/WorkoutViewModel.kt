@@ -569,10 +569,40 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
     }
 
     private suspend fun buildDayUiFromPlanAsync(plan: WorkoutPlanEntity): List<WorkoutDayUi> {
-         val sessions = repository.getSessionsForPlan(plan.id)
-         return sessions.mapNotNull { session ->
-             val sessionExercises = repository.getSessionExercises(session.id)
-             val exerciseMap = repository.getAllExercises().associateBy { it.id }
+        var sessions = repository.getSessionsForPlan(plan.id)
+
+        // AUTO-REPAIR: If plan has missing days (1..7), auto-insert missing session records
+        val existingDays = sessions.map { it.dayOfWeek }.toSet()
+        if (existingDays.size < 7) {
+            val missingSessions = mutableListOf<WorkoutSessionEntity>()
+            val daysList = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+            (1..7).forEach { dayIndex ->
+                if (!existingDays.contains(dayIndex)) {
+                    val dayLabel = daysList[dayIndex - 1]
+                    missingSessions.add(
+                        WorkoutSessionEntity(
+                            id = UUID.randomUUID().toString(),
+                            planId = plan.id,
+                            dayOfWeek = dayIndex,
+                            sessionName = "$dayLabel Workout",
+                            estimatedDurationMin = 45,
+                            estimatedCalories = 300,
+                            createdAt = System.currentTimeMillis(),
+                            updatedAt = System.currentTimeMillis()
+                        )
+                    )
+                }
+            }
+            if (missingSessions.isNotEmpty()) {
+                repository.workoutPlanDao.insertWorkoutSessions(missingSessions)
+                sessions = repository.getSessionsForPlan(plan.id)
+            }
+        }
+
+        val exerciseMap = repository.getAllExercises().associateBy { it.id }
+
+        return sessions.sortedBy { it.dayOfWeek }.map { session ->
+            val sessionExercises = repository.getSessionExercises(session.id)
             val mappedExercises = sessionExercises.mapNotNull { sessionExercise ->
                 val exercise = exerciseMap[sessionExercise.exerciseId] ?: return@mapNotNull null
                 val completedSetCount = repository.getExerciseLogsForSessionExercise(sessionExercise.id)
