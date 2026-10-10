@@ -1,26 +1,22 @@
 ﻿# Kinetiq Project State
 
 ## Current Phase
-Workout Exit Action, Stepper Progress Bar Repositioning, Rest Day Conversion & Integer Formatting (Completed)
+7-Day Independent Workout Navigation & Rest Day Streak Protection (Completed)
 
 ## Status
-Workout session finish button exit navigation, stepper progress bar top repositioning, rest day to workout day conversion, and integer weight/height formatting fully implemented and compiling successfully.
+Full 7-day session initialization in Room database, 100% independent ribbon navigation for all 7 days (Mon-Sun), and rest-day streak protection fully implemented and compiling successfully.
 
 ## Completed Enhancements
-1. **Workout Session Finished Exit Navigation (`WorkoutSessionFragment.kt`)**:
-   - Enabled `btnCompleteExercise` on session completion (`state.isComplete == true`) and attached `findNavController().navigateUp()` exit action, returning to Workout Plan.
-2. **Clean Weight & Height Integer Formatting (`ProfileFragment.kt`)**:
-   - Updated `bindEditorState(state)` so `weightKg` and `heightCm` format as clean integers (`50` and `175`) without `.0` input locks when whole numbers.
-3. **Stepper Progress Bar Repositioning (`fragment_onboarding.xml`, `fragment_profile.xml`)**:
-   - Moved `headerProgressCard` (`Step 1 of 4: Physical Metrics`) from the bottom of the layout to the top right below the title.
-4. **Rest Day to Workout Day Conversion (`WorkoutPlanFragment.kt`, `WorkoutViewModel.kt`)**:
-   - Added `addCustomExerciseToDay(dayName, ...)` in `WorkoutViewModel.kt`.
-   - Selecting any Rest day displays **"⊕ CONVERT TO WORKOUT DAY & ADD EXERCISE"**, enabling users to convert rest days and add custom exercises to train on any chosen day.
-5. **Strength Graph Calculation Documentation**:
-   - Documented Epley 1RM Formula ($1\text{RM} = \text{Weight} \times (1 + \text{Reps}/30)$) and strength percentage delta calculation in project documentation.
-6. **100% View ID Preservation**:
+1. **7-Day Active Session Generation (`WorkoutViewModel.kt`)**:
+   - Updated `generateWorkoutPlan` to initialize active `WorkoutSessionEntity` records for **all 7 days (Monday through Sunday)** in Room database.
+2. **100% Independent Ribbon Navigation (`WorkoutPlanFragment.kt`)**:
+   - Tapping ANY day on the 7-day ribbon (Mon..Sun) immediately opens that day's session card.
+   - If a day has 0 exercises, the action button displays `"⊕ ADD EXERCISE TO START WORKOUT"`, allowing users to perform workouts, add custom exercises, and rename session titles on any day.
+3. **Rest-Day Streak Protection (`WorkoutViewModel.kt`)**:
+   - Updated `recordCompletedWorkoutForStreak()` to respect planned rest days (up to 3-day grace interval), so taking a planned rest day on Tuesday or Thursday keeps the streak alive when Wednesday or Friday workouts are completed.
+4. **100% View ID Preservation**:
    - Preserved all existing View IDs across all layouts for 100% code compatibility.
-7. **Verified Build**: Built cleanly with `:app:assembleDebug`.
+5. **Verified Build**: Built cleanly with `:app:assembleDebug`.
 
 ## Current Build Status
 - **BUILD SUCCESSFUL** (`:app:assembleDebug`). Zero errors.
@@ -32,12 +28,8 @@ Workout session finish button exit navigation, stepper progress bar top repositi
 - Single-User Offline First Application
 
 ## Files Modified
-- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutSessionFragment.kt`
-- `app/src/main/java/com/example/kinetiq/ui/profile/ProfileFragment.kt`
-- `app/src/main/res/layout/fragment_onboarding.xml`
-- `app/src/main/res/layout/fragment_profile.xml`
-- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutPlanFragment.kt`
 - `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutViewModel.kt`
+- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutPlanFragment.kt`
 - `docs/PROJECT_STATE.md`
 - `docs/CHANGELOG.md`
 

@@ -144,19 +144,25 @@ class WorkoutPlanFragment : Fragment() {
 
             binding.tvTodayWorkoutStatus.text = if (activeSession.isComplete) {
                 "Session complete · ${activeSession.completedSets}/${activeSession.totalSets} sets"
+            } else if (activeSession.exerciseCount == 0) {
+                "0 exercises in this session. Tap '⊕ ADD CUSTOM EXERCISE' below."
             } else {
                 "${activeSession.completedSets}/${activeSession.totalSets} sets completed"
             }
 
-            binding.btnStartWorkout.text = if (activeSession.isComplete) {
-                "▶  REPEAT WORKOUT"
-            } else {
-                "▶  START WORKOUT"
+            binding.btnStartWorkout.text = when {
+                activeSession.isComplete -> "▶  REPEAT WORKOUT"
+                activeSession.exerciseCount == 0 -> "⊕  ADD EXERCISE TO START WORKOUT"
+                else -> "▶  START WORKOUT"
             }
 
             binding.btnStartWorkout.setOnClickListener {
-                val args = Bundle().apply { putString("sessionId", activeSession.sessionId) }
-                findNavController().navigate(R.id.action_workoutPlanFragment_to_workoutSessionFragment, args)
+                if (activeSession.exerciseCount == 0) {
+                    showAddExerciseDialog(activeSession.sessionId)
+                } else {
+                    val args = Bundle().apply { putString("sessionId", activeSession.sessionId) }
+                    findNavController().navigate(R.id.action_workoutPlanFragment_to_workoutSessionFragment, args)
+                }
             }
 
             binding.btnAddExerciseToSession.setOnClickListener {

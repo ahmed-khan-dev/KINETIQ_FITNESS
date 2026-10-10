@@ -2,6 +2,15 @@
 
 ## 2026-10-10
 
+### 7-Day Independent Workout Navigation & Rest Day Streak Protection
+- Updated `generateWorkoutPlan` in `WorkoutViewModel.kt` to generate active `WorkoutSessionEntity` records for **all 7 days (Monday through Sunday)** in Room database.
+- Updated `WorkoutPlanFragment.kt` so tapping ANY day on the weekly ribbon (Mon..Sun) immediately opens that day's session card with full exercise addition and workout launch capabilities.
+- Updated `recordCompletedWorkoutForStreak()` in `WorkoutViewModel.kt` to respect planned rest days so taking a planned rest day on Tuesday or Thursday keeps the streak alive when Wednesday or Friday workouts are completed.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-10-10
+
 ### Workout Exit Action, Stepper Progress Bar Repositioning & Rest Day Conversion
 - Made "WORKOUT FINISHED" button in `WorkoutSessionFragment.kt` navigate back up to Workout Plan.
 - Moved step progress indicator card (`headerProgressCard`) to the top of `fragment_onboarding.xml` and `fragment_profile.xml`.

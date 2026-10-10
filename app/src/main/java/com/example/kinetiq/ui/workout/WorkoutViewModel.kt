@@ -650,12 +650,18 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         val exerciseRecords = mutableListOf<SessionExerciseEntity>()
         val dayUi = mutableListOf<WorkoutDayUi>()
 
-        sessionTemplates.forEachIndexed { index, pair ->
-            val (sessionName, focusGroups) = pair
+        val daysList = listOf("Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun")
+        (1..7).forEach { dayIndex ->
+            val templateIndex = dayIndex - 1
+            val dayLabel = daysList[templateIndex]
+            val template = sessionTemplates.getOrNull(templateIndex)
+            val sessionName = template?.first ?: "$dayLabel Workout"
+            val focusGroups = template?.second ?: listOf("General")
+
             val session = WorkoutSessionEntity(
                 id = UUID.randomUUID().toString(),
                 planId = planId,
-                dayOfWeek = index + 1,
+                dayOfWeek = dayIndex,
                 sessionName = sessionName,
                 estimatedDurationMin = profile.sessionMinutes.coerceAtLeast(30),
                 estimatedCalories = estimateCalories(profile.goal, profile.sessionMinutes),
@@ -664,44 +670,48 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             )
             sessionRecords.add(session)
 
-            val chosenExercises = chooseExercisesForSession(
-                profile = profile,
-                allExercises = allExercises,
-                medicalFlags = medicalFlags,
-                allowedEquipment = allowedEquipment,
-                focusGroups = focusGroups
-            )
-
-            val uiExercises = chosenExercises.mapIndexed { orderIndex, exercise ->
-                val sessionExercise = SessionExerciseEntity(
-                    id = UUID.randomUUID().toString(),
-                    sessionId = session.id,
-                    exerciseId = exercise.id,
-                    orderIndex = orderIndex,
-                    targetSets = exercise.defaultSets,
-                    targetReps = targetRepsForGoal(profile.goal, exercise),
-                    targetRestSec = targetRestForGoal(profile.goal),
-                    createdAt = System.currentTimeMillis(),
-                    updatedAt = System.currentTimeMillis()
+            val uiExercises = if (template != null) {
+                val chosenExercises = chooseExercisesForSession(
+                    profile = profile,
+                    allExercises = allExercises,
+                    medicalFlags = medicalFlags,
+                    allowedEquipment = allowedEquipment,
+                    focusGroups = focusGroups
                 )
-                exerciseRecords.add(sessionExercise)
 
-                WorkoutExerciseUi(
-                    sessionExerciseId = sessionExercise.id,
-                    exerciseId = exercise.id,
-                    name = exercise.name,
-                    targetMuscles = exercise.muscleGroup,
-                    sets = sessionExercise.targetSets,
-                    reps = sessionExercise.targetReps,
-                    restSeconds = sessionExercise.targetRestSec,
-                    notes = exercise.instructions
-                )
+                chosenExercises.mapIndexed { orderIndex, exercise ->
+                    val sessionExercise = SessionExerciseEntity(
+                        id = UUID.randomUUID().toString(),
+                        sessionId = session.id,
+                        exerciseId = exercise.id,
+                        orderIndex = orderIndex,
+                        targetSets = exercise.defaultSets,
+                        targetReps = targetRepsForGoal(profile.goal, exercise),
+                        targetRestSec = targetRestForGoal(profile.goal),
+                        createdAt = System.currentTimeMillis(),
+                        updatedAt = System.currentTimeMillis()
+                    )
+                    exerciseRecords.add(sessionExercise)
+
+                    WorkoutExerciseUi(
+                        sessionExerciseId = sessionExercise.id,
+                        exerciseId = exercise.id,
+                        name = exercise.name,
+                        targetMuscles = exercise.muscleGroup,
+                        sets = sessionExercise.targetSets,
+                        reps = sessionExercise.targetReps,
+                        restSeconds = sessionExercise.targetRestSec,
+                        notes = exercise.instructions
+                    )
+                }
+            } else {
+                emptyList()
             }
 
             dayUi.add(
                 WorkoutDayUi(
                     sessionId = session.id,
-                    dayName = dayOfWeekLabel(index + 1),
+                    dayName = dayLabel,
                     title = sessionName,
                     focus = focusGroups.joinToString(", "),
                     estimatedMinutes = session.estimatedDurationMin,
