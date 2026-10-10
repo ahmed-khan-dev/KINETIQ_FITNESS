@@ -321,8 +321,11 @@ class WorkoutSessionFragment : Fragment() {
             binding.cardActiveSet.visibility = View.GONE
             binding.cardRestTimer.visibility = View.GONE
             binding.llPendingSetsContainer.removeAllViews()
-            binding.btnCompleteExercise.text = "WORKOUT FINISHED"
-            binding.btnCompleteExercise.isEnabled = false
+            binding.btnCompleteExercise.text = "✓ WORKOUT FINISHED (EXIT)"
+            binding.btnCompleteExercise.isEnabled = true
+            binding.btnCompleteExercise.setOnClickListener {
+                findNavController().navigateUp()
+            }
             binding.btnSkipExercise.visibility = View.GONE
         } else {
             binding.tvCompletionStatus.visibility = View.GONE

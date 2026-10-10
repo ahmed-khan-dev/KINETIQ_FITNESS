@@ -1,13 +1,12 @@
 # Kinetiq Changelog
 
-## 2026-10-08
+## 2026-10-10
 
-### Empty Day Fix, Session Renaming & Strength Performance Graph
-- Fixed empty day selection bug in `WorkoutViewModel.kt` (`buildDayUiFromPlanAsync`), ensuring days with 0 exercises (like Thursday) remain selectable with the "⊕ ADD CUSTOM EXERCISE" button.
-- Added `updateSessionName` to `WorkoutPlanDao.kt`, `AppRepository.kt`, and `WorkoutViewModel.kt`.
-- Added custom session renaming dialog on `tvTodayWorkoutTitle` in `WorkoutPlanFragment.kt` allowing users to rename any workout session (e.g. from *"Pull A"* to *"Chest & Triceps"*).
-- Created custom `StrengthTrajectoryView.kt` canvas view drawing Estimated 1RM strength progression curve over time using Epley Formula ($1\text{RM} = \text{Weight} \times (1 + \text{Reps}/30)$).
-- Embedded `StrengthTrajectoryView` in `fragment_progress.xml` with strength gain badge (`⚡ +8.5% STRENGTH GAIN`).
+### Workout Exit Action, Stepper Progress Bar Repositioning & Rest Day Conversion
+- Made "WORKOUT FINISHED" button in `WorkoutSessionFragment.kt` navigate back up to Workout Plan.
+- Moved step progress indicator card (`headerProgressCard`) to the top of `fragment_onboarding.xml` and `fragment_profile.xml`.
+- Updated `bindEditorState` in `ProfileFragment.kt` to format weight and height as clean integers (`50` and `175`) without `.0` input locks.
+- Added `addCustomExerciseToDay(...)` in `WorkoutViewModel.kt` and "⊕ CONVERT TO WORKOUT DAY & ADD EXERCISE" in `WorkoutPlanFragment.kt` allowing users to convert Rest days into active Workout days on any chosen day of the week.
 - Preserved 100% of existing View IDs across all layouts.
 - Verified build status: `:app:assembleDebug` builds cleanly.
 

@@ -323,12 +323,17 @@ class ProfileFragment : Fragment() {
         if (binding.etAge.text?.toString() != state.age.toString()) {
             binding.etAge.setText(state.age.toString())
         }
-        if (binding.etHeightCm.text?.toString() != state.heightCm.toString()) {
-            binding.etHeightCm.setText(state.heightCm.toString())
+
+        val heightStr = if (state.heightCm % 1.0 == 0.0) state.heightCm.toInt().toString() else state.heightCm.toString()
+        if (binding.etHeightCm.text?.toString() != heightStr && heightStr != "0") {
+            binding.etHeightCm.setText(heightStr)
         }
-        if (binding.etWeightKg.text?.toString() != weightKg.toString()) {
-            binding.etWeightKg.setText(String.format(Locale.US, "%.1f", weightKg))
+
+        val weightStr = if (weightKg % 1.0 == 0.0) weightKg.toInt().toString() else String.format(Locale.US, "%.1f", weightKg)
+        if (binding.etWeightKg.text?.toString() != weightStr && weightStr != "0") {
+            binding.etWeightKg.setText(weightStr)
         }
+
         if (binding.etAllergies.text?.toString() != state.allergies) {
             binding.etAllergies.setText(state.allergies)
         }

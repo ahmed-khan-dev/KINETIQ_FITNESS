@@ -219,22 +219,19 @@ class WorkoutPlanFragment : Fragment() {
                 "${exercise.name} | ${exercise.targetMuscles} | ${exercise.sets} x ${exercise.reps} reps | Rest ${exercise.restSeconds}s"
             }
         } else {
-            // Selected a rest day or no sessions
-            binding.tvTodayWorkoutTitle.text = "Rest & Recovery"
-            binding.tvTodayWorkoutMeta.text = "No intense resistance workout scheduled for ${selectedDayName ?: "today"}."
+            val restDayName = selectedDayName ?: "Thu"
+            binding.cardTodayWorkout.visibility = View.VISIBLE
+            binding.tvSessionSectionBadge.text = "${restDayName.uppercase()} REST DAY"
+            binding.tvTodayWorkoutTitle.text = "$restDayName — Rest & Recovery"
+            binding.tvTodayWorkoutMeta.text = "No workout scheduled for $restDayName."
             binding.tvWorkoutMinutes.text = "Rest Day"
             binding.tvExerciseCount.text = "0 exercises"
-            binding.tvWorkoutFocus.text = "Active Recovery & Mobility"
+            binding.tvWorkoutFocus.text = "Rest Day"
             binding.tvTodayWorkoutStatus.text = "Rest & Hydrate"
             binding.llExerciseCardsContainer.removeAllViews()
-            binding.btnStartWorkout.text = "START ACTIVE RECOVERY"
+            binding.btnStartWorkout.text = "⊕ CONVERT TO WORKOUT DAY & ADD EXERCISE"
             binding.btnStartWorkout.setOnClickListener {
-                // If user wants to do recovery, find nearest session or open first available
-                val fallbackSession = state.todayWorkout ?: state.weeklyPlan.firstOrNull()
-                if (fallbackSession != null) {
-                    val args = Bundle().apply { putString("sessionId", fallbackSession.sessionId) }
-                    findNavController().navigate(R.id.action_workoutPlanFragment_to_workoutSessionFragment, args)
-                }
+                showAddExerciseForDayDialog(restDayName)
             }
         }
 
@@ -349,6 +346,37 @@ class WorkoutPlanFragment : Fragment() {
                 val newName = etInput.text.toString().trim()
                 if (newName.isNotEmpty()) {
                     viewModel.updateSessionName(sessionId, newName)
+                }
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showAddExerciseForDayDialog(dayName: String) {
+        val layout = android.widget.LinearLayout(requireContext()).apply {
+            orientation = android.widget.LinearLayout.VERTICAL
+            setPadding(48, 24, 48, 24)
+        }
+        val etName = android.widget.EditText(requireContext()).apply { hint = "Exercise Name (e.g. Bench Press)" }
+        val etMuscle = android.widget.EditText(requireContext()).apply { hint = "Muscle Group / Type (e.g. Chest)" }
+        val etSets = android.widget.EditText(requireContext()).apply { hint = "Target Sets (e.g. 3)"; inputType = android.text.InputType.TYPE_CLASS_NUMBER }
+        val etReps = android.widget.EditText(requireContext()).apply { hint = "Target Reps (e.g. 10)"; inputType = android.text.InputType.TYPE_CLASS_NUMBER }
+
+        layout.addView(etName)
+        layout.addView(etMuscle)
+        layout.addView(etSets)
+        layout.addView(etReps)
+
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Add Exercise to $dayName")
+            .setView(layout)
+            .setPositiveButton("Add & Start Day") { _, _ ->
+                val name = etName.text.toString().trim()
+                val muscle = etMuscle.text.toString().trim().ifBlank { "General" }
+                val sets = etSets.text.toString().toIntOrNull() ?: 3
+                val reps = etReps.text.toString().toIntOrNull() ?: 10
+                if (name.isNotEmpty()) {
+                    viewModel.addCustomExerciseToDay(dayName, name, muscle, sets, reps)
                 }
             }
             .setNegativeButton("Cancel", null)

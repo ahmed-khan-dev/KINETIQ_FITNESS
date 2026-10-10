@@ -212,6 +212,63 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun addCustomExerciseToDay(
+        dayName: String,
+        exerciseName: String,
+        muscleGroup: String = "Chest",
+        targetSets: Int = 3,
+        targetReps: Int = 10
+    ) {
+        viewModelScope.launch {
+            if (exerciseName.isBlank()) return@launch
+            val activePlan = repository.getActiveWorkoutPlan(userId) ?: return@launch
+            val dayOfWeek = dayNameLabelToOfWeek(dayName)
+            val existingSessions = repository.getSessionsForPlan(activePlan.id)
+            var session = existingSessions.find { it.dayOfWeek == dayOfWeek }
+
+            if (session == null) {
+                val newSessionId = java.util.UUID.randomUUID().toString()
+                session = com.example.kinetiq.data.local.entity.WorkoutSessionEntity(
+                    id = newSessionId,
+                    planId = activePlan.id,
+                    dayOfWeek = dayOfWeek,
+                    sessionName = "$dayName Workout",
+                    estimatedDurationMin = 45,
+                    estimatedCalories = 300,
+                    createdAt = System.currentTimeMillis(),
+                    updatedAt = System.currentTimeMillis()
+                )
+                repository.workoutPlanDao.insertWorkoutSessions(listOf(session))
+            }
+
+            val exercise = repository.saveCustomExercise(exerciseName, muscleGroup, "Dumbbell")
+            val sessionExercise = com.example.kinetiq.data.local.entity.SessionExerciseEntity(
+                id = java.util.UUID.randomUUID().toString(),
+                sessionId = session.id,
+                exerciseId = exercise.id,
+                orderIndex = 99,
+                targetSets = targetSets,
+                targetReps = targetReps,
+                targetRestSec = 60,
+                createdAt = System.currentTimeMillis(),
+                updatedAt = System.currentTimeMillis()
+            )
+            repository.workoutPlanDao.insertSessionExercises(listOf(sessionExercise))
+            loadWorkout(forceGenerate = false)
+        }
+    }
+
+    private fun dayNameLabelToOfWeek(dayName: String): Int = when (dayName.lowercase()) {
+        "mon" -> 1
+        "tue" -> 2
+        "wed" -> 3
+        "thu" -> 4
+        "fri" -> 5
+        "sat" -> 6
+        "sun" -> 7
+        else -> 1
+    }
+
     fun deleteSessionExercise(sessionExerciseId: String) {
         viewModelScope.launch {
             repository.deleteSessionExercise(sessionExerciseId)
