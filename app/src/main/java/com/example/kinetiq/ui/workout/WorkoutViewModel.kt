@@ -132,6 +132,32 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
 
             val activePlan = repository.getActiveWorkoutPlan(userId)
             if (!forceGenerate && activePlan != null) {
+                // If the user's profile changed (daysPerWeek) and the active plan's split
+                // doesn't match the expected split for the profile, auto-regenerate so the
+                // top ribbon reflects the profile (e.g., 6-day plan).
+                val desiredSplit = determineSplitType(profile.daysPerWeek)
+                if (!activePlan.splitType.equals(desiredSplit, ignoreCase = true)) {
+                    val generated = generateWorkoutPlan(profile, dietaryPreference)
+                    cachedSessions = generated.second
+                    selectedSessionIndex = findTodayOrNextSessionIndex(cachedSessions)
+                    val todaySession = cachedSessions.getOrNull(selectedSessionIndex) ?: cachedSessions.firstOrNull()
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        hasProfile = true,
+                        profileMessage = null,
+                        activePlanId = generated.first.id,
+                        planTitle = generated.first.splitType,
+                        planSummary = "${generated.second.size} workout sessions planned for this week",
+                        weeklyPlan = generated.second,
+                        todayWorkout = todaySession,
+                        totalWorkoutMinutes = generated.second.sumOf { it.estimatedMinutes },
+                        totalExercises = generated.second.sumOf { it.exerciseCount },
+                        errorMessage = null
+                    )
+                    prepareSession(selectedSessionIndex)
+                    return@launch
+                }
+
                 val mapped = buildDayUiFromPlanAsync(activePlan)
                 cachedSessions = mapped
                 selectedSessionIndex = findTodayOrNextSessionIndex(mapped)
@@ -629,8 +655,38 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                 totalSets = mappedExercises.sumOf { it.sets },
                 exercises = mappedExercises,
                 completedSets = mappedExercises.sumOf { it.completedSets },
+                // A session is complete only if it has exercises and all those exercises are completed.
+                // Empty sessions are treated as explicit Rest days (handled in the UI), not as "DONE".
                 isComplete = mappedExercises.isNotEmpty() && mappedExercises.all { it.completedSets >= it.sets }
             )
+        }
+    }
+
+    /** Toggle a day between Rest and Workout.
+     * If the session currently has exercises or is not labelled Rest, this will remove all
+     * session exercises and rename the session to "<Day> Rest Day". If already marked Rest,
+     * this will rename back to "<Day> Workout" (exercises are left absent so user can add).
+     */
+    fun toggleRestForDay(dayName: String) {
+        viewModelScope.launch {
+            val activePlan = repository.getActiveWorkoutPlan(userId) ?: return@launch
+            val dayOfWeek = dayNameLabelToOfWeek(dayName)
+            val existingSessions = repository.getSessionsForPlan(activePlan.id)
+            val session = existingSessions.find { it.dayOfWeek == dayOfWeek } ?: return@launch
+
+            val sessionExercises = repository.getSessionExercises(session.id)
+            val isCurrentlyMarkedRest = sessionExercises.isEmpty() && session.sessionName.contains("rest", ignoreCase = true)
+
+            if (isCurrentlyMarkedRest) {
+                // Unmark rest: rename back to work out name
+                repository.updateSessionName(session.id, "${dayName} Workout")
+            } else {
+                // Mark as rest: remove all exercises and rename session
+                repository.deleteSessionExercisesForSession(session.id)
+                repository.updateSessionName(session.id, "${dayName} Rest Day")
+            }
+
+            loadWorkout(forceGenerate = false)
         }
     }
 

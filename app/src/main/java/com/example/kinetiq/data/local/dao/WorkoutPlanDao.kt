@@ -44,6 +44,10 @@ interface WorkoutPlanDao {
     @Query("DELETE FROM session_exercises WHERE id = :sessionExerciseId")
     suspend fun deleteSessionExercise(sessionExerciseId: String)
 
+    // Delete all exercises associated with a session (used when marking a day as a Rest day)
+    @Query("DELETE FROM session_exercises WHERE sessionId = :sessionId")
+    suspend fun deleteSessionExercisesForSession(sessionId: String)
+
     @Query("UPDATE session_exercises SET targetSets = :sets, targetReps = :reps, targetRestSec = :restSec, updatedAt = :updatedAt WHERE id = :sessionExerciseId")
     suspend fun updateSessionExercise(sessionExerciseId: String, sets: Int, reps: Int, restSec: Int, updatedAt: Long = System.currentTimeMillis())
 

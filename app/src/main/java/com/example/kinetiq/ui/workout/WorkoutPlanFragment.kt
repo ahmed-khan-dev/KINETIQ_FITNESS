@@ -86,6 +86,17 @@ class WorkoutPlanFragment : Fragment() {
                 selectedDayName = dayName
                 render(viewModel.uiState.value)
             }
+            view.setOnLongClickListener {
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                    .setTitle("Toggle Rest Day")
+                    .setMessage("Mark $dayName as a Rest day (this will remove any exercises for the day). Long-press again to unmark.")
+                    .setPositiveButton("Confirm") { _, _ ->
+                        viewModel.toggleRestForDay(dayName)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+                true
+            }
         }
     }
 
@@ -256,6 +267,22 @@ class WorkoutPlanFragment : Fragment() {
                 selectedDayName = day.dayName
                 render(state)
             }
+
+            // Long-press to toggle Rest / Workout for a specific day
+            dayBinding.root.setOnLongClickListener {
+                val isRest = day.exerciseCount == 0 && day.title.contains("rest", ignoreCase = true)
+                val title = if (isRest) "Unmark Rest Day" else "Mark as Rest Day"
+                val message = if (isRest) "This will convert the day back to a workout (no exercises will be restored). You can add exercises later." else "This will mark ${day.dayName} as a Rest day and remove any exercises scheduled for that day."
+                com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+                    .setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(if (isRest) "Unmark" else "Mark") { _, _ ->
+                        viewModel.toggleRestForDay(day.dayName)
+                    }
+                    .setNegativeButton("Cancel", null)
+                    .show()
+                true
+            }
             binding.llWeeklyScheduleContainer.addView(dayBinding.root)
         }
 
@@ -305,6 +332,11 @@ class WorkoutPlanFragment : Fragment() {
             }
 
             when {
+                // If there's a session with zero exercises, treat it as an explicit REST day first.
+                sessionForDay != null && sessionForDay.exerciseCount == 0 -> {
+                    subView.text = "REST"
+                    subView.setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_muted))
+                }
                 sessionForDay != null && sessionForDay.isComplete -> {
                     subView.text = "DONE"
                     subView.setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_primary))
@@ -313,7 +345,7 @@ class WorkoutPlanFragment : Fragment() {
                     subView.text = "TODAY"
                     subView.setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_primary))
                 }
-                sessionForDay != null -> {
+                sessionForDay != null && sessionForDay.exerciseCount > 0 -> {
                     subView.text = "PLAN"
                     subView.setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_secondary))
                 }

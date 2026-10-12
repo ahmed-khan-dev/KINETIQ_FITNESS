@@ -105,6 +105,10 @@ class AppRepository(private val database: AppDatabase) {
     suspend fun deleteSessionExercise(sessionExerciseId: String) =
         workoutPlanDao.deleteSessionExercise(sessionExerciseId)
 
+    // Remove all session exercise records for a session (used when toggling Rest day)
+    suspend fun deleteSessionExercisesForSession(sessionId: String) =
+        workoutPlanDao.deleteSessionExercisesForSession(sessionId)
+
     suspend fun updateSessionExercise(sessionExerciseId: String, sets: Int, reps: Int, restSec: Int) =
         workoutPlanDao.updateSessionExercise(sessionExerciseId, sets, reps, restSec)
 
