@@ -125,9 +125,16 @@ class StrengthTrajectoryView @JvmOverloads constructor(
             canvas.drawCircle(pt.first, pt.second, 10f, linePaint)
             canvas.drawCircle(pt.first, pt.second, 5f, dotInnerPaint)
 
+            val valueStr = String.format(Locale.US, "%.1f kg", points1RM[index].second)
+            textPaint.color = Color.parseColor("#00E676")
+            textPaint.textSize = 22f
+            textPaint.textAlign = Paint.Align.CENTER
+            canvas.drawText(valueStr, pt.first, pt.second - 16f, textPaint)
+
             if (count <= 5 || index == 0 || index == count - 1 || index % (count / 4) == 0) {
                 val label = if (index == count - 1) "Today" else dateFormat.format(Date(points1RM[index].first))
                 textPaint.color = Color.parseColor("#00DAF3")
+                textPaint.textSize = 24f
                 textPaint.textAlign = when (index) {
                     0 -> Paint.Align.LEFT
                     count - 1 -> Paint.Align.RIGHT

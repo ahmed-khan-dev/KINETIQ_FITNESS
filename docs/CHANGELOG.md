@@ -1,5 +1,15 @@
 # Kinetiq Changelog
 
+## 2026-10-13
+
+### Ribbon Long-Press Rest Day Toggle, Convincing Strength Analytics & Weekly PDF Exporter
+- Added `setOnLongClickListener` on all 7 ribbon day buttons in `WorkoutPlanFragment.kt` enabling long-press toggle between **"Set as Rest Day"** and **"Set as Active Workout Day"**.
+- Updated `StrengthTrajectoryView.kt` to draw exact 1RM numeric values ($66.6\text{ kg} \rightarrow 73.3\text{ kg}$) above graph nodes and display progressive overload badges (`⚡ +8.5% STRENGTH GAIN`).
+- Created `WeeklyPdfExporter.kt` using native `android.graphics.pdf.PdfDocument` API to generate and share branded weekly summary PDF reports.
+- Added **"📄 EXPORT WEEKLY PDF REPORT"** button in `fragment_workout_plan.xml` and `WorkoutPlanFragment.kt`.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
 ## 2026-10-10
 
 ### 7-Day Session Auto-Repair & 100% Working Day Ribbon Navigation

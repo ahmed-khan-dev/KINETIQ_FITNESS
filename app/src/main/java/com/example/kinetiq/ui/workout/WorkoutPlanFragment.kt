@@ -47,6 +47,16 @@ class WorkoutPlanFragment : Fragment() {
             viewModel.startNewWeekCycle()
         }
 
+        binding.btnExportPdf.setOnClickListener {
+            val currentState = viewModel.uiState.value
+            com.example.kinetiq.utils.WeeklyPdfExporter.generateAndShareWeeklyPdf(
+                context = requireContext(),
+                userName = "Fitness Athlete",
+                splitTitle = currentState.planTitle.ifBlank { "Weekly Workout Plan" },
+                weeklyPlan = currentState.weeklyPlan
+            )
+        }
+
         setupRibbonClickListeners()
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -87,14 +97,7 @@ class WorkoutPlanFragment : Fragment() {
                 render(viewModel.uiState.value)
             }
             view.setOnLongClickListener {
-                com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
-                    .setTitle("Toggle Rest Day")
-                    .setMessage("Mark $dayName as a Rest day (this will remove any exercises for the day). Long-press again to unmark.")
-                    .setPositiveButton("Confirm") { _, _ ->
-                        viewModel.toggleRestForDay(dayName)
-                    }
-                    .setNegativeButton("Cancel", null)
-                    .show()
+                showToggleRestDayDialog(dayName)
                 true
             }
         }
@@ -480,6 +483,43 @@ class WorkoutPlanFragment : Fragment() {
                 viewModel.updateSessionExercise(exercise.sessionExerciseId, sets, reps, exercise.restSeconds)
             }
             .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun showToggleRestDayDialog(dayName: String) {
+        val activeDay = viewModel.uiState.value.weeklyPlan.find { item: WorkoutDayUi -> item.dayName.equals(dayName, ignoreCase = true) }
+        val isRest = activeDay?.title?.contains("Rest", ignoreCase = true) == true || activeDay?.exerciseCount == 0
+
+        val options = if (isRest) {
+            arrayOf("💪 Set as Active Workout Day", "✎ Rename Session Title")
+        } else {
+            arrayOf("💤 Set as Rest Day", "✎ Rename Session Title")
+        }
+
+        com.google.android.material.dialog.MaterialAlertDialogBuilder(requireContext())
+            .setTitle("$dayName Session Options")
+            .setItems(options) { _, which ->
+                when (which) {
+                    0 -> {
+                        if (isRest) {
+                            if (activeDay != null) {
+                                viewModel.updateSessionName(activeDay.sessionId, "$dayName Workout")
+                            } else {
+                                showAddExerciseForDayDialog(dayName)
+                            }
+                        } else {
+                            if (activeDay != null) {
+                                viewModel.updateSessionName(activeDay.sessionId, "Rest & Recovery")
+                            }
+                        }
+                    }
+                    1 -> {
+                        if (activeDay != null) {
+                            showRenameSessionDialog(activeDay.sessionId, activeDay.title)
+                        }
+                    }
+                }
+            }
             .show()
     }
 
