@@ -2,6 +2,15 @@
 
 ## 2026-10-18
 
+### PDF Weight/Load Report Enhancements & Ribbon Rest Subview Fix
+- Added `loggedWeightKg` and `loggedSetsText` to `WorkoutExerciseUi` in `WorkoutViewModel.kt`.
+- Updated `WeeklyPdfExporter.kt` to format and render logged exercise weight and set details (e.g. `• Dumbbell Bench Press (3 sets × 10 reps @ 22.5 kg)`).
+- Fixed ribbon subview badge in `WorkoutPlanFragment.kt` (`updateRibbonDisplay`) to display **`REST`** instead of `"PLAN"` when a day is set as a Rest Day.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-10-18
+
 ### Resource Linkage Debugging & Bottom Navigation Fix
 - Moved `bottom_nav_styles.xml` from `res/drawable/` to `res/values/bottom_nav_styles.xml` so AAPT2 registers `Widget.Kinetiq.BottomNav` in `R.style`.
 - Fixed icon resource links in `bottom_nav_menu.xml` by replacing `@android:drawable/` system references with local `@drawable/` vector drawables.

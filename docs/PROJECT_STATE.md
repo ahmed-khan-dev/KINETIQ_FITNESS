@@ -1,18 +1,20 @@
 ﻿# Kinetiq Project State
 
 ## Current Phase
-Resource Linkage Debugging & Bottom Navigation Fix (Completed)
+PDF Weight/Load Report Enhancements & Ribbon Rest Subview Fix (Completed)
 
 ## Status
-Resource linkage errors for Bottom Navigation styles and menu icons fully debugged, resolved, and verified compiling successfully.
+Weekly PDF Report weight/load rendering and ribbon rest status subview badge display fully implemented and compiling successfully.
 
 ## Completed Enhancements
-1. **Styles Location Fix (`res/values/bottom_nav_styles.xml`)**:
-   - Moved `<style name="Widget.Kinetiq.BottomNav">` from `res/drawable/` to `res/values/bottom_nav_styles.xml`. Android AAPT requires styles to reside in `res/values/` to register them in `R.style`.
-2. **Local Vector Drawable Linkage (`res/menu/bottom_nav_menu.xml`)**:
-   - Replaced `@android:drawable/` system framework references with project local vector drawables (`@drawable/ic_nav_home`, `@drawable/ic_nav_workout`, `@drawable/ic_nav_meals`, `@drawable/ic_nav_progress`, `@drawable/ic_nav_profile`).
-3. **FileProvider Declaration (`AndroidManifest.xml`)**:
-   - Declared `FileProvider` in `AndroidManifest.xml` with authority `com.example.kinetiq.fileprovider` for PDF generation & sharing.
+1. **Weekly PDF Report Weight & Load Rendering (`WeeklyPdfExporter.kt`, `WorkoutViewModel.kt`)**:
+   - Added `loggedWeightKg` and `loggedSetsText` to `WorkoutExerciseUi`.
+   - Updated `WeeklyPdfExporter.kt` to format and render logged exercise weight and set details (e.g. `• Dumbbell Bench Press (3 sets × 10 reps @ 22.5 kg) — Logged: [1 x 10 @ 22.5 kg]`).
+   - Added Toast notifications on PDF generation.
+2. **Ribbon Subview Rest Status Badge (`WorkoutPlanFragment.kt`)**:
+   - Fixed `updateRibbonDisplay`: evaluates explicit rest sessions first (`isExplicitRest`), setting `subView.text = "REST"` instead of `"PLAN"` when a day is set as a Rest Day.
+3. **100% View ID Preservation**:
+   - Preserved all existing View IDs across all layouts for 100% code compatibility.
 4. **Verified Build**: Built cleanly with `:app:assembleDebug`.
 
 ## Current Build Status
@@ -24,14 +26,10 @@ Resource linkage errors for Bottom Navigation styles and menu icons fully debugg
 - Local Room SQLite Persistence (Version 3 Database)
 - Single-User Offline First Application
 
-## Files Created
-- `app/src/main/res/values/bottom_nav_styles.xml`
-- `app/src/main/res/xml/file_paths.xml`
-
 ## Files Modified
-- `app/src/main/res/menu/bottom_nav_menu.xml`
-- `app/src/main/res/layout/activity_main.xml`
-- `app/src/main/AndroidManifest.xml`
+- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutViewModel.kt`
+- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutPlanFragment.kt`
+- `app/src/main/java/com/example/kinetiq/utils/WeeklyPdfExporter.kt`
 - `docs/PROJECT_STATE.md`
 - `docs/CHANGELOG.md`
 

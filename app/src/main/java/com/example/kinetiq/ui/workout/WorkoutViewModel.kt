@@ -44,7 +44,9 @@ data class WorkoutExerciseUi(
     val reps: Int,
     val restSeconds: Int,
     val notes: String,
-    val completedSets: Int = 0
+    val completedSets: Int = 0,
+    val loggedWeightKg: Double = 0.0,
+    val loggedSetsText: String = ""
 )
 
 data class WorkoutUiState(
@@ -631,8 +633,14 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
             val sessionExercises = repository.getSessionExercises(session.id)
             val mappedExercises = sessionExercises.mapNotNull { sessionExercise ->
                 val exercise = exerciseMap[sessionExercise.exerciseId] ?: return@mapNotNull null
-                val completedSetCount = repository.getExerciseLogsForSessionExercise(sessionExercise.id)
-                    .sumOf(::completedSetCountFromLog)
+                val savedLogs = repository.getExerciseLogsForSessionExercise(sessionExercise.id)
+                val completedSetCount = savedLogs.sumOf(::completedSetCountFromLog)
+                val latestWeight = savedLogs.lastOrNull { it.loggedSets.contains("@") }
+                    ?.loggedSets?.substringAfter("@")?.removeSuffix("kg")?.trim()?.toDoubleOrNull() ?: 0.0
+                val loggedText = savedLogs.joinToString(", ") { log ->
+                    log.loggedSets.removePrefix("1 x ").trim()
+                }
+
                 WorkoutExerciseUi(
                     sessionExerciseId = sessionExercise.id,
                     exerciseId = exercise.id,
@@ -642,7 +650,9 @@ class WorkoutViewModel(application: Application) : AndroidViewModel(application)
                     reps = sessionExercise.targetReps,
                     restSeconds = sessionExercise.targetRestSec,
                     notes = exercise.instructions,
-                    completedSets = completedSetCount.coerceAtMost(sessionExercise.targetSets)
+                    completedSets = completedSetCount.coerceAtMost(sessionExercise.targetSets),
+                    loggedWeightKg = latestWeight,
+                    loggedSetsText = loggedText
                 )
             }
             WorkoutDayUi(

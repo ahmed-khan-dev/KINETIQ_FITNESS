@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.pdf.PdfDocument
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.example.kinetiq.ui.workout.WorkoutDayUi
 import java.io.File
@@ -72,9 +73,16 @@ object WeeklyPdfExporter {
             canvas.drawText("${day.dayName} — ${day.title} $statusStr", 40f, y, textPaint)
             y += 16f
 
-            day.exercises.forEach { ex ->
-                canvas.drawText("   • ${ex.name} (${ex.sets} sets × ${ex.reps} reps)", 55f, y, textPaint)
+            if (day.exercises.isEmpty()) {
+                canvas.drawText("   • [Rest / Active Recovery]", 55f, y, textPaint)
                 y += 14f
+            } else {
+                day.exercises.forEach { ex ->
+                    val weightStr = if (ex.loggedWeightKg > 0.0) " @ ${ex.loggedWeightKg} kg" else ""
+                    val logDetails = if (ex.loggedSetsText.isNotBlank()) " — Logged: [${ex.loggedSetsText}]" else ""
+                    canvas.drawText("   • ${ex.name} (${ex.sets} sets × ${ex.reps} reps$weightStr)$logDetails", 55f, y, textPaint)
+                    y += 14f
+                }
             }
             y += 8f
 
@@ -102,8 +110,10 @@ object WeeklyPdfExporter {
                 addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
             }
             context.startActivity(Intent.createChooser(shareIntent, "Share Kinetiq Weekly PDF Report"))
+            Toast.makeText(context, "Weekly PDF Report Generated Successfully!", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             e.printStackTrace()
+            Toast.makeText(context, "Could not generate PDF: ${e.localizedMessage}", Toast.LENGTH_LONG).show()
         }
     }
 }
