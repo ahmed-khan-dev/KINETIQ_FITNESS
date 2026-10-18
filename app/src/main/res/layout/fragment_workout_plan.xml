@@ -4,13 +4,18 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/kinetic_surface"
-    android:fillViewport="true">
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="28dp">
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -21,7 +26,7 @@
             android:indeterminateTint="@color/kinetic_primary"
             android:visibility="gone" />
 
-        <!-- EMPTY STATE GROUP -->
+        <!-- ============ EMPTY STATE ============ -->
         <LinearLayout
             android:id="@+id/emptyStateGroup"
             android:layout_width="match_parent"
@@ -34,32 +39,46 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 app:cardBackgroundColor="@color/kinetic_card_surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:contentPadding="16dp">
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/kinetic_primary"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical"
+                    android:padding="28dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="🏋️"
+                        android:textSize="48sp" />
 
                     <TextView
                         android:id="@+id/tvEmptyState"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:gravity="center"
+                        android:lineSpacingExtra="4dp"
                         android:text="Complete your profile to generate your personalized workout plan."
                         android:textColor="@color/kinetic_text_primary"
                         android:textSize="16sp" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnGeneratePlan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="54dp"
+                        android:layout_marginTop="20dp"
                         android:backgroundTint="@color/kinetic_primary"
+                        android:letterSpacing="0.08"
                         android:text="Go to Profile"
                         android:textColor="@color/black"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:cornerRadius="18dp" />
 
                 </LinearLayout>
 
@@ -67,7 +86,7 @@
 
         </LinearLayout>
 
-        <!-- MAIN PLAN CONTENT GROUP -->
+        <!-- ============ MAIN PLAN CONTENT ============ -->
         <LinearLayout
             android:id="@+id/planContentGroup"
             android:layout_width="match_parent"
@@ -75,7 +94,7 @@
             android:orientation="vertical"
             android:visibility="visible">
 
-            <!-- PAGE HEADER (MICROCYCLE & TITLE) -->
+            <!-- PAGE HEADER -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -92,6 +111,7 @@
                         android:id="@+id/tvMicrocycleTag"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:letterSpacing="0.2"
                         android:text="MICROCYCLE PROGRAM"
                         android:textColor="@color/kinetic_primary"
                         android:textSize="10sp"
@@ -101,10 +121,11 @@
                         android:id="@+id/tvWorkoutTitle"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="4dp"
+                        android:letterSpacing="-0.02"
                         android:text="Weekly Workout Plan"
                         android:textColor="@color/kinetic_text_primary"
-                        android:textSize="24sp"
+                        android:textSize="28sp"
                         android:textStyle="bold" />
 
                     <TextView
@@ -112,6 +133,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
+                        android:letterSpacing="0.02"
                         android:text="4-Day Split Cycle"
                         android:textColor="@color/kinetic_text_muted"
                         android:textSize="13sp" />
@@ -125,8 +147,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/bg_stadium_pill"
                     android:backgroundTint="@color/kinetic_card_high"
-                    android:paddingHorizontal="12dp"
-                    android:paddingVertical="6dp"
+                    android:letterSpacing="0.08"
+                    android:paddingHorizontal="14dp"
+                    android:paddingVertical="8dp"
                     android:text="⚡ ACTIVE SPLIT"
                     android:textColor="@color/kinetic_primary"
                     android:textSize="11sp"
@@ -134,12 +157,14 @@
 
             </LinearLayout>
 
-            <!-- INTERACTIVE WEEKLY RIBBON (7 DAYS) -->
+            <!-- WEEKLY RIBBON -->
             <HorizontalScrollView
                 android:id="@+id/hsvWeeklyRibbon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
+                android:clipToPadding="false"
+                android:overScrollMode="never"
                 android:scrollbars="none">
 
                 <LinearLayout
@@ -151,8 +176,8 @@
                     <!-- MON -->
                     <LinearLayout
                         android:id="@+id/btnDayMon"
-                        android:layout_width="54dp"
-                        android:layout_height="72dp"
+                        android:layout_width="60dp"
+                        android:layout_height="84dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_day_tab_normal"
                         android:clickable="true"
@@ -164,6 +189,7 @@
                             android:id="@+id/tvDayMonLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:letterSpacing="0.08"
                             android:text="MON"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="11sp"
@@ -171,19 +197,21 @@
 
                         <TextView
                             android:id="@+id/tvDayMonIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@color/kinetic_card_highest"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
                             android:gravity="center"
                             android:text="💪"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDayMonSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:letterSpacing="0.1"
                             android:text="PLAN"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="9sp" />
@@ -192,8 +220,8 @@
                     <!-- TUE -->
                     <LinearLayout
                         android:id="@+id/btnDayTue"
-                        android:layout_width="54dp"
-                        android:layout_height="72dp"
+                        android:layout_width="60dp"
+                        android:layout_height="84dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_day_tab_normal"
                         android:clickable="true"
@@ -205,6 +233,7 @@
                             android:id="@+id/tvDayTueLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:letterSpacing="0.08"
                             android:text="TUE"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="11sp"
@@ -212,19 +241,21 @@
 
                         <TextView
                             android:id="@+id/tvDayTueIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@color/kinetic_card_highest"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
                             android:gravity="center"
                             android:text="🏋️"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDayTueSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:letterSpacing="0.1"
                             android:text="PLAN"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="9sp" />
@@ -233,8 +264,8 @@
                     <!-- WED -->
                     <LinearLayout
                         android:id="@+id/btnDayWed"
-                        android:layout_width="54dp"
-                        android:layout_height="72dp"
+                        android:layout_width="60dp"
+                        android:layout_height="84dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_day_tab_normal"
                         android:clickable="true"
@@ -246,6 +277,7 @@
                             android:id="@+id/tvDayWedLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:letterSpacing="0.08"
                             android:text="WED"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="11sp"
@@ -253,19 +285,21 @@
 
                         <TextView
                             android:id="@+id/tvDayWedIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@color/kinetic_card_highest"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
                             android:gravity="center"
                             android:text="🧘"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDayWedSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:letterSpacing="0.1"
                             android:text="REST"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="9sp" />
@@ -274,8 +308,8 @@
                     <!-- THU -->
                     <LinearLayout
                         android:id="@+id/btnDayThu"
-                        android:layout_width="54dp"
-                        android:layout_height="72dp"
+                        android:layout_width="60dp"
+                        android:layout_height="84dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_day_tab_normal"
                         android:clickable="true"
@@ -287,6 +321,7 @@
                             android:id="@+id/tvDayThuLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:letterSpacing="0.08"
                             android:text="THU"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="11sp"
@@ -294,19 +329,21 @@
 
                         <TextView
                             android:id="@+id/tvDayThuIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@color/kinetic_card_highest"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
                             android:gravity="center"
                             android:text="🏃"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDayThuSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:letterSpacing="0.1"
                             android:text="PLAN"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="9sp" />
@@ -315,8 +352,8 @@
                     <!-- FRI -->
                     <LinearLayout
                         android:id="@+id/btnDayFri"
-                        android:layout_width="54dp"
-                        android:layout_height="72dp"
+                        android:layout_width="60dp"
+                        android:layout_height="84dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_day_tab_normal"
                         android:clickable="true"
@@ -328,6 +365,7 @@
                             android:id="@+id/tvDayFriLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:letterSpacing="0.08"
                             android:text="FRI"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="11sp"
@@ -335,19 +373,21 @@
 
                         <TextView
                             android:id="@+id/tvDayFriIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@color/kinetic_card_highest"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
                             android:gravity="center"
                             android:text="⚡"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDayFriSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:letterSpacing="0.1"
                             android:text="PLAN"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="9sp" />
@@ -356,8 +396,8 @@
                     <!-- SAT -->
                     <LinearLayout
                         android:id="@+id/btnDaySat"
-                        android:layout_width="54dp"
-                        android:layout_height="72dp"
+                        android:layout_width="60dp"
+                        android:layout_height="84dp"
                         android:layout_marginEnd="8dp"
                         android:background="@drawable/bg_day_tab_normal"
                         android:clickable="true"
@@ -369,6 +409,7 @@
                             android:id="@+id/tvDaySatLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:letterSpacing="0.08"
                             android:text="SAT"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="11sp"
@@ -376,19 +417,21 @@
 
                         <TextView
                             android:id="@+id/tvDaySatIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@color/kinetic_card_highest"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
                             android:gravity="center"
                             android:text="🛌"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDaySatSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:letterSpacing="0.1"
                             android:text="REST"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="9sp" />
@@ -397,8 +440,8 @@
                     <!-- SUN -->
                     <LinearLayout
                         android:id="@+id/btnDaySun"
-                        android:layout_width="54dp"
-                        android:layout_height="72dp"
+                        android:layout_width="60dp"
+                        android:layout_height="84dp"
                         android:background="@drawable/bg_day_tab_normal"
                         android:clickable="true"
                         android:focusable="true"
@@ -409,6 +452,7 @@
                             android:id="@+id/tvDaySunLabel"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:letterSpacing="0.08"
                             android:text="SUN"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="11sp"
@@ -416,19 +460,21 @@
 
                         <TextView
                             android:id="@+id/tvDaySunIcon"
-                            android:layout_width="24dp"
-                            android:layout_height="24dp"
-                            android:layout_marginTop="4dp"
-                            android:background="@color/kinetic_card_highest"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:layout_marginTop="6dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_highest"
                             android:gravity="center"
                             android:text="🔄"
-                            android:textSize="12sp" />
+                            android:textSize="14sp" />
 
                         <TextView
                             android:id="@+id/tvDaySunSub"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="4dp"
+                            android:layout_marginTop="6dp"
+                            android:letterSpacing="0.1"
                             android:text="RELOAD"
                             android:textColor="@color/kinetic_text_muted"
                             android:textSize="9sp" />
@@ -438,199 +484,251 @@
 
             </HorizontalScrollView>
 
-            <!-- SELECTED WORKOUT SESSION EXPANDED CARD -->
+            <!-- ============ SELECTED SESSION CARD ============ -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/cardTodayWorkout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="20dp"
                 app:cardBackgroundColor="@color/kinetic_card_surface"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:contentPadding="16dp">
+                app:cardCornerRadius="28dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/kinetic_card_high"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- Card Header Indicator -->
+                    <!-- Tri-colour accent strip -->
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
+                        android:layout_height="4dp"
                         android:orientation="horizontal">
 
                         <View
-                            android:layout_width="8dp"
-                            android:layout_height="8dp"
-                            android:layout_marginEnd="6dp"
-                            android:background="@drawable/bg_pulsing_dot" />
-
-                        <TextView
-                            android:id="@+id/tvSessionSectionBadge"
                             android:layout_width="0dp"
-                            android:layout_height="wrap_content"
+                            android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="TODAY'S SCHEDULED SESSION"
-                            android:textColor="@color/kinetic_primary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
+                            android:background="@color/kinetic_primary" />
 
-                        <TextView
-                            android:id="@+id/tvRpeBadge"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/kinetic_card_high"
-                            android:paddingHorizontal="8dp"
-                            android:paddingVertical="3dp"
-                            android:text="RPE 8.0"
-                            android:textColor="@color/kinetic_secondary"
-                            android:textSize="10sp"
-                            android:textStyle="bold" />
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@color/kinetic_secondary" />
+
+                        <View
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:background="@color/kinetic_tertiary" />
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/tvTodayWorkoutTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="6dp"
-                        android:text="Upper Body A — Hypertrophy"
-                        android:textColor="@color/kinetic_text_primary"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/tvTodayWorkoutMeta"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="3dp"
-                        android:text="Mon · 5 exercises · ~45 min"
-                        android:textColor="@color/kinetic_text_muted"
-                        android:textSize="13sp" />
-
-                    <!-- TELEMETRIC BADGES -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="10dp"
-                        android:orientation="horizontal">
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <!-- Card header -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
+
+                            <View
+                                android:layout_width="8dp"
+                                android:layout_height="8dp"
+                                android:layout_marginEnd="8dp"
+                                android:background="@drawable/bg_pulsing_dot" />
+
+                            <TextView
+                                android:id="@+id/tvSessionSectionBadge"
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:letterSpacing="0.15"
+                                android:text="TODAY'S SCHEDULED SESSION"
+                                android:textColor="@color/kinetic_primary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvRpeBadge"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_stadium_pill"
+                                android:backgroundTint="@color/kinetic_card_high"
+                                android:letterSpacing="0.06"
+                                android:paddingHorizontal="10dp"
+                                android:paddingVertical="4dp"
+                                android:text="RPE 8.0"
+                                android:textColor="@color/kinetic_secondary"
+                                android:textSize="10sp"
+                                android:textStyle="bold" />
+
+                        </LinearLayout>
 
                         <TextView
-                            android:id="@+id/tvWorkoutMinutes"
+                            android:id="@+id/tvTodayWorkoutTitle"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:background="@color/kinetic_card_high"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="~45 min"
-                            android:textColor="@color/kinetic_secondary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvExerciseCount"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:background="@color/kinetic_card_high"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="5 exercises"
-                            android:textColor="@color/kinetic_primary"
-                            android:textSize="11sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/tvWorkoutFocus"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@color/kinetic_card_high"
-                            android:paddingHorizontal="10dp"
-                            android:paddingVertical="4dp"
-                            android:text="Chest, Back"
+                            android:layout_marginTop="12dp"
+                            android:letterSpacing="-0.01"
+                            android:text="Upper Body A — Hypertrophy"
                             android:textColor="@color/kinetic_text_primary"
-                            android:textSize="11sp" />
+                            android:textSize="22sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvTodayWorkoutMeta"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="4dp"
+                            android:text="Mon · 5 exercises · ~45 min"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="13sp" />
+
+                        <!-- Telemetry chips -->
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:orientation="horizontal">
+
+                            <TextView
+                                android:id="@+id/tvWorkoutMinutes"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:background="@drawable/bg_stadium_pill"
+                                android:backgroundTint="@color/kinetic_card_high"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="6dp"
+                                android:text="~45 min"
+                                android:textColor="@color/kinetic_secondary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvExerciseCount"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginEnd="8dp"
+                                android:background="@drawable/bg_stadium_pill"
+                                android:backgroundTint="@color/kinetic_card_high"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="6dp"
+                                android:text="5 exercises"
+                                android:textColor="@color/kinetic_primary"
+                                android:textSize="11sp"
+                                android:textStyle="bold" />
+
+                            <TextView
+                                android:id="@+id/tvWorkoutFocus"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:background="@drawable/bg_stadium_pill"
+                                android:backgroundTint="@color/kinetic_card_high"
+                                android:paddingHorizontal="12dp"
+                                android:paddingVertical="6dp"
+                                android:text="Chest, Back"
+                                android:textColor="@color/kinetic_text_primary"
+                                android:textSize="11sp" />
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/tvTodayWorkoutStatus"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="16dp"
+                            android:text="0 / 12 sets completed"
+                            android:textColor="@color/kinetic_primary"
+                            android:textSize="14sp"
+                            android:textStyle="bold" />
+
+                        <!-- DYNAMIC EXERCISE CARDS CONTAINER -->
+                        <LinearLayout
+                            android:id="@+id/llExerciseCardsContainer"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="12dp"
+                            android:orientation="vertical" />
+
+                        <!-- ADD CUSTOM EXERCISE -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnAddExerciseToSession"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp"
+                            android:layout_marginTop="12dp"
+                            android:letterSpacing="0.06"
+                            android:text="⊕  ADD CUSTOM EXERCISE"
+                            android:textColor="@color/kinetic_secondary"
+                            android:textSize="12sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="16dp"
+                            app:strokeColor="@color/kinetic_secondary" />
+
+                        <!-- Fallback / Accessibility TextView with preserved ID -->
+                        <TextView
+                            android:id="@+id/tvTodayWorkoutExercises"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:lineSpacingExtra="4dp"
+                            android:textColor="@color/kinetic_text_muted"
+                            android:textSize="13sp"
+                            android:visibility="gone" />
+
+                        <!-- PRIMARY START WORKOUT -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnStartWorkout"
+                            android:layout_width="match_parent"
+                            android:layout_height="60dp"
+                            android:layout_marginTop="16dp"
+                            android:backgroundTint="@color/kinetic_primary"
+                            android:letterSpacing="0.1"
+                            android:text="▶  START WORKOUT"
+                            android:textColor="@color/black"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="20dp" />
+
+                        <!-- START NEW WEEK -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnStartNewWeek"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="10dp"
+                            android:backgroundTint="@color/kinetic_card_high"
+                            android:letterSpacing="0.05"
+                            android:text="⚡ START NEW WEEK / REPEAT PLAN"
+                            android:textColor="@color/kinetic_primary"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="18dp" />
+
+                        <!-- EXPORT PDF -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnExportPdf"
+                            style="?attr/materialButtonOutlinedStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="52dp"
+                            android:layout_marginTop="8dp"
+                            android:letterSpacing="0.05"
+                            android:text="📄 EXPORT WEEKLY PDF REPORT"
+                            android:textColor="@color/kinetic_secondary"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            app:cornerRadius="18dp"
+                            app:strokeColor="@color/kinetic_secondary" />
 
                     </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/tvTodayWorkoutStatus"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:text="0 / 12 sets completed"
-                        android:textColor="@color/kinetic_primary"
-                        android:textSize="14sp"
-                        android:textStyle="bold" />
-
-                    <!-- DYNAMIC EXERCISE CARDS CONTAINER -->
-                    <LinearLayout
-                        android:id="@+id/llExerciseCardsContainer"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="12dp"
-                        android:orientation="vertical" />
-
-                    <!-- ADD CUSTOM EXERCISE BUTTON -->
-                    <Button
-                        android:id="@+id/btnAddExerciseToSession"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="44dp"
-                        android:layout_marginTop="10dp"
-                        android:text="⊕  ADD CUSTOM EXERCISE"
-                        android:textColor="@color/kinetic_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <!-- Fallback / Accessibility TextView with preserved ID -->
-                    <TextView
-                        android:id="@+id/tvTodayWorkoutExercises"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:lineSpacingExtra="4dp"
-                        android:textColor="@color/kinetic_text_muted"
-                        android:textSize="13sp"
-                        android:visibility="gone" />
-
-                    <!-- PRIMARY START WORKOUT BUTTON -->
-                    <Button
-                        android:id="@+id/btnStartWorkout"
-                        android:layout_width="match_parent"
-                        android:layout_height="52dp"
-                        android:layout_marginTop="14dp"
-                        android:backgroundTint="@color/kinetic_primary"
-                        android:text="▶  START WORKOUT"
-                        android:textColor="@color/black"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
-
-                    <!-- START NEW WEEK CYCLE / REPEAT PLAN CTA -->
-                    <Button
-                        android:id="@+id/btnStartNewWeek"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="10dp"
-                        android:backgroundTint="@color/kinetic_card_high"
-                        android:text="⚡ START NEW WEEK / REPEAT PLAN"
-                        android:textColor="@color/kinetic_primary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
-
-                    <!-- EXPORT WEEKLY PDF SUMMARY CTA -->
-                    <Button
-                        android:id="@+id/btnExportPdf"
-                        style="?attr/materialButtonOutlinedStyle"
-                        android:layout_width="match_parent"
-                        android:layout_height="48dp"
-                        android:layout_marginTop="8dp"
-                        android:text="📄 EXPORT WEEKLY PDF REPORT"
-                        android:textColor="@color/kinetic_secondary"
-                        android:textSize="13sp"
-                        android:textStyle="bold" />
 
                 </LinearLayout>
 

@@ -1,5 +1,13 @@
 # Kinetiq Changelog
 
+## 2026-10-18
+
+### Resource Linkage Debugging & Bottom Navigation Fix
+- Moved `bottom_nav_styles.xml` from `res/drawable/` to `res/values/bottom_nav_styles.xml` so AAPT2 registers `Widget.Kinetiq.BottomNav` in `R.style`.
+- Fixed icon resource links in `bottom_nav_menu.xml` by replacing `@android:drawable/` system references with local `@drawable/` vector drawables.
+- Added `FileProvider` in `AndroidManifest.xml` for PDF sharing support.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
 ## 2026-10-13
 
 ### Ribbon Long-Press Rest Day Toggle, Convincing Strength Analytics & Weekly PDF Exporter

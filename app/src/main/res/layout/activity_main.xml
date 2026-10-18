@@ -14,23 +14,37 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/bottomNav"
+        app:layout_constraintBottom_toTopOf="@id/navBarCard"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:navGraph="@navigation/nav_graph" />
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
+    <!-- Floating rounded dock around the bottom navigation -->
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/navBarCard"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="@color/kinetic_surface_container_lowest"
-        app:itemIconTint="@color/nav_item_color"
-        app:itemRippleColor="@color/kinetic_chip_active_bg"
-        app:itemTextColor="@color/nav_item_color"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="12dp"
+        app:cardBackgroundColor="@color/kinetic_surface_container_lowest"
+        app:cardCornerRadius="32dp"
+        app:cardElevation="10dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:menu="@menu/bottom_nav_menu" />
+        app:strokeColor="@color/kinetic_card_high"
+        app:strokeWidth="1dp">
+
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottomNav"
+            style="@style/Widget.Kinetiq.BottomNav"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:menu="@menu/bottom_nav_menu" />
+
+    </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

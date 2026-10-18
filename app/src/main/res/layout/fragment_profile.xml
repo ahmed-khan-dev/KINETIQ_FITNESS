@@ -162,7 +162,7 @@
                         android:contentDescription="Profile Picture Avatar"
                         android:scaleType="centerCrop"
                         android:src="@drawable/ic_kinetiq_logo"
-                        app:strokeColor="@color/kinetic_primary"
+
                         app:strokeWidth="2dp" />
 
                     <TextView

@@ -504,6 +504,7 @@ class WorkoutPlanFragment : Fragment() {
                         if (isRest) {
                             if (activeDay != null) {
                                 viewModel.updateSessionName(activeDay.sessionId, "$dayName Workout")
+
                             } else {
                                 showAddExerciseForDayDialog(dayName)
                             }

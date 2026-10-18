@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Widget.Kinetiq.BottomNav" parent="Widget.MaterialComponents.BottomNavigationView">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:elevation">0dp</item>
+        <item name="elevation">0dp</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemBackground">@drawable/nav_item_background</item>
+        <item name="itemIconTint">@color/nav_item_color</item>
+        <item name="itemTextColor">@color/nav_item_color</item>
+        <item name="itemIconSize">24dp</item>
+        <item name="itemRippleColor">@color/kinetic_chip_active_bg</item>
+        <item name="itemTextAppearanceActive">@style/TextAppearance.Kinetiq.NavActive</item>
+        <item name="itemTextAppearanceInactive">@style/TextAppearance.Kinetiq.NavInactive</item>
+    </style>
+
+    <style name="TextAppearance.Kinetiq.NavActive" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+
+    <style name="TextAppearance.Kinetiq.NavInactive" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="android:textSize">11sp</item>
+        <item name="android:textStyle">normal</item>
+        <item name="android:letterSpacing">0.04</item>
+    </style>
+
+</resources>

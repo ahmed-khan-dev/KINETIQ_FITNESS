@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Rounded "pill" behind the selected tab, with a matching rounded ripple -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/kinetic_chip_active_bg">
+
+    <item android:id="@android:id/mask">
+        <inset
+            android:insetLeft="4dp"
+            android:insetTop="8dp"
+            android:insetRight="4dp"
+            android:insetBottom="8dp">
+            <shape android:shape="rectangle">
+                <solid android:color="@android:color/white" />
+                <corners android:radius="22dp" />
+            </shape>
+        </inset>
+    </item>
+
+    <item>
+        <selector>
+            <item android:state_checked="true">
+                <inset
+                    android:insetLeft="4dp"
+                    android:insetTop="8dp"
+                    android:insetRight="4dp"
+                    android:insetBottom="8dp">
+                    <shape android:shape="rectangle">
+                        <solid android:color="@color/kinetic_chip_active_bg" />
+                        <corners android:radius="22dp" />
+                    </shape>
+                </inset>
+            </item>
+            <item android:drawable="@android:color/transparent" />
+        </selector>
+    </item>
+
+</ripple>
