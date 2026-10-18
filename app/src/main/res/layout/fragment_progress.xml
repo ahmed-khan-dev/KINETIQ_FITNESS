@@ -4,70 +4,122 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/kinetic_surface"
-    android:fillViewport="true">
+    android:clipToPadding="false"
+    android:fillViewport="true"
+    android:overScrollMode="never"
+    android:scrollbars="none">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:padding="16dp">
+        android:paddingHorizontal="16dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="28dp">
 
-        <!-- MILESTONE ENERGY BANNER -->
+        <!-- ============ MILESTONE HERO BANNER ============ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:cardBackgroundColor="@color/kinetic_card_surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:contentPadding="16dp">
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/kinetic_card_high"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
+                <!-- Tri-colour accent strip -->
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
+                    android:layout_height="4dp"
                     android:orientation="horizontal">
 
-                    <TextView
+                    <View
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="Body Progress &amp; Analytics"
-                        android:textColor="@color/kinetic_text_primary"
-                        android:textSize="20sp"
-                        android:textStyle="bold" />
+                        android:background="@color/kinetic_primary" />
 
-                    <TextView
-                        android:layout_width="28dp"
-                        android:layout_height="28dp"
-                        android:background="@drawable/bg_stadium_pill"
-                        android:backgroundTint="@color/kinetic_card_high"
-                        android:gravity="center"
-                        android:text="📈"
-                        android:textSize="14sp" />
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/kinetic_secondary" />
+
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:background="@color/kinetic_tertiary" />
 
                 </LinearLayout>
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:background="@drawable/bg_stadium_pill"
-                    android:backgroundTint="@color/kinetic_card_high"
-                    android:paddingHorizontal="10dp"
-                    android:paddingVertical="4dp">
+                    android:orientation="vertical"
+                    android:padding="20dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="📉 -1.2 KG LOST · MUSCLE MASS UP 0.8%"
+                        android:letterSpacing="0.2"
+                        android:text="KINETIQ ANALYTICS"
                         android:textColor="@color/kinetic_primary"
                         android:textSize="10sp"
                         android:textStyle="bold" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:letterSpacing="-0.02"
+                            android:text="Body Progress &amp; Analytics"
+                            android:textColor="@color/kinetic_text_primary"
+                            android:textSize="24sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:background="@drawable/bg_stadium_pill"
+                            android:backgroundTint="@color/kinetic_card_high"
+                            android:gravity="center"
+                            android:text="📈"
+                            android:textSize="18sp" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:background="@drawable/bg_stadium_pill"
+                        android:backgroundTint="@color/kinetic_card_high"
+                        android:paddingHorizontal="14dp"
+                        android:paddingVertical="8dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:letterSpacing="0.05"
+                            android:text="📉 -1.2 KG LOST · MUSCLE MASS UP 0.8%"
+                            android:textColor="@color/kinetic_primary"
+                            android:textSize="10sp"
+                            android:textStyle="bold" />
+
+                    </LinearLayout>
 
                 </LinearLayout>
 
@@ -75,31 +127,35 @@
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- 3 BODY METRICS GRID -->
+        <!-- ============ 3 BODY METRICS ============ -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="14dp"
             android:orientation="horizontal">
 
+            <!-- Waist -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="4dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="@color/kinetic_card_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="1dp"
-                app:contentPadding="10dp">
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/kinetic_primary"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:letterSpacing="0.12"
                         android:text="WAIST"
                         android:textColor="@color/kinetic_text_muted"
                         android:textSize="9sp"
@@ -108,42 +164,48 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="6dp"
+                        android:letterSpacing="-0.02"
                         android:text="78 cm"
                         android:textColor="@color/kinetic_text_primary"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="4dp"
                         android:text="▼ -2.5 cm"
                         android:textColor="@color/kinetic_primary"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Chest -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="4dp"
+                android:layout_marginHorizontal="5dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="@color/kinetic_card_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="1dp"
-                app:contentPadding="10dp">
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/kinetic_secondary"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:letterSpacing="0.12"
                         android:text="CHEST"
                         android:textColor="@color/kinetic_text_muted"
                         android:textSize="9sp"
@@ -152,42 +214,48 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="6dp"
+                        android:letterSpacing="-0.02"
                         android:text="102 cm"
                         android:textColor="@color/kinetic_text_primary"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="4dp"
                         android:text="▲ +1.1 cm"
                         android:textColor="@color/kinetic_secondary"
-                        android:textSize="10sp" />
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
             </com.google.android.material.card.MaterialCardView>
 
+            <!-- Body fat -->
             <com.google.android.material.card.MaterialCardView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 app:cardBackgroundColor="@color/kinetic_card_surface"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="1dp"
-                app:contentPadding="10dp">
+                app:cardCornerRadius="22dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/kinetic_tertiary"
+                app:strokeWidth="1dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    android:padding="14dp">
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:letterSpacing="0.12"
                         android:text="BODY FAT"
                         android:textColor="@color/kinetic_text_muted"
                         android:textSize="9sp"
@@ -196,19 +264,21 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="6dp"
+                        android:letterSpacing="-0.02"
                         android:text="14.2%"
                         android:textColor="@color/kinetic_text_primary"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:textStyle="bold" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
+                        android:layout_marginTop="4dp"
                         android:text="▼ -1.4%"
-                        android:textColor="@color/kinetic_primary"
-                        android:textSize="10sp" />
+                        android:textColor="@color/kinetic_tertiary"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
@@ -216,103 +286,139 @@
 
         </LinearLayout>
 
-        <!-- 4-WEEK METABOLIC TRAJECTORY GRAPH CARD -->
+        <!-- ============ 4-WEEK TRAJECTORY ============ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             app:cardBackgroundColor="@color/kinetic_card_surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:contentPadding="16dp">
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/kinetic_card_high"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="4-WEEK METABOLIC TRAJECTORY"
-                    android:textColor="@color/kinetic_primary"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/kinetic_primary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.2"
+                        android:text="4-WEEK METABOLIC TRAJECTORY"
+                        android:textColor="@color/kinetic_primary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <com.example.kinetiq.ui.progress.WeightTrajectoryView
                     android:id="@+id/weightTrajectoryGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_height="190dp"
+                    android:layout_marginTop="12dp" />
 
-                <!-- Input Row: Weight + Save Button -->
+                <!-- Weight input + save -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
+                    android:layout_marginTop="16dp"
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
                     <EditText
                         android:id="@+id/etProgressWeight"
                         android:layout_width="0dp"
-                        android:layout_height="48dp"
+                        android:layout_height="54dp"
                         android:layout_weight="1"
                         android:background="@drawable/bg_day_tab_normal"
                         android:hint="Weight in kg (e.g. 68.8)"
                         android:inputType="numberDecimal"
-                        android:paddingHorizontal="14dp"
+                        android:paddingHorizontal="16dp"
                         android:textColor="@color/kinetic_text_primary"
                         android:textColorHint="@color/kinetic_text_muted"
                         android:textSize="15sp" />
 
-                    <Button
+                    <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnSaveWeight"
                         android:layout_width="wrap_content"
-                        android:layout_height="48dp"
+                        android:layout_height="54dp"
                         android:layout_marginStart="8dp"
                         android:backgroundTint="@color/kinetic_primary"
+                        android:letterSpacing="0.04"
                         android:text="⊕ Log Weight"
                         android:textColor="@color/black"
                         android:textSize="13sp"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        app:cornerRadius="16dp" />
 
                 </LinearLayout>
 
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="RECENT WEIGHT LOGS"
-                    android:textColor="@color/kinetic_secondary"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
+                    android:layout_marginTop="22dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/kinetic_secondary" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:letterSpacing="0.2"
+                        android:text="RECENT WEIGHT LOGS"
+                        android:textColor="@color/kinetic_secondary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
 
                 <LinearLayout
                     android:id="@+id/weightHistoryContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- STRENGTH PERFORMANCE TRAJECTORY CARD -->
+        <!-- ============ STRENGTH PERFORMANCE ============ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             app:cardBackgroundColor="@color/kinetic_card_surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:contentPadding="16dp">
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/kinetic_card_high"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="20dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -320,11 +426,19 @@
                     android:gravity="center_vertical"
                     android:orientation="horizontal">
 
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/kinetic_secondary" />
+
                     <TextView
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
                         android:layout_weight="1"
-                        android:text="STRENGTH PERFORMANCE (ESTIMATED 1RM)"
+                        android:letterSpacing="0.12"
+                        android:text="STRENGTH (EST. 1RM)"
                         android:textColor="@color/kinetic_secondary"
                         android:textSize="10sp"
                         android:textStyle="bold" />
@@ -333,9 +447,11 @@
                         android:id="@+id/tvStrengthBadge"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:background="@color/kinetic_card_high"
-                        android:paddingHorizontal="8dp"
-                        android:paddingVertical="3dp"
+                        android:background="@drawable/bg_stadium_pill"
+                        android:backgroundTint="@color/kinetic_card_high"
+                        android:letterSpacing="0.05"
+                        android:paddingHorizontal="12dp"
+                        android:paddingVertical="6dp"
                         android:text="⚡ +8.5% STRENGTH GAIN"
                         android:textColor="@color/kinetic_primary"
                         android:textSize="10sp"
@@ -346,134 +462,171 @@
                 <com.example.kinetiq.ui.progress.StrengthTrajectoryView
                     android:id="@+id/strengthTrajectoryGraph"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:layout_marginTop="10dp" />
+                    android:layout_height="190dp"
+                    android:layout_marginTop="12dp" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- PROGRESS PHOTO SECTION CARD -->
+        <!-- ============ VISUAL TRANSFORMATION ============ -->
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
             app:cardBackgroundColor="@color/kinetic_card_surface"
-            app:cardCornerRadius="16dp"
-            app:cardElevation="2dp"
-            app:contentPadding="16dp">
+            app:cardCornerRadius="28dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/kinetic_card_high"
+            app:strokeWidth="1dp">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:padding="20dp">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="VISUAL BODY TRANSFORMATION"
-                    android:textColor="@color/kinetic_primary"
-                    android:textSize="10sp"
-                    android:textStyle="bold" />
-
-                <FrameLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="220dp"
-                    android:layout_marginTop="10dp"
-                    android:background="@color/kinetic_surface_container_lowest">
-
-                    <androidx.camera.view.PreviewView
-                        android:id="@+id/progressCameraPreview"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:visibility="gone"
-                        app:implementationMode="compatible" />
-
-                    <ImageView
-                        android:id="@+id/ivProgressPhoto"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:contentDescription="Captured progress photo"
-                        android:scaleType="centerCrop"
-                        android:visibility="gone" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="16dp">
-
-                        <TextView
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_stadium_pill"
-                            android:backgroundTint="@color/kinetic_card_highest"
-                            android:gravity="center"
-                            android:text="📸"
-                            android:textSize="22sp" />
-
-                        <TextView
-                            android:id="@+id/tvProgressCameraPrompt"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="10dp"
-                            android:gravity="center"
-                            android:text="Capture front, side, or back physique photo"
-                            android:textColor="@color/kinetic_text_muted"
-                            android:textSize="13sp" />
-
-                    </LinearLayout>
-
-                </FrameLayout>
-
-                <!-- Camera Controls -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <Button
-                        android:id="@+id/btnCaptureProgressPhoto"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/kinetic_card_highest"
-                        android:text="📷 Camera"
-                        android:textColor="@color/kinetic_text_primary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
+                    <View
+                        android:layout_width="3dp"
+                        android:layout_height="12dp"
+                        android:layout_marginEnd="8dp"
+                        android:background="@color/kinetic_primary" />
 
-                    <Button
-                        android:id="@+id/btnChooseProgressGallery"
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/kinetic_card_highest"
-                        android:text="🖼 Gallery"
-                        android:textColor="@color/kinetic_secondary"
-                        android:textSize="12sp"
-                        android:textStyle="bold" />
-
-                    <Button
-                        android:id="@+id/btnRetakeProgressPhoto"
-                        style="?attr/materialButtonOutlinedStyle"
+                    <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Retake"
-                        android:textColor="@color/kinetic_secondary"
-                        android:visibility="gone" />
+                        android:letterSpacing="0.2"
+                        android:text="VISUAL BODY TRANSFORMATION"
+                        android:textColor="@color/kinetic_primary"
+                        android:textSize="10sp"
+                        android:textStyle="bold" />
 
                 </LinearLayout>
 
-                <!-- Photo Angle Spinner -->
+                <!-- Rounded viewport -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    app:cardBackgroundColor="@color/kinetic_surface_container_lowest"
+                    app:cardCornerRadius="20dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="@color/kinetic_primary"
+                    app:strokeWidth="1dp">
+
+                    <FrameLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="240dp"
+                        android:background="@color/kinetic_surface_container_lowest">
+
+                        <androidx.camera.view.PreviewView
+                            android:id="@+id/progressCameraPreview"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:visibility="gone"
+                            app:implementationMode="compatible" />
+
+                        <ImageView
+                            android:id="@+id/ivProgressPhoto"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:contentDescription="Captured progress photo"
+                            android:scaleType="centerCrop"
+                            android:visibility="gone" />
+
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:gravity="center"
+                            android:orientation="vertical"
+                            android:padding="20dp">
+
+                            <TextView
+                                android:layout_width="56dp"
+                                android:layout_height="56dp"
+                                android:background="@drawable/bg_stadium_pill"
+                                android:backgroundTint="@color/kinetic_card_highest"
+                                android:gravity="center"
+                                android:text="📸"
+                                android:textSize="26sp" />
+
+                            <TextView
+                                android:id="@+id/tvProgressCameraPrompt"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="14dp"
+                                android:gravity="center"
+                                android:lineSpacingExtra="3dp"
+                                android:text="Capture front, side, or back physique photo"
+                                android:textColor="@color/kinetic_text_muted"
+                                android:textSize="14sp" />
+
+                        </LinearLayout>
+
+                    </FrameLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Camera controls -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnCaptureProgressPhoto"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/kinetic_card_highest"
+                        android:letterSpacing="0.04"
+                        android:text="📷 Camera"
+                        android:textColor="@color/kinetic_text_primary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="16dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnChooseProgressGallery"
+                        android:layout_width="0dp"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/kinetic_card_highest"
+                        android:letterSpacing="0.04"
+                        android:text="🖼 Gallery"
+                        android:textColor="@color/kinetic_secondary"
+                        android:textSize="12sp"
+                        android:textStyle="bold"
+                        app:cornerRadius="16dp" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnRetakeProgressPhoto"
+                        style="?attr/materialButtonOutlinedStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="52dp"
+                        android:layout_marginStart="8dp"
+                        android:text="Retake"
+                        android:textColor="@color/kinetic_secondary"
+                        android:visibility="gone"
+                        app:cornerRadius="16dp"
+                        app:strokeColor="@color/kinetic_secondary" />
+
+                </LinearLayout>
+
+                <!-- Photo angle -->
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="18dp"
+                    android:letterSpacing="0.15"
                     android:text="PHOTO ANGLE"
                     android:textColor="@color/kinetic_text_muted"
                     android:textSize="10sp"
@@ -482,9 +635,10 @@
                 <Spinner
                     android:id="@+id/spinnerProgressAngle"
                     android:layout_width="match_parent"
-                    android:layout_height="44dp"
-                    android:layout_marginTop="4dp"
-                    android:background="@drawable/bg_day_tab_normal" />
+                    android:layout_height="52dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_day_tab_normal"
+                    android:paddingHorizontal="8dp" />
 
                 <ProgressBar
                     android:id="@+id/pbSavingProgress"
@@ -492,7 +646,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:indeterminateTint="@color/kinetic_primary"
                     android:visibility="gone" />
 
@@ -500,43 +654,60 @@
                     android:id="@+id/tvProgressMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="10dp"
                     android:accessibilityLiveRegion="polite"
                     android:textColor="@color/kinetic_primary"
-                    android:textSize="12sp"
+                    android:textSize="13sp"
                     android:visibility="gone" />
 
-                <!-- Save Progress Photo CTA -->
-                <Button
+                <!-- Save CTA -->
+                <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnSaveProgressPhoto"
                     android:layout_width="match_parent"
-                    android:layout_height="52dp"
-                    android:layout_marginTop="12dp"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="16dp"
                     android:backgroundTint="@color/kinetic_primary"
+                    android:letterSpacing="0.1"
                     android:text="✓  SAVE PROGRESS PHOTO"
                     android:textColor="@color/black"
                     android:textSize="14sp"
-                    android:textStyle="bold" />
+                    android:textStyle="bold"
+                    app:cornerRadius="20dp" />
 
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
 
-        <!-- SAVED PROGRESS PHOTOS GALLERY CONTAINER -->
-        <TextView
-            android:layout_width="wrap_content"
+        <!-- ============ SAVED GALLERY ============ -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:text="SAVED PROGRESS GALLERY"
-            android:textColor="@color/kinetic_secondary"
-            android:textSize="11sp"
-            android:textStyle="bold" />
+            android:layout_marginTop="26dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <View
+                android:layout_width="3dp"
+                android:layout_height="12dp"
+                android:layout_marginEnd="8dp"
+                android:background="@color/kinetic_secondary" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:letterSpacing="0.2"
+                android:text="SAVED PROGRESS GALLERY"
+                android:textColor="@color/kinetic_secondary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
+
+        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/progressPhotosContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:orientation="vertical"
             android:paddingBottom="24dp" />
 
