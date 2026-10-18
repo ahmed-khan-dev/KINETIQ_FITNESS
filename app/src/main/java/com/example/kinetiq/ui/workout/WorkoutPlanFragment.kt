@@ -325,6 +325,7 @@ class WorkoutPlanFragment : Fragment() {
             val isSelected = dayName.equals(selectedDay, ignoreCase = true)
             val isToday = dayName.equals(todayLabel, ignoreCase = true)
             val sessionForDay = planByDay[dayName.lowercase()]
+            val isExplicitRest = sessionForDay != null && (sessionForDay.title.contains("Rest", ignoreCase = true) || sessionForDay.exerciseCount == 0)
 
             if (isSelected) {
                 container.setBackgroundResource(R.drawable.bg_day_tab_active)
@@ -335,8 +336,8 @@ class WorkoutPlanFragment : Fragment() {
             }
 
             when {
-                // If there's a session with zero exercises, treat it as an explicit REST day first.
-                sessionForDay != null && sessionForDay.exerciseCount == 0 -> {
+                // Explicit Rest day check first
+                isExplicitRest -> {
                     subView.text = "REST"
                     subView.setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_muted))
                 }
