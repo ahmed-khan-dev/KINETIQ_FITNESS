@@ -2,9 +2,18 @@
 
 ## 2026-10-18
 
+### Multi-Page Branded PDF Summary Report Exporter
+- Updated `WeeklyPdfExporter.kt` with two-pass `ReportBuilder` architecture for multi-page A4 PDF generation.
+- Added branded cover header, stat cards (`SESSIONS DONE`, `SETS COMPLETED`, `WEEK COMPLETION`), and overall progress bar.
+- Formatted structured exercise table with 4 columns (`EXERCISE`, `PLAN`, `LOAD`, `LOGGED SETS`) and zebra striping.
+- Added non-Activity context safety and guaranteed `document.close()` cleanup in `finally` block.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
+## 2026-10-18
+
 ### PDF Weight/Load Report Enhancements & Ribbon Rest Subview Fix
 - Added `loggedWeightKg` and `loggedSetsText` to `WorkoutExerciseUi` in `WorkoutViewModel.kt`.
-- Updated `WeeklyPdfExporter.kt` to format and render logged exercise weight and set details (e.g. `• Dumbbell Bench Press (3 sets × 10 reps @ 22.5 kg)`).
+- Updated `WeeklyPdfExporter.kt` to format and render logged exercise weight and set details.
 - Fixed ribbon subview badge in `WorkoutPlanFragment.kt` (`updateRibbonDisplay`) to display **`REST`** instead of `"PLAN"` when a day is set as a Rest Day.
 - Preserved 100% of existing View IDs across all layouts.
 - Verified build status: `:app:assembleDebug` builds cleanly.

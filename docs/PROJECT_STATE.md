@@ -1,21 +1,26 @@
 ﻿# Kinetiq Project State
 
 ## Current Phase
-PDF Weight/Load Report Enhancements & Ribbon Rest Subview Fix (Completed)
+Multi-Page Branded PDF Report Exporter & Stitch Kinetic UI (Completed)
 
 ## Status
-Weekly PDF Report weight/load rendering and ribbon rest status subview badge display fully implemented and compiling successfully.
+Multi-page A4 PDF report exporter with exercise table column formatting (Name, Plan, Load, Logged Sets), two-pass page calculation, and share chooser fully integrated and compiling successfully.
 
 ## Completed Enhancements
-1. **Weekly PDF Report Weight & Load Rendering (`WeeklyPdfExporter.kt`, `WorkoutViewModel.kt`)**:
-   - Added `loggedWeightKg` and `loggedSetsText` to `WorkoutExerciseUi`.
-   - Updated `WeeklyPdfExporter.kt` to format and render logged exercise weight and set details (e.g. `• Dumbbell Bench Press (3 sets × 10 reps @ 22.5 kg) — Logged: [1 x 10 @ 22.5 kg]`).
-   - Added Toast notifications on PDF generation.
-2. **Ribbon Subview Rest Status Badge (`WorkoutPlanFragment.kt`)**:
-   - Fixed `updateRibbonDisplay`: evaluates explicit rest sessions first (`isExplicitRest`), setting `subView.text = "REST"` instead of `"PLAN"` when a day is set as a Rest Day.
-3. **100% View ID Preservation**:
+1. **Multi-Page A4 PDF Summary Report Exporter (`WeeklyPdfExporter.kt`)**:
+   - Refactored `WeeklyPdfExporter.kt` using a two-pass `ReportBuilder` architecture:
+     - Pass 1: Dynamic page height calculation ensuring precise `"Page X of Y"` footers.
+     - Pass 2: Branded A4 PDF canvas rendering with Kinetiq cover header, top stat cards (`SESSIONS DONE`, `SETS COMPLETED`, `WEEK COMPLETION`), and overall progress bar.
+   - Structured exercise breakdown table with 4 columns:
+     - `EXERCISE` (wrapped title)
+     - `PLAN` (sets × reps)
+     - `LOAD` (logged weight in kg)
+     - `LOGGED SETS` (detailed set-by-set log history)
+   - Styled status chips (`COMPLETE`, `REST`, `X/Y SETS`, `PENDING`) and zebra-striped table rows.
+   - Non-Activity context flag safety (`FLAG_ACTIVITY_NEW_TASK`) and resource leak protection (`try-catch-finally` closing `PdfDocument`).
+2. **100% View ID Preservation**:
    - Preserved all existing View IDs across all layouts for 100% code compatibility.
-4. **Verified Build**: Built cleanly with `:app:assembleDebug`.
+3. **Verified Build**: Built cleanly with `:app:assembleDebug`.
 
 ## Current Build Status
 - **BUILD SUCCESSFUL** (`:app:assembleDebug`). Zero errors.
@@ -27,8 +32,6 @@ Weekly PDF Report weight/load rendering and ribbon rest status subview badge dis
 - Single-User Offline First Application
 
 ## Files Modified
-- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutViewModel.kt`
-- `app/src/main/java/com/example/kinetiq/ui/workout/WorkoutPlanFragment.kt`
 - `app/src/main/java/com/example/kinetiq/utils/WeeklyPdfExporter.kt`
 - `docs/PROJECT_STATE.md`
 - `docs/CHANGELOG.md`
@@ -37,4 +40,4 @@ Weekly PDF Report weight/load rendering and ribbon rest status subview badge dis
 - None. Build compiles cleanly.
 
 ## Exact Next Task
-Ready for Git commit/push or user testing.
+Awaiting user instructions for the next process/feature.
