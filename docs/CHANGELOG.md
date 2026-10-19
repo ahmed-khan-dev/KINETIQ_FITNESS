@@ -1,5 +1,15 @@
 # Kinetiq Changelog
 
+## 2026-10-20
+
+### Ribbon Subview Real-Time Sync, Progress Screen Cleanup & Photo Deletion
+- Refined `updateRibbonDisplay` in `WorkoutPlanFragment.kt` so subview text switches dynamically between **`REST`** and **`PLAN`** / **`TODAY`** when toggling days.
+- Removed 3 Body Metrics Grid (Waist, Chest, Body Fat cards) and Strength Performance Card container from `fragment_progress.xml` and `ProgressFragment.kt`.
+- Added `deleteProgressPhoto` to `ProgressPhotoDao.kt`, `AppRepository.kt`, and `ProgressViewModel.kt`.
+- Rendered 3-dot overflow menu (`⋮`) on progress photo items in `ProgressFragment.kt` offering a **"Delete Photo"** action.
+- Preserved 100% of existing View IDs across all layouts.
+- Verified build status: `:app:assembleDebug` builds cleanly.
+
 ## 2026-10-18
 
 ### Multi-Page Branded PDF Summary Report Exporter

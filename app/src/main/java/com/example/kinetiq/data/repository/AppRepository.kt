@@ -215,6 +215,7 @@ class AppRepository(private val database: AppDatabase) {
 
     // Progress Photos
     suspend fun saveProgressPhoto(photo: ProgressPhotoEntity) = progressPhotoDao.insertProgressPhoto(photo)
+    suspend fun deleteProgressPhoto(photo: ProgressPhotoEntity) = progressPhotoDao.deleteProgressPhoto(photo)
     fun getLatestProgressPhotoFlow(userId: String): Flow<ProgressPhotoEntity?> = progressPhotoDao.getLatestProgressPhotoFlow(userId)
     fun getAllProgressPhotosFlow(userId: String): Flow<List<ProgressPhotoEntity>> = progressPhotoDao.getAllProgressPhotosFlow(userId)
 

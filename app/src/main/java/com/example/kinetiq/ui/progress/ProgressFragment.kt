@@ -217,6 +217,7 @@ class ProgressFragment : Fragment() {
             val row = LinearLayout(requireContext()).apply {
                 orientation = LinearLayout.HORIZONTAL
                 setPadding(0, dp(10), 0, dp(10))
+                gravity = android.view.Gravity.CENTER_VERTICAL
             }
             val image = ImageView(requireContext()).apply {
                 layoutParams = LinearLayout.LayoutParams(dp(88), dp(88))
@@ -230,8 +231,34 @@ class ProgressFragment : Fragment() {
                 text = "${photo.angle} view\n${formatDate(photo.takenAt)}"
                 setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_text_primary))
             }
+            val menuBtn = TextView(requireContext()).apply {
+                text = "⋮"
+                textSize = 22f
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.kinetic_secondary))
+                setPadding(dp(12), dp(8), dp(12), dp(8))
+                setOnClickListener { anchor ->
+                    val popup = androidx.appcompat.widget.PopupMenu(requireContext(), anchor)
+                    popup.menu.add("Delete Photo")
+                    popup.setOnMenuItemClickListener { menuItem ->
+                        if (menuItem.title == "Delete Photo") {
+                            androidx.appcompat.app.AlertDialog.Builder(requireContext())
+                                .setTitle("Delete Progress Photo")
+                                .setMessage("Are you sure you want to delete this ${photo.angle} progress photo?")
+                                .setPositiveButton("Delete") { _, _ ->
+                                    viewModel.deleteProgressPhoto(photo)
+                                }
+                                .setNegativeButton("Cancel", null)
+                                .show()
+                            true
+                        } else false
+                    }
+                    popup.show()
+                }
+            }
+
             row.addView(image)
             row.addView(details)
+            row.addView(menuBtn)
             binding.progressPhotosContainer.addView(row)
         }
     }

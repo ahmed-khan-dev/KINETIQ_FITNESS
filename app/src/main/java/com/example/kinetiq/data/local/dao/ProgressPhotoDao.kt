@@ -20,4 +20,7 @@ interface ProgressPhotoDao {
 
     @Query("SELECT * FROM progress_photos WHERE userId = :userId ORDER BY takenAt DESC")
     fun getAllProgressPhotosFlow(userId: String): Flow<List<ProgressPhotoEntity>>
+
+    @androidx.room.Delete
+    suspend fun deleteProgressPhoto(photo: ProgressPhotoEntity)
 }

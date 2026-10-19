@@ -142,4 +142,19 @@ class ProgressViewModel(application: Application) : AndroidViewModel(application
             }
         }
     }
+
+    fun deleteProgressPhoto(photo: ProgressPhotoEntity) {
+        viewModelScope.launch {
+            try {
+                repository.deleteProgressPhoto(photo)
+                val file = File(photo.photoUrl)
+                if (file.exists()) {
+                    file.delete()
+                }
+                showMessage("Progress photo deleted.")
+            } catch (error: Exception) {
+                showMessage("Could not delete photo: ${error.localizedMessage}")
+            }
+        }
+    }
 }
